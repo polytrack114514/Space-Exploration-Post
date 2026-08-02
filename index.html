@@ -1594,6 +1594,87 @@
             .launch-card { padding: 16px; }
         }
 
+
+        /* ==================== 官方机构徽章 ==================== */
+        .badge-official {
+            display: inline-block;
+            font-size: 0.68rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-left: 6px;
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+            vertical-align: middle;
+        }
+        .auth-avatar-small img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .auth-user-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+        .btn-add-launch {
+            padding: 8px 16px;
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+            border: 1px solid rgba(0, 210, 211, 0.3);
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+        .btn-add-launch:hover {
+            background: rgba(0, 210, 211, 0.25);
+        }
+        .launch-image {
+            width: 100%;
+            max-height: 280px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+        .launch-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .launch-edit-btn, .launch-delete-btn {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .launch-edit-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+        }
+        .launch-edit-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+        }
+        .launch-delete-btn {
+            background: rgba(255, 85, 85, 0.1);
+            color: var(--danger);
+        }
+        .launch-delete-btn:hover {
+            background: rgba(255, 85, 85, 0.2);
+        }
+
     </style>
 </head>
 <body>
@@ -1664,6 +1745,17 @@
         let likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
         let isLoading = false;
 
+        // ==================== 官方机构账号配置 ====================
+        const OFFICIAL_USERS = {
+            'NASA': { avatar: 'https://www.nasa.gov/wp-content/themes/nasa/assets/images/nasa-logo.svg', badge: 'NASA官方' },
+            'CNSA': { avatar: 'https://picx.zhimg.com/v2-264f1e06887851be0703902fb9f106ca_r.jpg?source=2c26e567', badge: '国家航天局' },
+            'SpaceX': { avatar: 'https://i.imglt.com/20260802/f61b49848b4eda0e49a759683af30679.jpg', badge: 'SpaceX官方' },
+            '其他火箭发射': { avatar: 'https://i0.hdslb.com/bfs/new_dyn/43b61571f1e9a172c5ef0e1bc70d709f3461574224251726.jpg', badge: '火箭发射' }
+        };
+        function isOfficialUser(name) {
+            return !!OFFICIAL_USERS[name];
+        }
+
         // ==================== 从云端加载帖子 ====================
         async function loadPosts() {
             isLoading = true;
@@ -1672,6 +1764,10 @@
                 if (resp.ok) {
                     const data = await resp.json();
                     posts = data.posts || [];
+                    if (data.launches && data.launches.length > 0) {
+                        launches = data.launches;
+                        renderLaunches();
+                    }
                     renderPosts();
                 }
             } catch (err) {
@@ -1684,13 +1780,34 @@
         // ==================== 保存帖子到云端 ====================
         async function savePosts() {
             try {
+                const resp = await fetch(API_URL);
+                const data = await resp.json();
+                data.posts = posts;
+                data.launches = launches;
                 await fetch(API_URL, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ posts: posts })
+                    body: JSON.stringify(data)
                 });
             } catch (err) {
                 console.error('保存失败:', err);
+            }
+        }
+
+        // ==================== 保存发射时间表到云端 ====================
+        async function saveLaunches() {
+            try {
+                const resp = await fetch(API_URL);
+                const data = await resp.json();
+                data.posts = data.posts || posts;
+                data.launches = launches;
+                await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (err) {
+                console.error('保存发射数据失败:', err);
             }
         }
 
@@ -1719,6 +1836,9 @@
 
         document.getElementById('modalOverlay').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
+        });
+        document.getElementById('launchModalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeLaunchEditor();
         });
 
         document.addEventListener('keydown', function(e) {
@@ -1768,7 +1888,7 @@
                 const saveResp = await fetch(API_URL, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ posts: posts })
+                    body: JSON.stringify({ posts: posts, launches: launches })
                 });
 
                 if (saveResp.ok) {
@@ -1844,6 +1964,7 @@
                                 <div class="author-info">
                                     <span class="author-name">
                                         ${escapeHtml(post.author)}
+                                        ${OFFICIAL_USERS[post.author] ? `<span class="badge-official">${OFFICIAL_USERS[post.author].badge}</span>` : ''}
                                     </span>
                                     <span class="post-time">${formatTime(post.time)}</span>
                                 </div>
@@ -2004,6 +2125,7 @@
         }
 
         function getAvatar(name) {
+            if (OFFICIAL_USERS[name]) return OFFICIAL_USERS[name].avatar;
             return '🚀';
         }
 
@@ -2068,13 +2190,18 @@
             const area = document.getElementById('authArea');
             if (!area) return;
             if (currentUser) {
+                const av = getAvatar(currentUser.name);
+                const avHtml = av.startsWith('http') ? `<img src="${av}" alt="avatar">` : av;
+                const badge = OFFICIAL_USERS[currentUser.name] ? `<span class="auth-user-badge">${OFFICIAL_USERS[currentUser.name].badge}</span>` : '';
                 area.innerHTML = `
                     <div class="auth-user">
-                        <div class="auth-avatar-small">${getAvatar(currentUser.name)}</div>
+                        <div class="auth-avatar-small">${avHtml}</div>
                         <span class="auth-name">${escapeHtml(currentUser.name)}</span>
+                        ${badge}
                         <button class="btn-logout" onclick="handleLogout()">退出</button>
                     </div>
                 `;
+                renderLaunchControls();
             } else {
                 area.innerHTML = `<button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>`;
             }
@@ -2178,6 +2305,7 @@
             currentUser = null;
             localStorage.removeItem('space_user');
             renderAuthArea();
+            renderLaunchControls();
         }
 
         // Override openModal to require login
@@ -2195,7 +2323,7 @@
         };
 
         // ==================== 火箭发射时间表 ====================
-        const launches = [
+        let launches = [
             {
                 rocket: '朱雀三号遥二',
                 agency: '蓝箭航天 LandSpace',
@@ -2294,7 +2422,14 @@
                             <span class="launch-badge ${badgeClass}">${badgeText}</span>
                         </div>
                         ${countdownHtml}
-                        <div class="launch-desc">${l.desc}</div>
+                        ${l.image ? `<img src="${escapeHtml(l.image)}" class="launch-image" alt="发射图片" onerror="this.style.display='none'">` : ''}
+                        <div class="launch-desc">${escapeHtml(l.desc)}</div>
+                        ${currentUser && isOfficialUser(currentUser.name) ? `
+                        <div class="launch-card-actions">
+                            <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
+                            <button class="launch-delete-btn" onclick="deleteLaunch(${i})">🗑 删除</button>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
@@ -2330,7 +2465,128 @@
             if (needRerender) renderLaunches();
         }
 
+        // ==================== 发射管理控件 ====================
+        function renderLaunchControls() {
+            const header = document.querySelector('.launch-header');
+            if (!header) return;
+            // 移除已有的控件
+            const existing = header.querySelector('.launch-controls');
+            if (existing) existing.remove();
+
+            if (currentUser && isOfficialUser(currentUser.name)) {
+                const controls = document.createElement('div');
+                controls.className = 'launch-controls';
+                controls.style.marginLeft = 'auto';
+                controls.innerHTML = '<button class="btn-add-launch" onclick="openLaunchEditor()">+ 添加发射</button>';
+                header.appendChild(controls);
+            }
+        }
+
+        // ==================== 发射编辑器 ====================
+        let editingLaunchId = null;
+
+        function openLaunchEditor() {
+            editingLaunchId = null;
+            document.getElementById('launchRocket').value = '';
+            document.getElementById('launchAgency').value = '';
+            document.getElementById('launchDate').value = '';
+            document.getElementById('launchLocation').value = '';
+            document.getElementById('launchMission').value = '';
+            document.getElementById('launchImage').value = '';
+            document.getElementById('launchDesc').value = '';
+            document.getElementById('launchModalTitle').textContent = '添加火箭发射';
+            document.getElementById('launchModalOverlay').classList.add('show');
+            setTimeout(() => document.getElementById('launchRocket').focus(), 100);
+        }
+
+        function closeLaunchEditor() {
+            document.getElementById('launchModalOverlay').classList.remove('show');
+            editingLaunchId = null;
+        }
+
+        function editLaunch(index) {
+            const l = launches[index];
+            if (!l) return;
+            editingLaunchId = index;
+
+            // 转换时间为 datetime-local 格式
+            const d = new Date(l.date);
+            const localISO = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+            document.getElementById('launchRocket').value = l.rocket || '';
+            document.getElementById('launchAgency').value = l.agency || '';
+            document.getElementById('launchDate').value = localISO;
+            document.getElementById('launchLocation').value = l.location || '';
+            document.getElementById('launchMission').value = l.mission || '';
+            document.getElementById('launchImage').value = l.image || '';
+            document.getElementById('launchDesc').value = l.desc || '';
+            document.getElementById('launchModalTitle').textContent = '编辑火箭发射';
+            document.getElementById('launchModalOverlay').classList.add('show');
+        }
+
+        async function submitLaunch() {
+            if (!currentUser || !isOfficialUser(currentUser.name)) {
+                alert('只有官方机构账号才能管理发射时间表');
+                return;
+            }
+
+            const rocket = document.getElementById('launchRocket').value.trim();
+            const agency = document.getElementById('launchAgency').value.trim();
+            const dateStr = document.getElementById('launchDate').value;
+            const location = document.getElementById('launchLocation').value.trim();
+            const mission = document.getElementById('launchMission').value.trim();
+            const image = document.getElementById('launchImage').value.trim();
+            const desc = document.getElementById('launchDesc').value.trim();
+
+            if (!rocket) { document.getElementById('launchRocket').focus(); return; }
+            if (!dateStr) { document.getElementById('launchDate').focus(); return; }
+
+            const btn = document.getElementById('launchSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = '保存中...';
+
+            const launchData = {
+                rocket: rocket,
+                agency: agency,
+                date: new Date(dateStr).getTime(),
+                location: location,
+                mission: mission,
+                image: image,
+                desc: desc,
+                status: 'tentative'
+            };
+
+            if (editingLaunchId !== null) {
+                launches[editingLaunchId] = launchData;
+            } else {
+                launches.push(launchData);
+            }
+
+            // 按日期排序
+            launches.sort((a, b) => a.date - b.date);
+
+            await saveLaunches();
+            renderLaunches();
+
+            btn.disabled = false;
+            btn.textContent = '保存';
+            closeLaunchEditor();
+        }
+
+        async function deleteLaunch(index) {
+            if (!currentUser || !isOfficialUser(currentUser.name)) return;
+            if (!confirm('确定要删除这条发射信息吗？')) return;
+            launches.splice(index, 1);
+            await saveLaunches();
+            renderLaunches();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLaunchEditor();
+        });
+
         renderLaunches();
+        renderLaunchControls();
         setInterval(updateCountdowns, 1000);
 
 // ==================== 初始化 ====================
@@ -2341,6 +2597,22 @@
     
 
 </script>
+
+    <!-- 发射编辑弹窗 -->
+    <div class="modal-overlay" id="launchModalOverlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeLaunchEditor()">×</button>
+            <div class="modal-title" id="launchModalTitle">添加火箭发射</div>
+            <input type="text" class="modal-input" id="launchRocket" placeholder="火箭名称（如：朱雀三号遥二）" maxlength="50">
+            <input type="text" class="modal-input" id="launchAgency" placeholder="机构（如：蓝箭航天）" maxlength="50">
+            <input type="datetime-local" class="modal-input" id="launchDate" style="color-scheme: dark;">
+            <input type="text" class="modal-input" id="launchLocation" placeholder="发射地点" maxlength="100">
+            <input type="text" class="modal-input" id="launchMission" placeholder="任务（简短描述）" maxlength="100">
+            <input type="text" class="modal-input" id="launchImage" placeholder="图片链接（可选）" maxlength="500">
+            <textarea class="modal-textarea" id="launchDesc" placeholder="详细描述（可选）" maxlength="500"></textarea>
+            <button class="modal-submit" id="launchSubmitBtn" onclick="submitLaunch()">保存</button>
+        </div>
+    </div>
 
     <div class="auth-modal-overlay" id="authModal">
         <div class="auth-modal">
