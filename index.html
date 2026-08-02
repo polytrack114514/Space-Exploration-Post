@@ -1733,6 +1733,49 @@
         </div>
     </div>
 
+    <!-- 发射编辑弹窗 -->
+    <div class="modal-overlay" id="launchModalOverlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeLaunchEditor()">×</button>
+            <div class="modal-title" id="launchModalTitle">添加火箭发射</div>
+            <input type="text" class="modal-input" id="launchRocket" placeholder="火箭名称（如：朱雀三号遥二）" maxlength="50">
+            <input type="text" class="modal-input" id="launchAgency" placeholder="机构（如：蓝箭航天）" maxlength="50">
+            <input type="datetime-local" class="modal-input" id="launchDate" style="color-scheme: dark;">
+            <input type="text" class="modal-input" id="launchLocation" placeholder="发射地点" maxlength="100">
+            <input type="text" class="modal-input" id="launchMission" placeholder="任务（简短描述）" maxlength="100">
+            <input type="text" class="modal-input" id="launchImage" placeholder="图片链接（可选）" maxlength="500">
+            <textarea class="modal-textarea" id="launchDesc" placeholder="详细描述（可选）" maxlength="500"></textarea>
+            <button class="modal-submit" id="launchSubmitBtn" onclick="submitLaunch()">保存</button>
+        </div>
+    </div>
+
+    <!-- 用户认证弹窗 -->
+    <div class="auth-modal-overlay" id="authModal">
+        <div class="auth-modal">
+            <h2 id="authTitle">登录</h2>
+            <div class="auth-error" id="authError"></div>
+            <div class="auth-success" id="authSuccess"></div>
+            <div class="auth-field">
+                <label>用户名</label>
+                <input type="text" id="authUsername" placeholder="起一个用户名" maxlength="20">
+            </div>
+            <div class="auth-field">
+                <label>密码</label>
+                <input type="password" id="authPassword" placeholder="密码（至少6位）">
+            </div>
+            <div class="auth-field" id="authConfirmField" style="display:none">
+                <label>确认密码</label>
+                <input type="password" id="authConfirm" placeholder="再输入一次密码">
+            </div>
+            <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()">登录</button>
+            <div class="auth-switch">
+                <span id="authSwitchText">还没有账号？</span>
+                <a id="authSwitchLink" onclick="toggleAuthMode()">注册</a>
+            </div>
+            <button class="auth-close" onclick="closeAuthModal()">&times;</button>
+        </div>
+    </div>
+
     <script>
         // ==================== JSONBlob 配置 ====================
         const BLOB_ID = '019fc148-0e14-79cd-91ba-3ef877e9c105';
@@ -1837,12 +1880,9 @@
         document.getElementById('modalOverlay').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
-        document.getElementById('launchModalOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closeLaunchEditor();
-        });
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); }
         });
 
         // ==================== 发帖 ====================
@@ -2581,15 +2621,16 @@
             renderLaunches();
         }
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeLaunchEditor();
-        });
-
         renderLaunches();
         renderLaunchControls();
         setInterval(updateCountdowns, 1000);
 
 // ==================== 初始化 ====================
+        // launchModalOverlay 在 script 之后渲染，这里绑定事件
+        var lmo = document.getElementById('launchModalOverlay');
+        if (lmo) lmo.addEventListener('click', function(e) {
+            if (e.target === this) closeLaunchEditor();
+        });
         renderAuthArea();
         loadUsers();
         loadPosts();
@@ -2598,46 +2639,5 @@
 
 </script>
 
-    <!-- 发射编辑弹窗 -->
-    <div class="modal-overlay" id="launchModalOverlay">
-        <div class="modal">
-            <button class="modal-close" onclick="closeLaunchEditor()">×</button>
-            <div class="modal-title" id="launchModalTitle">添加火箭发射</div>
-            <input type="text" class="modal-input" id="launchRocket" placeholder="火箭名称（如：朱雀三号遥二）" maxlength="50">
-            <input type="text" class="modal-input" id="launchAgency" placeholder="机构（如：蓝箭航天）" maxlength="50">
-            <input type="datetime-local" class="modal-input" id="launchDate" style="color-scheme: dark;">
-            <input type="text" class="modal-input" id="launchLocation" placeholder="发射地点" maxlength="100">
-            <input type="text" class="modal-input" id="launchMission" placeholder="任务（简短描述）" maxlength="100">
-            <input type="text" class="modal-input" id="launchImage" placeholder="图片链接（可选）" maxlength="500">
-            <textarea class="modal-textarea" id="launchDesc" placeholder="详细描述（可选）" maxlength="500"></textarea>
-            <button class="modal-submit" id="launchSubmitBtn" onclick="submitLaunch()">保存</button>
-        </div>
-    </div>
-
-    <div class="auth-modal-overlay" id="authModal">
-        <div class="auth-modal">
-            <h2 id="authTitle">登录</h2>
-            <div class="auth-error" id="authError"></div>
-            <div class="auth-success" id="authSuccess"></div>
-            <div class="auth-field">
-                <label>用户名</label>
-                <input type="text" id="authUsername" placeholder="起一个用户名" maxlength="20">
-            </div>
-            <div class="auth-field">
-                <label>密码</label>
-                <input type="password" id="authPassword" placeholder="密码（至少6位）">
-            </div>
-            <div class="auth-field" id="authConfirmField" style="display:none">
-                <label>确认密码</label>
-                <input type="password" id="authConfirm" placeholder="再输入一次密码">
-            </div>
-            <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()">登录</button>
-            <div class="auth-switch">
-                <span id="authSwitchText">还没有账号？</span>
-                <a id="authSwitchLink" onclick="toggleAuthMode()">注册</a>
-            </div>
-            <button class="auth-close" onclick="closeAuthModal()">&times;</button>
-        </div>
-    </div>
 </body>
 </html>
