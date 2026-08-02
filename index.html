@@ -2515,6 +2515,16 @@
                 launchedSection.style.display = '';
                 // 按发射时间倒序排列（最近发射的在前）
                 launched.sort((a, b) => b.data.date - a.data.date);
+                // 只保留前20个，多余的从 launches 中删除
+                if (launched.length > 20) {
+                    const toRemove = launched.slice(20);
+                    toRemove.forEach(item => {
+                        const idx = launches.indexOf(item.data);
+                        if (idx !== -1) launches.splice(idx, 1);
+                    });
+                    launched.length = 20;
+                    saveLaunches();
+                }
                 launchedList.innerHTML = launched.map((item) => {
                     const l = item.data;
                     const i = item.origIndex;
