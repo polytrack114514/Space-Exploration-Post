@@ -1589,6 +1589,23 @@
             font-weight: 600;
             font-size: 0.95rem;
         }
+        .badge-launched {
+            background: rgba(255, 107, 107, 0.15);
+            color: #ff6b6b;
+        }
+        .launch-card.launched-card {
+            opacity: 0.85;
+            border-color: rgba(255, 107, 107, 0.15);
+        }
+        .launched-time {
+            text-align: center;
+            padding: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .launched-time strong {
+            color: #ff6b6b;
+        }
         @media (max-width: 520px) {
             .countdown-num { font-size: 1.3rem; }
             .launch-card { padding: 16px; }
@@ -1693,6 +1710,15 @@
             <h2>🚀 近期火箭发射</h2>
         </div>
         <div class="launch-list" id="launchList"></div>
+    </div>
+
+    <!-- 已发射火箭 -->
+    <div class="launch-section" id="launchedSection" style="display:none;">
+        <div class="launch-header">
+            <span class="pulse-dot" style="background:#ff6b6b;animation:none;"></span>
+            <h2>🏁 已发射火箭</h2>
+        </div>
+        <div class="launch-list" id="launchedList"></div>
     </div>
 
     <div class="container">
@@ -2395,12 +2421,27 @@
 
         function renderLaunches() {
             const list = document.getElementById('launchList');
+            const launchedSection = document.getElementById('launchedSection');
+            const launchedList = document.getElementById('launchedList');
             if (!list) return;
             const now = Date.now();
 
-            list.innerHTML = launches.map((l, i) => {
+            // 分离即将发射和已发射
+            const upcoming = [];
+            const launched = [];
+            launches.forEach((l, i) => {
+                if (l.date - now <= 0) {
+                    launched.push({ data: l, origIndex: i });
+                } else {
+                    upcoming.push({ data: l, origIndex: i });
+                }
+            });
+
+            // 渲染即将发射
+            list.innerHTML = upcoming.map((item) => {
+                const l = item.data;
+                const i = item.origIndex;
                 const diff = l.date - now;
-                const launched = diff <= 0;
 
                 let badgeClass = 'badge-upcoming';
                 let badgeText = '即将发射';
@@ -2417,35 +2458,30 @@
                     month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
 
-                let countdownHtml = '';
-                if (launched) {
-                    countdownHtml = '<div class="launch-launched">🚀 已发射！</div>';
-                } else {
-                    const days = Math.floor(diff / (24 * 60 * 60 * 1000));
-                    const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
-                    const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
-                    const secs = Math.floor((diff % (60 * 1000)) / 1000);
-                    countdownHtml = `
-                        <div class="launch-countdown">
-                            <div class="countdown-box">
-                                <div class="countdown-num" id="cd-days-${i}">${days}</div>
-                                <div class="countdown-label">天</div>
-                            </div>
-                            <div class="countdown-box">
-                                <div class="countdown-num" id="cd-hours-${i}">${String(hours).padStart(2,'0')}</div>
-                                <div class="countdown-label">时</div>
-                            </div>
-                            <div class="countdown-box">
-                                <div class="countdown-num" id="cd-mins-${i}">${String(mins).padStart(2,'0')}</div>
-                                <div class="countdown-label">分</div>
-                            </div>
-                            <div class="countdown-box">
-                                <div class="countdown-num" id="cd-secs-${i}">${String(secs).padStart(2,'0')}</div>
-                                <div class="countdown-label">秒</div>
-                            </div>
+                const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
+                const secs = Math.floor((diff % (60 * 1000)) / 1000);
+                const countdownHtml = `
+                    <div class="launch-countdown">
+                        <div class="countdown-box">
+                            <div class="countdown-num" id="cd-days-${i}">${days}</div>
+                            <div class="countdown-label">天</div>
                         </div>
-                    `;
-                }
+                        <div class="countdown-box">
+                            <div class="countdown-num" id="cd-hours-${i}">${String(hours).padStart(2,'0')}</div>
+                            <div class="countdown-label">时</div>
+                        </div>
+                        <div class="countdown-box">
+                            <div class="countdown-num" id="cd-mins-${i}">${String(mins).padStart(2,'0')}</div>
+                            <div class="countdown-label">分</div>
+                        </div>
+                        <div class="countdown-box">
+                            <div class="countdown-num" id="cd-secs-${i}">${String(secs).padStart(2,'0')}</div>
+                            <div class="countdown-label">秒</div>
+                        </div>
+                    </div>
+                `;
 
                 return `
                     <div class="launch-card ${diff > 0 && diff < 3 * 24 * 60 * 60 * 1000 ? 'launching-soon' : ''}">
@@ -2473,6 +2509,56 @@
                     </div>
                 `;
             }).join('');
+
+            // 渲染已发射
+            if (launched.length > 0 && launchedSection && launchedList) {
+                launchedSection.style.display = '';
+                // 按发射时间倒序排列（最近发射的在前）
+                launched.sort((a, b) => b.data.date - a.data.date);
+                launchedList.innerHTML = launched.map((item) => {
+                    const l = item.data;
+                    const i = item.origIndex;
+                    const dateStr = new Date(l.date).toLocaleString('zh-CN', {
+                        month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+                    const ago = Date.now() - l.date;
+                    const agoDays = Math.floor(ago / (24 * 60 * 60 * 1000));
+                    const agoHours = Math.floor((ago % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                    const agoMins = Math.floor((ago % (60 * 60 * 1000)) / (60 * 1000));
+                    let agoStr = '';
+                    if (agoDays > 0) agoStr = `${agoDays}天${agoHours}小时前`;
+                    else if (agoHours > 0) agoStr = `${agoHours}小时${agoMins}分钟前`;
+                    else agoStr = `${agoMins}分钟前`;
+
+                    return `
+                        <div class="launch-card launched-card">
+                            <div class="launch-card-top">
+                                <div class="launch-info">
+                                    <div class="launch-rocket">${l.rocket}</div>
+                                    <div class="launch-agency">${l.agency}</div>
+                                    <div class="launch-meta">
+                                        <span>📅 ${dateStr}</span>
+                                        <span>📍 ${l.location}</span>
+                                        <span>🎯 ${l.mission}</span>
+                                    </div>
+                                </div>
+                                <span class="launch-badge badge-launched">已发射</span>
+                            </div>
+                            <div class="launched-time">🚀 发射于 <strong>${agoStr}</strong></div>
+                            ${l.image ? `<img src="${escapeHtml(l.image)}" class="launch-image" alt="发射图片" onerror="this.style.display='none'">` : ''}
+                            <div class="launch-desc">${escapeHtml(l.desc)}</div>
+                            ${currentUser && isOfficialUser(currentUser.name) ? `
+                            <div class="launch-card-actions">
+                                <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
+                                <button class="launch-delete-btn" onclick="deleteLaunch(${i})">🗑 删除</button>
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            } else if (launchedSection) {
+                launchedSection.style.display = 'none';
+            }
         }
 
         function updateCountdowns() {
