@@ -1446,7 +1446,154 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.18);
         }
-    
+
+        /* ==================== 火箭发射时间表 ==================== */
+        .launch-section {
+            position: relative;
+            z-index: 2;
+            max-width: 720px;
+            margin: 0 auto 32px;
+            padding: 0 20px;
+        }
+        .launch-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .launch-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .launch-header .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: #00d2d3;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px #00d2d3; }
+            50% { opacity: 0.3; box-shadow: 0 0 2px #00d2d3; }
+        }
+        .launch-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .launch-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        .launch-card:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-focus);
+        }
+        .launch-card.launching-soon {
+            border-color: rgba(0, 210, 211, 0.3);
+        }
+        .launch-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+        .launch-info {
+            flex: 1;
+        }
+        .launch-rocket {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .launch-agency {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .launch-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .launch-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .launch-badge {
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .badge-soon {
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+        }
+        .badge-upcoming {
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--gold);
+        }
+        .badge-tentative {
+            background: rgba(136, 136, 153, 0.15);
+            color: var(--text-secondary);
+        }
+        .launch-countdown {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .countdown-box {
+            flex: 1;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 10px 6px;
+        }
+        .countdown-num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+        .countdown-label {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .launch-desc {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+        .launch-launched {
+            text-align: center;
+            padding: 12px;
+            color: #00d2d3;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        @media (max-width: 520px) {
+            .countdown-num { font-size: 1.3rem; }
+            .launch-card { padding: 16px; }
+        }
+
     </style>
 </head>
 <body>
@@ -1457,6 +1604,15 @@
         <h1>探索宇宙帖子</h1>
         <p>探索浩瀚宇宙，分享星辰大海，一起畅聊太空奥秘</p>
     </header>
+
+    <!-- 火箭发射时间表 -->
+    <div class="launch-section">
+        <div class="launch-header">
+            <span class="pulse-dot"></span>
+            <h2>🚀 近期火箭发射</h2>
+        </div>
+        <div class="launch-list" id="launchList"></div>
+    </div>
 
     <div class="container">
 
@@ -2037,6 +2193,146 @@
             document.getElementById('modalName').style.opacity = '0.6';
             document.getElementById('modalTitle').focus();
         };
+
+        // ==================== 火箭发射时间表 ====================
+        const launches = [
+            {
+                rocket: '朱雀三号遥二',
+                agency: '蓝箭航天 LandSpace',
+                date: new Date('2026-08-11T10:00:00+08:00').getTime(),
+                location: '酒泉东风商业航天区',
+                mission: '一子级垂直回收验证',
+                desc: '中国民营可重复使用火箭关键测试，朱雀三号遥二将首次挑战陆地着陆腿垂直回收。若成功，中国将成为第二个掌握火箭回收技术的国家。',
+                status: 'confirmed'
+            },
+            {
+                rocket: 'Starship IFT-14',
+                agency: 'SpaceX',
+                date: new Date('2026-08-20T12:00:00+08:00').getTime(),
+                location: '德州星际基地 Starbase',
+                mission: '第14次试飞 · 尝试塔捕S41',
+                desc: 'IFT-13成功部署星链卫星后，SpaceX计划在IFT-14中再次尝试用发射塔机械臂捕获超重型助推器，并验证飞船再入隔热盾改进效果。',
+                status: 'tentative'
+            },
+            {
+                rocket: 'Artemis II',
+                agency: 'NASA',
+                date: new Date('2026-09-30T00:00:00+08:00').getTime(),
+                location: '肯尼迪航天中心 KSC',
+                mission: '载人绕月飞行测试',
+                desc: '自1972年阿波罗17号以来人类首次载人深空飞行，四名宇航员将乘坐猎户座飞船绕月飞行，为阿尔忒弥斯三号登月铺路。',
+                status: 'tentative'
+            }
+        ];
+
+        function renderLaunches() {
+            const list = document.getElementById('launchList');
+            if (!list) return;
+            const now = Date.now();
+
+            list.innerHTML = launches.map((l, i) => {
+                const diff = l.date - now;
+                const launched = diff <= 0;
+
+                let badgeClass = 'badge-upcoming';
+                let badgeText = '即将发射';
+                if (l.status === 'tentative') {
+                    badgeClass = 'badge-tentative';
+                    badgeText = '待定';
+                }
+                if (diff > 0 && diff < 3 * 24 * 60 * 60 * 1000) {
+                    badgeClass = 'badge-soon';
+                    badgeText = '发射在即';
+                }
+
+                const dateStr = new Date(l.date).toLocaleString('zh-CN', {
+                    month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+
+                let countdownHtml = '';
+                if (launched) {
+                    countdownHtml = '<div class="launch-launched">🚀 已发射！</div>';
+                } else {
+                    const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                    const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                    const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
+                    const secs = Math.floor((diff % (60 * 1000)) / 1000);
+                    countdownHtml = `
+                        <div class="launch-countdown">
+                            <div class="countdown-box">
+                                <div class="countdown-num" id="cd-days-${i}">${days}</div>
+                                <div class="countdown-label">天</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-num" id="cd-hours-${i}">${String(hours).padStart(2,'0')}</div>
+                                <div class="countdown-label">时</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-num" id="cd-mins-${i}">${String(mins).padStart(2,'0')}</div>
+                                <div class="countdown-label">分</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-num" id="cd-secs-${i}">${String(secs).padStart(2,'0')}</div>
+                                <div class="countdown-label">秒</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="launch-card ${diff > 0 && diff < 3 * 24 * 60 * 60 * 1000 ? 'launching-soon' : ''}">
+                        <div class="launch-card-top">
+                            <div class="launch-info">
+                                <div class="launch-rocket">${l.rocket}</div>
+                                <div class="launch-agency">${l.agency}</div>
+                                <div class="launch-meta">
+                                    <span>📅 ${dateStr}</span>
+                                    <span>📍 ${l.location}</span>
+                                    <span>🎯 ${l.mission}</span>
+                                </div>
+                            </div>
+                            <span class="launch-badge ${badgeClass}">${badgeText}</span>
+                        </div>
+                        ${countdownHtml}
+                        <div class="launch-desc">${l.desc}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateCountdowns() {
+            const now = Date.now();
+            let needRerender = false;
+
+            launches.forEach((l, i) => {
+                const diff = l.date - now;
+                if (diff <= 0) {
+                    needRerender = true;
+                    return;
+                }
+
+                const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
+                const secs = Math.floor((diff % (60 * 1000)) / 1000);
+
+                const dEl = document.getElementById('cd-days-' + i);
+                const hEl = document.getElementById('cd-hours-' + i);
+                const mEl = document.getElementById('cd-mins-' + i);
+                const sEl = document.getElementById('cd-secs-' + i);
+
+                if (dEl) dEl.textContent = days;
+                if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+                if (mEl) mEl.textContent = String(mins).padStart(2, '0');
+                if (sEl) sEl.textContent = String(secs).padStart(2, '0');
+            });
+
+            if (needRerender) renderLaunches();
+        }
+
+        renderLaunches();
+        setInterval(updateCountdowns, 1000);
+
 // ==================== 初始化 ====================
         renderAuthArea();
         loadUsers();
