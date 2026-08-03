@@ -1473,6 +1473,41 @@
             border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
+        .launch-tabs {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px;
+            background: var(--surface);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin-bottom: 16px;
+        }
+        .launch-tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            letter-spacing: 0.01em;
+        }
+        .launch-tab:hover {
+            color: var(--text-primary);
+        }
+        .launch-tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+        .launch-controls-wrap {
+            margin-left: auto;
+        }
         @keyframes pulse {
             0%, 100% { opacity: 1; box-shadow: 0 0 8px #00d2d3; }
             50% { opacity: 0.3; box-shadow: 0 0 2px #00d2d3; }
@@ -1705,20 +1740,17 @@
 
     <!-- 火箭发射时间表 -->
     <div class="launch-section">
-        <div class="launch-header">
-            <span class="pulse-dot"></span>
-            <h2>🚀 近期火箭发射</h2>
+        <div class="launch-tabs">
+            <button class="launch-tab active" data-launch-tab="upcoming">
+                <span>🚀 近期发射</span>
+            </button>
+            <button class="launch-tab" data-launch-tab="launched">
+                <span>🏁 已发射</span>
+            </button>
+            <div class="launch-controls-wrap" id="launchControlsWrap"></div>
         </div>
         <div class="launch-list" id="launchList"></div>
-    </div>
-
-    <!-- 已发射火箭 -->
-    <div class="launch-section" id="launchedSection" style="display:none;">
-        <div class="launch-header">
-            <span class="pulse-dot" style="background:#ff6b6b;animation:none;"></span>
-            <h2>🏁 已发射火箭</h2>
-        </div>
-        <div class="launch-list" id="launchedList"></div>
+        <div class="launch-list" id="launchedList" style="display:none;"></div>
     </div>
 
     <div class="container">
@@ -2419,9 +2451,10 @@
             }
         ];
 
+        let currentLaunchTab = 'upcoming';
+
         function renderLaunches() {
             const list = document.getElementById('launchList');
-            const launchedSection = document.getElementById('launchedSection');
             const launchedList = document.getElementById('launchedList');
             if (!list) return;
             const now = Date.now();
@@ -2437,8 +2470,20 @@
                 }
             });
 
+            // 已发射按时间倒序，只保留前20个
+            launched.sort((a, b) => b.data.date - a.data.date);
+            if (launched.length > 20) {
+                const toRemove = launched.slice(20);
+                toRemove.forEach(item => {
+                    const idx = launches.indexOf(item.data);
+                    if (idx !== -1) launches.splice(idx, 1);
+                });
+                launched.length = 20;
+                saveLaunches();
+            }
+
             // 渲染即将发射
-            list.innerHTML = upcoming.map((item) => {
+            list.innerHTML = upcoming.length > 0 ? upcoming.map((item) => {
                 const l = item.data;
                 const i = item.origIndex;
                 const diff = l.date - now;
@@ -2508,24 +2553,11 @@
                         ` : ''}
                     </div>
                 `;
-            }).join('');
+            }).join('') : '<div class="empty-state"><div class="emoji">🚀</div><p>暂无即将发射的火箭</p></div>';
 
             // 渲染已发射
-            if (launched.length > 0 && launchedSection && launchedList) {
-                launchedSection.style.display = '';
-                // 按发射时间倒序排列（最近发射的在前）
-                launched.sort((a, b) => b.data.date - a.data.date);
-                // 只保留前20个，多余的从 launches 中删除
-                if (launched.length > 20) {
-                    const toRemove = launched.slice(20);
-                    toRemove.forEach(item => {
-                        const idx = launches.indexOf(item.data);
-                        if (idx !== -1) launches.splice(idx, 1);
-                    });
-                    launched.length = 20;
-                    saveLaunches();
-                }
-                launchedList.innerHTML = launched.map((item) => {
+            if (launchedList) {
+                launchedList.innerHTML = launched.length > 0 ? launched.map((item) => {
                     const l = item.data;
                     const i = item.origIndex;
                     const dateStr = new Date(l.date).toLocaleString('zh-CN', {
@@ -2565,11 +2597,27 @@
                             ` : ''}
                         </div>
                     `;
-                }).join('');
-            } else if (launchedSection) {
-                launchedSection.style.display = 'none';
+                }).join('') : '<div class="empty-state"><div class="emoji">🏁</div><p>暂无已发射的火箭</p></div>';
             }
         }
+
+        // Tab 切换
+        function updateLaunchTabs() {
+            document.querySelectorAll('.launch-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.launchTab === currentLaunchTab);
+            });
+            const list = document.getElementById('launchList');
+            const launchedList = document.getElementById('launchedList');
+            if (list) list.style.display = currentLaunchTab === 'upcoming' ? '' : 'none';
+            if (launchedList) launchedList.style.display = currentLaunchTab === 'launched' ? '' : 'none';
+        }
+
+        document.querySelectorAll('.launch-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentLaunchTab = tab.dataset.launchTab;
+                updateLaunchTabs();
+            });
+        });
 
         function updateCountdowns() {
             const now = Date.now();
@@ -2603,18 +2651,12 @@
 
         // ==================== 发射管理控件 ====================
         function renderLaunchControls() {
-            const header = document.querySelector('.launch-header');
-            if (!header) return;
-            // 移除已有的控件
-            const existing = header.querySelector('.launch-controls');
-            if (existing) existing.remove();
+            const wrap = document.getElementById('launchControlsWrap');
+            if (!wrap) return;
+            wrap.innerHTML = '';
 
             if (currentUser && isOfficialUser(currentUser.name)) {
-                const controls = document.createElement('div');
-                controls.className = 'launch-controls';
-                controls.style.marginLeft = 'auto';
-                controls.innerHTML = '<button class="btn-add-launch" onclick="openLaunchEditor()">+ 添加发射</button>';
-                header.appendChild(controls);
+                wrap.innerHTML = '<button class="btn-add-launch" onclick="openLaunchEditor()">+ 添加发射</button>';
             }
         }
 
