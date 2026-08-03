@@ -2478,7 +2478,7 @@
                 const toRemove = launched.slice(20);
                 for (const item of toRemove) {
                     if (item.data.id) {
-                        await sb.from('launches').delete().eq('id', item.data.id);
+                        sb.from('launches').delete().eq('id', item.data.id).then(() => {}).catch(e => console.error('删除旧发射记录失败:', e));
                     }
                     const idx = launches.indexOf(item.data);
                     if (idx !== -1) launches.splice(idx, 1);
