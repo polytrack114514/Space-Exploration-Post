@@ -1728,6 +1728,7 @@
         }
 
     </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="bg-image"></div>
@@ -1835,10 +1836,10 @@
     </div>
 
     <script>
-        // ==================== JSONBlob 配置 ====================
-        const BLOB_ID = '019fc148-0e14-79cd-91ba-3ef877e9c105';
-        const USERS_URL = 'https://api.jsonblob.com/019fc147-5be3-7571-8c1b-d6f561ca5f63';
-        const API_URL = 'https://api.jsonblob.com/' + BLOB_ID;
+        // ==================== Supabase 配置 ====================
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ==================== 数据 ====================
         let posts = [];
@@ -1861,16 +1862,12 @@
         async function loadPosts() {
             isLoading = true;
             try {
-                const resp = await fetch(API_URL);
-                if (resp.ok) {
-                    const data = await resp.json();
-                    posts = data.posts || [];
-                    if (data.launches && data.launches.length > 0) {
-                        launches = data.launches;
-                        renderLaunches();
-                    }
-                    renderPosts();
-                }
+                const { data: postData, error: postErr } = await sb.from('posts').select('*').order('time', { ascending: false });
+                if (postErr) throw postErr;
+                posts = postData || [];
+                renderPosts();
+                // 加载发射数据
+                await loadLaunches();
             } catch (err) {
                 console.error('加载失败:', err);
                 document.getElementById('postsList').innerHTML = '<div class="empty-state"><div class="emoji">⚠️</div><p>加载失败，请检查网络连接</p></div>';
@@ -1878,39 +1875,47 @@
             isLoading = false;
         }
 
-        // ==================== 保存帖子到云端 ====================
-        async function savePosts() {
+        // ==================== 加载发射数据 ====================
+        async function loadLaunches() {
             try {
-                const resp = await fetch(API_URL);
-                const data = await resp.json();
-                data.posts = posts;
-                data.launches = launches;
-                await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
+                const { data, error } = await sb.from('launches').select('*').order('date', { ascending: true });
+                if (error) throw error;
+                if (data && data.length > 0) {
+                    launches = data;
+                    renderLaunches();
+                } else {
+                    // 首次运行，插入默认数据
+                    for (const l of launches) {
+                        await sb.from('launches').insert({
+                            rocket: l.rocket, agency: l.agency, date: l.date,
+                            location: l.location, mission: l.mission,
+                            image: l.image || '', desc: l.desc, status: l.status || 'tentative'
+                        });
+                    }
+                }
             } catch (err) {
-                console.error('保存失败:', err);
+                console.error('加载发射数据失败:', err);
             }
         }
 
-        // ==================== 保存发射时间表到云端 ====================
-        async function saveLaunches() {
+        // ==================== 更新单个帖子到 Supabase ====================
+        async function updatePostDB(postId) {
+            const post = posts.find(p => String(p.id) === String(postId));
+            if (!post) return;
             try {
-                const resp = await fetch(API_URL);
-                const data = await resp.json();
-                data.posts = data.posts || posts;
-                data.launches = launches;
-                await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
+                const { error } = await sb.from('posts').update({
+                    likes: post.likes || 0,
+                    comments: post.comments || [],
+                    pinned: post.pinned || false
+                }).eq('id', postId);
+                if (error) console.error('更新帖子失败:', error);
             } catch (err) {
-                console.error('保存发射数据失败:', err);
+                console.error('更新帖子失败:', err);
             }
         }
+
+        // ==================== saveLaunches 兼容占位 ====================
+        async function saveLaunches() {}
 
         // ==================== 自动刷新（每1分钟同步一次） ====================
         setInterval(() => {
@@ -1975,28 +1980,26 @@
                 comments: []
             };
 
-            // 先读取最新数据，再写入（避免覆盖他人帖子）
+            // 插入到 Supabase
             try {
-                const resp = await fetch(API_URL);
-                const data = await resp.json();
-                const currentPosts = data.posts || [];
-                currentPosts.unshift(newPost);
-                posts = currentPosts;
-
-                const saveResp = await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ posts: posts, launches: launches })
+                const { error } = await sb.from('posts').insert({
+                    id: newPost.id,
+                    title: newPost.title,
+                    content: newPost.content,
+                    author: newPost.author,
+                    avatar: newPost.avatar,
+                    image: newPost.image,
+                    time: newPost.time,
+                    likes: 0,
+                    comments: [],
+                    pinned: false
                 });
-
-                if (saveResp.ok) {
-                    closeModal();
-                    currentTab = 'new';
-                    updateTabs();
-                    renderPosts();
-                } else {
-                    alert('发布失败，请重试');
-                }
+                if (error) throw error;
+                posts.unshift(newPost);
+                closeModal();
+                currentTab = 'new';
+                updateTabs();
+                renderPosts();
             } catch (err) {
                 alert('发布失败: ' + err.message);
             }
@@ -2019,8 +2022,8 @@
             localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
             renderPosts();
 
-            // 同步到云端
-            savePosts();
+            // 同步到 Supabase
+            updatePostDB(id);
         }
 
         // ==================== 渲染 ====================
@@ -2122,7 +2125,7 @@
             const post = posts.find(p => String(p.id) === String(postId));
             if (post) {
                 post.pinned = !post.pinned;
-                await savePosts();
+                await updatePostDB(postId);
                 renderPosts();
                 alert(post.pinned ? '📌 已置顶' : '📌 已取消置顶');
             }
@@ -2136,10 +2139,15 @@
                 return;
             }
             if (!confirm('确定要删除这条帖子吗？')) return;
-            posts = posts.filter(p => String(p.id) !== String(postId));
-            await savePosts();
-            renderPosts();
-            alert('🗑 帖子已删除');
+            try {
+                const { error } = await sb.from('posts').delete().eq('id', postId);
+                if (error) throw error;
+                posts = posts.filter(p => String(p.id) !== String(postId));
+                renderPosts();
+                alert('🗑 帖子已删除');
+            } catch (err) {
+                alert('删除失败: ' + err.message);
+            }
         }
 
         // ==================== 评论功能 ====================
@@ -2180,7 +2188,7 @@
             nameInput.value = '';
             textInput.value = '';
 
-            await savePosts();
+            await updatePostDB(postId);
             renderPosts();
 
             // 重新展开评论区
@@ -2199,7 +2207,7 @@
             const post = posts.find(p => String(p.id) === String(postId));
             if (!post || !post.comments) return;
             post.comments = post.comments.filter(c => String(c.id) !== String(commentId));
-            await savePosts();
+            await updatePostDB(postId);
             renderPosts();
             setTimeout(() => {
                 const section = document.getElementById('comments-' + postId);
@@ -2246,14 +2254,7 @@
                 renderPosts();
             });
         });
-        // ==================== 自动心跳（每12小时访问一次，防止JSONBlob 3天过期） ====================
-        function heartbeat() {
-            fetch(API_URL, { method: 'HEAD' }).catch(() => {});
-            fetch(USERS_URL, { method: 'HEAD' }).catch(() => {});
-        }
-        // 页面加载时执行一次，然后每12小时执行一次
-        heartbeat();
-        setInterval(heartbeat, 12 * 60 * 60 * 1000);
+        // ==================== Supabase 无需心跳保活 ====================
 
 
         // ==================== 用户账号系统 ====================
@@ -2263,25 +2264,25 @@
 
         async function loadUsers() {
             try {
-                const resp = await fetch(USERS_URL);
-                if (resp.ok) {
-                    const data = await resp.json();
-                    allUsers = data.users || [];
-                }
-            } catch (e) {}
+                const { data, error } = await sb.from('users').select('*');
+                if (error) throw error;
+                allUsers = data || [];
+            } catch (e) {
+                console.error('加载用户失败:', e);
+            }
         }
 
-        async function saveUsers(users) {
+        async function saveUser(user) {
             try {
-                const resp = await fetch(USERS_URL);
-                const data = await resp.json();
-                data.users = users;
-                await fetch(USERS_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                const { error } = await sb.from('users').insert({
+                    name: user.name,
+                    password: user.password,
+                    avatar: user.avatar
                 });
-            } catch (e) {}
+                if (error) throw error;
+            } catch (e) {
+                console.error('保存用户失败:', e);
+            }
         }
 
         function renderAuthArea() {
@@ -2367,8 +2368,9 @@
                 if (password !== confirm) { showAuthErr('两次密码不一致'); btn.disabled = false; btn.textContent = '注册'; return; }
                 const exists = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
                 if (exists) { showAuthErr('该用户名已被注册'); btn.disabled = false; btn.textContent = '注册'; return; }
-                allUsers.push({ name: username, password: password, avatar: getAvatar(username) });
-                await saveUsers(allUsers);
+                const newUser = { name: username, password: password, avatar: getAvatar(username) };
+                allUsers.push(newUser);
+                await saveUser(newUser);
                 showAuthSuc('注册成功！请登录');
                 authMode = 'login';
                 updateAuthUI();
@@ -2474,12 +2476,14 @@
             launched.sort((a, b) => b.data.date - a.data.date);
             if (launched.length > 20) {
                 const toRemove = launched.slice(20);
-                toRemove.forEach(item => {
+                for (const item of toRemove) {
+                    if (item.data.id) {
+                        await sb.from('launches').delete().eq('id', item.data.id);
+                    }
                     const idx = launches.indexOf(item.data);
                     if (idx !== -1) launches.splice(idx, 1);
-                });
+                }
                 launched.length = 20;
-                saveLaunches();
             }
 
             // 渲染即将发射
@@ -2735,15 +2739,30 @@
             };
 
             if (editingLaunchId !== null) {
-                launches[editingLaunchId] = launchData;
+                // 更新现有发射记录
+                const existing = launches[editingLaunchId];
+                const dbId = existing.id;
+                const { error } = await sb.from('launches').update({
+                    rocket: rocket, agency: agency, date: launchData.date,
+                    location: location, mission: mission, image: image,
+                    desc: desc, status: 'tentative'
+                }).eq('id', dbId);
+                if (error) { alert('保存失败: ' + error.message); btn.disabled = false; btn.textContent = '保存'; return; }
+                launches[editingLaunchId] = { ...launchData, id: dbId };
             } else {
-                launches.push(launchData);
+                // 新增发射记录
+                const { data: inserted, error } = await sb.from('launches').insert({
+                    rocket: rocket, agency: agency, date: launchData.date,
+                    location: location, mission: mission, image: image,
+                    desc: desc, status: 'tentative'
+                }).select();
+                if (error) { alert('保存失败: ' + error.message); btn.disabled = false; btn.textContent = '保存'; return; }
+                if (inserted && inserted[0]) launches.push(inserted[0]);
             }
 
             // 按日期排序
             launches.sort((a, b) => a.date - b.date);
 
-            await saveLaunches();
             renderLaunches();
 
             btn.disabled = false;
@@ -2754,8 +2773,12 @@
         async function deleteLaunch(index) {
             if (!currentUser || !isOfficialUser(currentUser.name)) return;
             if (!confirm('确定要删除这条发射信息吗？')) return;
+            const launch = launches[index];
+            if (launch && launch.id) {
+                const { error } = await sb.from('launches').delete().eq('id', launch.id);
+                if (error) { alert('删除失败: ' + error.message); return; }
+            }
             launches.splice(index, 1);
-            await saveLaunches();
             renderLaunches();
         }
 
