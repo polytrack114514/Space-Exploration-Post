@@ -48,7 +48,7 @@
 |------|------|
 | HTML5 / CSS3 | 页面结构与暗色 UI |
 | JavaScript | 前端逻辑与实时倒计时 |
-| JSONBlob | 云端数据存储 |
+| Supabase | 云端数据库（PostgreSQL） |
 | GitHub Pages | 静态网站托管 |
 
 ### 📸 功能预览
@@ -104,7 +104,7 @@
 |------|---------|
 | HTML5 / CSS3 | Structure & dark UI |
 | JavaScript | Logic & real-time countdown |
-| JSONBlob | Cloud data storage |
+| Supabase | Cloud database (PostgreSQL) |
 | GitHub Pages | Static hosting |
 
 ### 📸 Preview
