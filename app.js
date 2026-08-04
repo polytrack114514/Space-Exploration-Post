@@ -1142,7 +1142,7 @@
 
             launched.sort((a, b) => b.data.date - a.data.date);
 
-            if (launched.length > 20) {
+            if (launched.length > 15) {
 
                 const toRemove = launched.slice(20);
 
@@ -1160,7 +1160,7 @@
 
                 }
 
-                launched.length = 20;
+                launched.length = 15;
 
             }
 
