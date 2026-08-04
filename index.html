@@ -466,6 +466,35 @@
             font-weight: 400;
         }
 
+        .post-source {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 14px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .source-label {
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .source-link {
+            color: #4fc3f7;
+            text-decoration: none;
+            word-break: break-all;
+            transition: color 0.2s;
+        }
+
+        .source-link:hover {
+            color: #81d4fa;
+            text-decoration: underline;
+        }
+
 
 
         .pin-btn {
@@ -1850,6 +1879,7 @@
                 <input type="text" class="image-input" id="modalImage" placeholder="图片链接（可选，粘贴图片URL）" maxlength="500">
             </div>
             <textarea class="modal-textarea" id="modalContent" placeholder="内容" maxlength="1000"></textarea>
+            <input type="text" class="modal-input" id="modalSourceUrl" placeholder="内容来源（可选，粘贴原文网址）" maxlength="500">
             <button class="modal-submit" id="submitBtn" onclick="submitPost()">发布</button>
         </div>
     </div>
@@ -1968,7 +1998,8 @@
                 const { error } = await sb.from('posts').update({
                     likes: post.likes || 0,
                     comments: post.comments || [],
-                    pinned: post.pinned || false
+                    pinned: post.pinned || false,
+                    source_url: post.source_url || ''
                 }).eq('id', postId);
                 if (error) console.error('更新帖子失败:', error);
             } catch (err) {
@@ -1998,6 +2029,7 @@
             document.getElementById('modalTitle').value = '';
             document.getElementById('modalContent').value = '';
             document.getElementById('modalImage').value = '';
+            document.getElementById('modalSourceUrl').value = '';
             document.getElementById('modalName').readOnly = false;
             document.getElementById('modalName').style.opacity = '1';
         }
@@ -2015,6 +2047,7 @@
             const name = document.getElementById('modalName').value.trim();
             const title = document.getElementById('modalTitle').value.trim();
             const content = document.getElementById('modalContent').value.trim();
+            const sourceUrl = document.getElementById('modalSourceUrl') ? (document.getElementById('modalSourceUrl').value.trim() || '') : '';
 
             if (!name) {
                 document.getElementById('modalName').focus();
@@ -2037,6 +2070,7 @@
                 author: name,
                 avatar: getAvatar(name),
                 image: document.getElementById('modalImage') ? (document.getElementById('modalImage').value.trim() || '') : '',
+                source_url: sourceUrl,
                 time: Date.now(),
                 likes: 0,
                 comments: []
@@ -2051,6 +2085,7 @@
                     author: newPost.author,
                     avatar: newPost.avatar,
                     image: newPost.image,
+                    source_url: newPost.source_url || '',
                     time: newPost.time,
                     likes: 0,
                     comments: [],
@@ -2114,7 +2149,8 @@
                     const title = (p.title || '').toLowerCase();
                     const content = (p.content || '').toLowerCase();
                     const author = (p.author || '').toLowerCase();
-                    return title.includes(searchKeyword) || content.includes(searchKeyword) || author.includes(searchKeyword);
+                    const source = (p.source_url || '').toLowerCase();
+                    return title.includes(searchKeyword) || content.includes(searchKeyword) || author.includes(searchKeyword) || source.includes(searchKeyword);
                 });
             }
 
@@ -2165,6 +2201,7 @@
                         ${post.title ? `<div class="post-title">${post.pinned ? '📌 ' : ''}${escapeHtml(post.title)}</div>` : ''}
                         ${post.image ? `<div class='post-images'><img src='${escapeHtml(post.image)}' class='post-image' alt='图片' onerror="this.style.display='none'"></div>` : ''}
                         <div class="post-content">${escapeHtml(post.content)}</div>
+                        ${post.source_url ? `<div class="post-source"><span class="source-label">📄 内容来源：</span><a href="${escapeHtml(post.source_url)}" target="_blank" rel="noopener noreferrer" class="source-link">${escapeHtml(post.source_url.length > 60 ? post.source_url.substring(0, 60) + '...' : post.source_url)}</a></div>` : ''}
                         <div class="post-footer">
                             <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
                                 <span>${isLiked ? '❤️' : '🤍'}</span>
