@@ -1,68 +1,136 @@
 <!DOCTYPE html>
 
+
+
 <html lang="zh-CN">
+
+
 
 <head>
 
+
+
     <meta charset="UTF-8">
+
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
+
     <title>探索宇宙帖子</title>
+
+
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+
+
     <link rel="stylesheet" href="style.css">
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
+
 </head>
+
+
 
 <body>
 
+
+
 <div class="bg-image"></div>
+
+
 
     <div class="bg-overlay"></div>
 
 
 
+
+
+
+
     <header class="header">
+
+
 
         <h1>探索宇宙帖子</h1>
 
+
+
         <p>探索浩瀚宇宙，分享星辰大海，一起畅聊太空奥秘</p>
+
+
 
     </header>
 
 
 
+
+
+
+
     <!-- 火箭发射时间表 -->
+
+
 
     <div class="launch-section">
 
+
+
         <div class="launch-tabs">
+
+
 
             <button class="launch-tab active" data-launch-tab="upcoming">
 
+
+
                 <span>🚀 近期发射</span>
 
+
+
             </button>
+
+
 
             <button class="launch-tab" data-launch-tab="launched">
 
+
+
                 <span>🏁 已发射</span>
+
+
 
             </button>
 
+
+
             <div class="launch-controls-wrap" id="launchControlsWrap"></div>
+
+
 
         </div>
 
+
+
         <div class="launch-list" id="launchList"></div>
+
+
 
         <div class="launch-list" id="launchedList" style="display:none;"></div>
 
+
+
     </div>
+
+
+
+
 
 
 
@@ -70,173 +138,355 @@
 
 
 
+
+
+
+
         
+
+
 
         <div class="top-bar">
 
+
+
             <div class="tabs">
+
+
 
                 <button class="tab active" data-tab="hot">
 
+
+
                     <span class="icon">🔥</span>热门
 
+
+
                 </button>
+
+
 
                 <button class="tab" data-tab="new">
 
+
+
                     <span class="icon">🆕</span>最新
+
+
 
                 </button>
 
+
+
             </div>
+
+
 
             <div class="search-box">
 
+
+
                 <span class="search-icon">🔍</span>
+
+
 
                 <input type="text" id="searchInput" placeholder="搜索帖子标题或内容..." oninput="handleSearch(this.value)">
 
+
+
                 <button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
 
+
+
             </div>
+
+
 
             <div class="auth-area" id="authArea">
 
+
+
                 <button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>
+
+
 
             </div>
 
+
+
             <button class="fab-post" onclick="openModal()">✨ 发布帖子</button>
 
+
+
         </div>
+
+
+
+
 
 
 
         <div class="posts-list" id="postsList">
 
+
+
             <div class="loading">正在加载帖子...</div>
+
+
 
         </div>
 
+
+
     </div>
+
+
+
+
 
 
 
     <!-- 发帖弹窗 -->
 
+
+
     <div class="modal-overlay" id="modalOverlay">
+
+
 
         <div class="modal">
 
+
+
             <button class="modal-close" onclick="closeModal()">×</button>
+
+
 
             <div class="modal-title">发布帖子</div>
 
+
+
             <input type="text" class="modal-input" id="modalName" placeholder="你的名字" maxlength="20">
+
+
 
             <input type="text" class="modal-input" id="modalTitle" placeholder="标题" maxlength="50">
 
+
+
             <div class="image-input-row">
+
+
 
                 <input type="text" class="image-input" id="modalImage" placeholder="图片链接（可选，粘贴图片URL）" maxlength="500">
 
+
+
             </div>
+
+
 
             <textarea class="modal-textarea" id="modalContent" placeholder="内容" maxlength="1000"></textarea>
 
+
+
             <input type="text" class="modal-input" id="modalSourceUrl" placeholder="内容来源（可选，粘贴原文网址）" maxlength="500">
+
+
 
             <button class="modal-submit" id="submitBtn" onclick="submitPost()">发布</button>
 
+
+
         </div>
 
+
+
     </div>
+
+
+
+
 
 
 
     <!-- 发射编辑弹窗 -->
 
+
+
     <div class="modal-overlay" id="launchModalOverlay">
+
+
 
         <div class="modal">
 
+
+
             <button class="modal-close" onclick="closeLaunchEditor()">×</button>
+
+
 
             <div class="modal-title" id="launchModalTitle">添加火箭发射</div>
 
+
+
             <input type="text" class="modal-input" id="launchRocket" placeholder="火箭名称（如：朱雀三号遥二）" maxlength="50">
+
+
 
             <input type="text" class="modal-input" id="launchAgency" placeholder="机构（如：蓝箭航天）" maxlength="50">
 
+
+
             <input type="datetime-local" class="modal-input" id="launchDate" style="color-scheme: dark;">
+
+            <label class="tbd-checkbox-row">
+
+                <input type="checkbox" id="launchDateTBD" onchange="toggleLaunchDateTBD(this.checked)">
+
+                <span>发射日期待确定（火箭发射可能推迟）</span>
+
+            </label>
+
+
 
             <input type="text" class="modal-input" id="launchLocation" placeholder="发射地点" maxlength="100">
 
+
+
             <input type="text" class="modal-input" id="launchMission" placeholder="任务（简短描述）" maxlength="100">
+
+
 
             <input type="text" class="modal-input" id="launchImage" placeholder="图片链接（可选）" maxlength="500">
 
+
+
             <textarea class="modal-textarea" id="launchDesc" placeholder="详细描述（可选）" maxlength="500"></textarea>
+
+
 
             <button class="modal-submit" id="launchSubmitBtn" onclick="submitLaunch()">保存</button>
 
+
+
         </div>
 
+
+
     </div>
+
+
+
+
 
 
 
     <!-- 用户认证弹窗 -->
 
+
+
     <div class="auth-modal-overlay" id="authModal">
+
+
 
         <div class="auth-modal">
 
+
+
             <h2 id="authTitle">登录</h2>
+
+
 
             <div class="auth-error" id="authError"></div>
 
+
+
             <div class="auth-success" id="authSuccess"></div>
 
+
+
             <div class="auth-field">
+
+
 
                 <label>用户名</label>
 
+
+
                 <input type="text" id="authUsername" placeholder="起一个用户名" maxlength="20">
 
+
+
             </div>
+
+
 
             <div class="auth-field">
 
+
+
                 <label>密码</label>
+
+
 
                 <input type="password" id="authPassword" placeholder="密码（至少6位）">
 
+
+
             </div>
+
+
 
             <div class="auth-field" id="authConfirmField" style="display:none">
 
+
+
                 <label>确认密码</label>
+
+
 
                 <input type="password" id="authConfirm" placeholder="再输入一次密码">
 
+
+
             </div>
+
+
 
             <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()">登录</button>
 
+
+
             <div class="auth-switch">
+
+
 
                 <span id="authSwitchText">还没有账号？</span>
 
+
+
                 <a id="authSwitchLink" onclick="toggleAuthMode()">注册</a>
+
+
 
             </div>
 
+
+
             <button class="auth-close" onclick="closeAuthModal()">&times;</button>
+
+
 
         </div>
 
+
+
     </div>
+
+
+
+
 
 
 
@@ -244,8 +494,17 @@
 
 
 
+
+
+
+
 <script src="app.js"></script>
+
 </body>
 
+
+
 </html>
+
+
 

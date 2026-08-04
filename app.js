@@ -6,8 +6,6 @@
 
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-
-
         // ==================== 数据 ====================
 
         let posts = [];
@@ -17,8 +15,6 @@
         let likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
 
         let isLoading = false;
-
-
 
         // ==================== 官方机构账号配置 ====================
 
@@ -39,8 +35,6 @@
             return !!OFFICIAL_USERS[name];
 
         }
-
-
 
         // ==================== 从云端加载帖子 ====================
 
@@ -73,8 +67,6 @@
             isLoading = false;
 
         }
-
-
 
         // ==================== 加载发射数据 ====================
 
@@ -120,8 +112,6 @@
 
         }
 
-
-
         // ==================== 更新单个帖子到 Supabase ====================
 
         async function updatePostDB(postId) {
@@ -154,13 +144,9 @@
 
         }
 
-
-
         // ==================== saveLaunches 兼容占位 ====================
 
         async function saveLaunches() {}
-
-
 
         // ==================== 自动刷新（每1分钟同步一次） ====================
 
@@ -169,8 +155,6 @@
             if (!isLoading) loadPosts();
 
         }, 60000);
-
-
 
         // ==================== 模态框 ====================
 
@@ -185,8 +169,6 @@
             }, 100);
 
         }
-
-
 
         function closeModal() {
 
@@ -208,23 +190,17 @@
 
         }
 
-
-
         document.getElementById('modalOverlay').addEventListener('click', function(e) {
 
             if (e.target === this) closeModal();
 
         });
 
-
-
         document.addEventListener('keydown', function(e) {
 
             if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); }
 
         });
-
-
 
         // ==================== 发帖 ====================
 
@@ -235,9 +211,8 @@
             const title = document.getElementById('modalTitle').value.trim();
 
             const content = document.getElementById('modalContent').value.trim();
+
             const sourceUrl = document.getElementById('modalSourceUrl') ? (document.getElementById('modalSourceUrl').value.trim() || '') : '';
-
-
 
             if (!name) {
 
@@ -247,8 +222,6 @@
 
             }
 
-
-
             if (!title && !content) {
 
                 document.getElementById('modalTitle').focus();
@@ -257,15 +230,11 @@
 
             }
 
-
-
             const btn = document.getElementById('submitBtn');
 
             btn.disabled = true;
 
             btn.textContent = '发布中...';
-
-
 
             const newPost = {
 
@@ -290,8 +259,6 @@
                 comments: []
 
             };
-
-
 
             // 插入到 Supabase
 
@@ -341,23 +308,17 @@
 
             }
 
-
-
             btn.disabled = false;
 
             btn.textContent = '发布';
 
         }
 
-
-
         // ==================== 点赞 ====================
 
         async function toggleLike(id) {
 
             const isLiked = likedPosts[id] || false;
-
-
 
             // 在本地找到帖子并修改
 
@@ -369,15 +330,11 @@
 
             }
 
-
-
             likedPosts[id] = !isLiked;
 
             localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
 
             renderPosts();
-
-
 
             // 同步到 Supabase
 
@@ -385,13 +342,9 @@
 
         }
 
-
-
         // ==================== 渲染 ====================
 
         let searchKeyword = '';
-
-
 
         function handleSearch(val) {
 
@@ -402,8 +355,6 @@
             renderPosts();
 
         }
-
-
 
         function clearSearch() {
 
@@ -417,15 +368,11 @@
 
         }
 
-
-
         function renderPosts() {
 
             const list = document.getElementById('postsList');
 
             let displayPosts = [...posts];
-
-
 
             // 搜索过滤
 
@@ -446,8 +393,6 @@
                 });
 
             }
-
-
 
             if (currentTab === 'hot') {
 
@@ -475,8 +420,6 @@
 
             }
 
-
-
             if (displayPosts.length === 0) {
 
                 list.innerHTML = `
@@ -494,8 +437,6 @@
                 return;
 
             }
-
-
 
             list.innerHTML = displayPosts.map(post => {
 
@@ -542,6 +483,7 @@
                         ${post.image ? `<div class='post-images'><img src='${escapeHtml(post.image)}' class='post-image' alt='图片' onerror="this.style.display='none'"></div>` : ''}
 
                         <div class="post-content">${escapeHtml(post.content)}</div>
+
                         ${post.source_url ? `<div class="post-source"><span class="source-label">📄 内容来源：</span><a href="${escapeHtml(post.source_url)}" target="_blank" rel="noopener noreferrer" class="source-link">${escapeHtml(post.source_url.length > 60 ? post.source_url.substring(0, 60) + '...' : post.source_url)}</a></div>` : ''}
 
                         <div class="post-footer">
@@ -616,8 +558,6 @@
 
         }
 
-
-
         async function togglePin(postId) {
 
             const password = prompt('请输入管理员密码：');
@@ -647,8 +587,6 @@
             }
 
         }
-
-
 
         async function deletePost(postId) {
 
@@ -686,8 +624,6 @@
 
         }
 
-
-
         // ==================== 评论功能 ====================
 
         function toggleComments(postId) {
@@ -702,8 +638,6 @@
 
         }
 
-
-
         async function submitComment(postId) {
 
             const nameInput = document.getElementById('comment-name-' + postId);
@@ -713,8 +647,6 @@
             const name = nameInput.value.trim();
 
             const content = textInput.value.trim();
-
-
 
             if (!name) {
 
@@ -732,17 +664,11 @@
 
             }
 
-
-
             const post = posts.find(p => String(p.id) === String(postId));
 
             if (!post) return;
 
-
-
             if (!post.comments) post.comments = [];
-
-
 
             post.comments.push({
 
@@ -756,19 +682,13 @@
 
             });
 
-
-
             nameInput.value = '';
 
             textInput.value = '';
 
-
-
             await updatePostDB(postId);
 
             renderPosts();
-
-
 
             // 重新展开评论区
 
@@ -781,8 +701,6 @@
             }, 50);
 
         }
-
-
 
         async function deleteComment(postId, commentId) {
 
@@ -816,8 +734,6 @@
 
         }
 
-
-
         // ==================== 工具函数 ====================
 
         function formatTime(timestamp) {
@@ -832,8 +748,6 @@
 
             const day = 24 * hour;
 
-
-
             if (diff < minute) return '刚刚';
 
             if (diff < hour) return Math.floor(diff / minute) + '分钟前';
@@ -846,8 +760,6 @@
 
         }
 
-
-
         function getAvatar(name) {
 
             if (OFFICIAL_USERS[name]) return OFFICIAL_USERS[name].avatar;
@@ -855,8 +767,6 @@
             return '🚀';
 
         }
-
-
 
         function escapeHtml(text) {
 
@@ -868,8 +778,6 @@
 
         }
 
-
-
         function updateTabs() {
 
             document.querySelectorAll('.tab').forEach(tab => {
@@ -879,8 +787,6 @@
             });
 
         }
-
-
 
         document.querySelectorAll('.tab').forEach(tab => {
 
@@ -898,10 +804,6 @@
 
         // ==================== Supabase 无需心跳保活 ====================
 
-
-
-
-
         // ==================== 用户账号系统 ====================
 
         let currentUser = JSON.parse(localStorage.getItem('space_user')) || null;
@@ -909,8 +811,6 @@
         let authMode = 'login';
 
         let allUsers = [];
-
-
 
         async function loadUsers() {
 
@@ -929,8 +829,6 @@
             }
 
         }
-
-
 
         async function saveUser(user) {
 
@@ -955,8 +853,6 @@
             }
 
         }
-
-
 
         function renderAuthArea() {
 
@@ -998,8 +894,6 @@
 
         }
 
-
-
         function openAuthModal() {
 
             authMode = 'login';
@@ -1022,15 +916,11 @@
 
         }
 
-
-
         function closeAuthModal() {
 
             document.getElementById('authModal').classList.remove('show');
 
         }
-
-
 
         function toggleAuthMode() {
 
@@ -1043,8 +933,6 @@
             document.getElementById('authSuccess').classList.remove('show');
 
         }
-
-
 
         function updateAuthUI() {
 
@@ -1076,8 +964,6 @@
 
         }
 
-
-
         async function handleAuth() {
 
             const username = document.getElementById('authUsername').value.trim();
@@ -1092,29 +978,19 @@
 
             const btn = document.getElementById('authSubmitBtn');
 
-
-
             errEl.classList.remove('show');
 
             sucEl.classList.remove('show');
-
-
 
             if (!username) { showAuthErr('请输入用户名'); return; }
 
             if (!password || password.length < 6) { showAuthErr('密码至少6位'); return; }
 
-
-
             btn.disabled = true;
 
             btn.textContent = '请稍候...';
 
-
-
             await loadUsers();
-
-
 
             if (authMode === 'signup') {
 
@@ -1156,15 +1032,11 @@
 
             }
 
-
-
             btn.disabled = false;
 
             btn.textContent = authMode === 'login' ? '登录' : '注册';
 
         }
-
-
 
         function showAuthErr(msg) {
 
@@ -1176,8 +1048,6 @@
 
         }
 
-
-
         function showAuthSuc(msg) {
 
             const el = document.getElementById('authSuccess');
@@ -1187,8 +1057,6 @@
             document.getElementById('authError').classList.remove('show');
 
         }
-
-
 
         function handleLogout() {
 
@@ -1201,8 +1069,6 @@
             renderLaunchControls();
 
         }
-
-
 
         // Override openModal to require login
 
@@ -1230,17 +1096,11 @@
 
         };
 
-
-
         // ==================== 火箭发射时间表 ====================
 
         let launches = [];
 
-
-
         let currentLaunchTab = 'upcoming';
-
-
 
         function renderLaunches() {
 
@@ -1252,8 +1112,6 @@
 
             const now = Date.now();
 
-
-
             // 分离即将发射和已发射
 
             const upcoming = [];
@@ -1262,7 +1120,13 @@
 
             launches.forEach((l, i) => {
 
-                if (l.date - now <= 0) {
+                if (l.status === 'tbd') {
+
+                    // TBD 发射始终留在"近期发射"
+
+                    upcoming.push({ data: l, origIndex: i });
+
+                } else if (l.date - now <= 0) {
 
                     launched.push({ data: l, origIndex: i });
 
@@ -1273,8 +1137,6 @@
                 }
 
             });
-
-
 
             // 已发射按时间倒序，只保留前20个
 
@@ -1302,8 +1164,6 @@
 
             }
 
-
-
             // 渲染即将发射
 
             list.innerHTML = upcoming.length > 0 ? upcoming.map((item) => {
@@ -1314,91 +1174,105 @@
 
                 const diff = l.date - now;
 
-
+                const isTBD = l.status === 'tbd';
 
                 let badgeClass = 'badge-upcoming';
 
                 let badgeText = '即将发射';
 
-                if (l.status === 'tentative') {
+                if (isTBD) {
 
                     badgeClass = 'badge-tentative';
 
-                    badgeText = '待定';
+                    badgeText = '日期待定';
+
+                } else {
+
+                    if (l.status === 'tentative') {
+
+                        badgeClass = 'badge-tentative';
+
+                        badgeText = '待定';
+
+                    }
+
+                    if (diff > 0 && diff < 3 * 24 * 60 * 60 * 1000) {
+
+                        badgeClass = 'badge-soon';
+
+                        badgeText = '发射在即';
+
+                    }
 
                 }
 
-                if (diff > 0 && diff < 3 * 24 * 60 * 60 * 1000) {
-
-                    badgeClass = 'badge-soon';
-
-                    badgeText = '发射在即';
-
-                }
-
-
-
-                const dateStr = new Date(l.date).toLocaleString('zh-CN', {
+                const dateStr = isTBD ? '发射日期待确定' : new Date(l.date).toLocaleString('zh-CN', {
 
                     month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
 
                 });
 
+                let countdownHtml;
 
+                if (isTBD) {
 
-                const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                    countdownHtml = `<div class="launch-countdown"><div class="launch-tbd-message">⏳ 发射日期待确定</div></div>`;
 
-                const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                } else {
 
-                const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
+                    const days = Math.floor(diff / (24 * 60 * 60 * 1000));
 
-                const secs = Math.floor((diff % (60 * 1000)) / 1000);
+                    const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
 
-                const countdownHtml = `
+                    const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
 
-                    <div class="launch-countdown">
+                    const secs = Math.floor((diff % (60 * 1000)) / 1000);
 
-                        <div class="countdown-box">
+                    countdownHtml = `
 
-                            <div class="countdown-num" id="cd-days-${i}">${days}</div>
+                        <div class="launch-countdown">
 
-                            <div class="countdown-label">天</div>
+                            <div class="countdown-box">
+
+                                <div class="countdown-num" id="cd-days-${i}">${days}</div>
+
+                                <div class="countdown-label">天</div>
+
+                            </div>
+
+                            <div class="countdown-box">
+
+                                <div class="countdown-num" id="cd-hours-${i}">${String(hours).padStart(2,'0')}</div>
+
+                                <div class="countdown-label">时</div>
+
+                            </div>
+
+                            <div class="countdown-box">
+
+                                <div class="countdown-num" id="cd-mins-${i}">${String(mins).padStart(2,'0')}</div>
+
+                                <div class="countdown-label">分</div>
+
+                            </div>
+
+                            <div class="countdown-box">
+
+                                <div class="countdown-num" id="cd-secs-${i}">${String(secs).padStart(2,'0')}</div>
+
+                                <div class="countdown-label">秒</div>
+
+                            </div>
 
                         </div>
 
-                        <div class="countdown-box">
+                    `;
 
-                            <div class="countdown-num" id="cd-hours-${i}">${String(hours).padStart(2,'0')}</div>
-
-                            <div class="countdown-label">时</div>
-
-                        </div>
-
-                        <div class="countdown-box">
-
-                            <div class="countdown-num" id="cd-mins-${i}">${String(mins).padStart(2,'0')}</div>
-
-                            <div class="countdown-label">分</div>
-
-                        </div>
-
-                        <div class="countdown-box">
-
-                            <div class="countdown-num" id="cd-secs-${i}">${String(secs).padStart(2,'0')}</div>
-
-                            <div class="countdown-label">秒</div>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-
+                }
 
                 return `
 
-                    <div class="launch-card ${diff > 0 && diff < 3 * 24 * 60 * 60 * 1000 ? 'launching-soon' : ''}">
+                    <div class="launch-card ${!isTBD && diff > 0 && diff < 3 * 24 * 60 * 60 * 1000 ? 'launching-soon' : ''}">
 
                         <div class="launch-card-top">
 
@@ -1448,8 +1322,6 @@
 
             }).join('') : '<div class="empty-state"><div class="emoji">🚀</div><p>暂无即将发射的火箭</p></div>';
 
-
-
             // 渲染已发射
 
             if (launchedList) {
@@ -1481,8 +1353,6 @@
                     else if (agoHours > 0) agoStr = `${agoHours}小时${agoMins}分钟前`;
 
                     else agoStr = `${agoMins}分钟前`;
-
-
 
                     return `
 
@@ -1540,8 +1410,6 @@
 
         }
 
-
-
         // Tab 切换
 
         function updateLaunchTabs() {
@@ -1562,8 +1430,6 @@
 
         }
 
-
-
         document.querySelectorAll('.launch-tab').forEach(tab => {
 
             tab.addEventListener('click', () => {
@@ -1576,17 +1442,15 @@
 
         });
 
-
-
         function updateCountdowns() {
 
             const now = Date.now();
 
             let needRerender = false;
 
-
-
             launches.forEach((l, i) => {
+
+                if (l.status === 'tbd') return; // 跳过TBD发射
 
                 const diff = l.date - now;
 
@@ -1598,8 +1462,6 @@
 
                 }
 
-
-
                 const days = Math.floor(diff / (24 * 60 * 60 * 1000));
 
                 const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
@@ -1608,8 +1470,6 @@
 
                 const secs = Math.floor((diff % (60 * 1000)) / 1000);
 
-
-
                 const dEl = document.getElementById('cd-days-' + i);
 
                 const hEl = document.getElementById('cd-hours-' + i);
@@ -1617,8 +1477,6 @@
                 const mEl = document.getElementById('cd-mins-' + i);
 
                 const sEl = document.getElementById('cd-secs-' + i);
-
-
 
                 if (dEl) dEl.textContent = days;
 
@@ -1630,13 +1488,9 @@
 
             });
 
-
-
             if (needRerender) renderLaunches();
 
         }
-
-
 
         // ==================== 发射管理控件 ====================
 
@@ -1648,8 +1502,6 @@
 
             wrap.innerHTML = '';
 
-
-
             if (currentUser && isOfficialUser(currentUser.name)) {
 
                 wrap.innerHTML = '<button class="btn-add-launch" onclick="openLaunchEditor()">+ 添加发射</button>';
@@ -1658,13 +1510,25 @@
 
         }
 
-
-
         // ==================== 发射编辑器 ====================
 
         let editingLaunchId = null;
 
+        // ==================== 发射日期待确定开关 ====================
 
+        function toggleLaunchDateTBD(checked) {
+
+            const dateInput = document.getElementById('launchDate');
+
+            dateInput.disabled = checked;
+
+            if (checked) {
+
+                dateInput.value = '';
+
+            }
+
+        }
 
         function openLaunchEditor() {
 
@@ -1675,6 +1539,10 @@
             document.getElementById('launchAgency').value = '';
 
             document.getElementById('launchDate').value = '';
+
+            document.getElementById('launchDateTBD').checked = false;
+
+            document.getElementById('launchDate').disabled = false;
 
             document.getElementById('launchLocation').value = '';
 
@@ -1692,8 +1560,6 @@
 
         }
 
-
-
         function closeLaunchEditor() {
 
             document.getElementById('launchModalOverlay').classList.remove('show');
@@ -1701,8 +1567,6 @@
             editingLaunchId = null;
 
         }
-
-
 
         function editLaunch(index) {
 
@@ -1712,21 +1576,37 @@
 
             editingLaunchId = index;
 
+            // 检查是否为TBD（发射日期待确定）
+
+            const isEditTBD = l.status === 'tbd';
+
+            document.getElementById('launchDateTBD').checked = isEditTBD;
+
+            document.getElementById('launchDate').disabled = isEditTBD;
+
 
 
             // 转换时间为 datetime-local 格式
 
-            const d = new Date(l.date);
+            if (isEditTBD) {
 
-            const localISO = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                document.getElementById('launchDate').value = '';
+
+            } else {
+
+                const d = new Date(l.date);
+
+                const localISO = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+                document.getElementById('launchDate').value = localISO;
+
+            }
 
 
 
             document.getElementById('launchRocket').value = l.rocket || '';
 
             document.getElementById('launchAgency').value = l.agency || '';
-
-            document.getElementById('launchDate').value = localISO;
 
             document.getElementById('launchLocation').value = l.location || '';
 
@@ -1742,8 +1622,6 @@
 
         }
 
-
-
         async function submitLaunch() {
 
             if (!currentUser || !isOfficialUser(currentUser.name)) {
@@ -1753,8 +1631,6 @@
                 return;
 
             }
-
-
 
             const rocket = document.getElementById('launchRocket').value.trim();
 
@@ -1770,13 +1646,11 @@
 
             const desc = document.getElementById('launchDesc').value.trim();
 
-
+            const isTBD = document.getElementById('launchDateTBD').checked;
 
             if (!rocket) { document.getElementById('launchRocket').focus(); return; }
 
-            if (!dateStr) { document.getElementById('launchDate').focus(); return; }
-
-
+            if (!isTBD && !dateStr) { document.getElementById('launchDate').focus(); return; }
 
             const btn = document.getElementById('launchSubmitBtn');
 
@@ -1784,15 +1658,13 @@
 
             btn.textContent = '保存中...';
 
-
-
             const launchData = {
 
                 rocket: rocket,
 
                 agency: agency,
 
-                date: new Date(dateStr).getTime(),
+                date: isTBD ? null : new Date(dateStr).getTime(),
 
                 location: location,
 
@@ -1802,11 +1674,9 @@
 
                 description: desc,
 
-                status: 'tentative'
+                status: isTBD ? 'tbd' : 'tentative'
 
             };
-
-
 
             if (editingLaunchId !== null) {
 
@@ -1818,11 +1688,11 @@
 
                 const { error } = await sb.from('launches').update({
 
-                    rocket: rocket, agency: agency, date: launchData.date,
+                    rocket: rocket, agency: agency, date: isTBD ? null : launchData.date,
 
                     location: location, mission: mission, image: image,
 
-                    description: desc, status: 'tentative'
+                    description: desc, status: isTBD ? 'tbd' : 'tentative'
 
                 }).eq('id', dbId);
 
@@ -1836,11 +1706,11 @@
 
                 const { data: inserted, error } = await sb.from('launches').insert({
 
-                    rocket: rocket, agency: agency, date: launchData.date,
+                    rocket: rocket, agency: agency, date: isTBD ? null : launchData.date,
 
                     location: location, mission: mission, image: image,
 
-                    description: desc, status: 'tentative'
+                    description: desc, status: isTBD ? 'tbd' : 'tentative'
 
                 }).select();
 
@@ -1850,17 +1720,19 @@
 
             }
 
+            // 按日期排序（TBD排到最后）
 
+            launches.sort((a, b) => {
 
-            // 按日期排序
+                if (a.status === 'tbd' && b.status !== 'tbd') return 1;
 
-            launches.sort((a, b) => a.date - b.date);
+                if (a.status !== 'tbd' && b.status === 'tbd') return -1;
 
+                return (a.date || 0) - (b.date || 0);
 
+            });
 
             renderLaunches();
-
-
 
             btn.disabled = false;
 
@@ -1869,8 +1741,6 @@
             closeLaunchEditor();
 
         }
-
-
 
         async function deleteLaunch(index) {
 
@@ -1894,15 +1764,11 @@
 
         }
 
-
-
         renderLaunches();
 
         renderLaunchControls();
 
         setInterval(updateCountdowns, 1000);
-
-
 
 // ==================== 初始化 ====================
 
