@@ -1889,7 +1889,7 @@
                         await sb.from('launches').insert({
                             rocket: l.rocket, agency: l.agency, date: l.date,
                             location: l.location, mission: l.mission,
-                            image: l.image || '', desc: l.desc, status: l.status || 'tentative'
+                            image: l.image || '', description: l.description, status: l.status || 'tentative'
                         });
                     }
                 }
@@ -2520,7 +2520,7 @@
                         </div>
                         ${countdownHtml}
                         ${l.image ? `<img src="${escapeHtml(l.image)}" class="launch-image" alt="发射图片" onerror="this.style.display='none'">` : ''}
-                        <div class="launch-desc">${escapeHtml(l.desc)}</div>
+                        <div class="launch-desc">${escapeHtml(l.description)}</div>
                         ${currentUser && isOfficialUser(currentUser.name) ? `
                         <div class="launch-card-actions">
                             <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
@@ -2564,7 +2564,7 @@
                             </div>
                             <div class="launched-time">🚀 发射于 <strong>${agoStr}</strong></div>
                             ${l.image ? `<img src="${escapeHtml(l.image)}" class="launch-image" alt="发射图片" onerror="this.style.display='none'">` : ''}
-                            <div class="launch-desc">${escapeHtml(l.desc)}</div>
+                            <div class="launch-desc">${escapeHtml(l.description)}</div>
                             ${currentUser && isOfficialUser(currentUser.name) ? `
                             <div class="launch-card-actions">
                                 <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
@@ -2673,7 +2673,7 @@
             document.getElementById('launchLocation').value = l.location || '';
             document.getElementById('launchMission').value = l.mission || '';
             document.getElementById('launchImage').value = l.image || '';
-            document.getElementById('launchDesc').value = l.desc || '';
+            document.getElementById('launchDesc').value = l.description || '';
             document.getElementById('launchModalTitle').textContent = '编辑火箭发射';
             document.getElementById('launchModalOverlay').classList.add('show');
         }
@@ -2706,7 +2706,7 @@
                 location: location,
                 mission: mission,
                 image: image,
-                desc: desc,
+                description: desc,
                 status: 'tentative'
             };
 
@@ -2717,7 +2717,7 @@
                 const { error } = await sb.from('launches').update({
                     rocket: rocket, agency: agency, date: launchData.date,
                     location: location, mission: mission, image: image,
-                    desc: desc, status: 'tentative'
+                    description: desc, status: 'tentative'
                 }).eq('id', dbId);
                 if (error) { alert('保存失败: ' + error.message); btn.disabled = false; btn.textContent = '保存'; return; }
                 launches[editingLaunchId] = { ...launchData, id: dbId };
@@ -2726,7 +2726,7 @@
                 const { data: inserted, error } = await sb.from('launches').insert({
                     rocket: rocket, agency: agency, date: launchData.date,
                     location: location, mission: mission, image: image,
-                    desc: desc, status: 'tentative'
+                    description: desc, status: 'tentative'
                 }).select();
                 if (error) { alert('保存失败: ' + error.message); btn.disabled = false; btn.textContent = '保存'; return; }
                 if (inserted && inserted[0]) launches.push(inserted[0]);
