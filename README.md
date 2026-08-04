@@ -11,6 +11,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Online-brightgreen?style=flat-square&logo=githubpages)](https://polytrack114514.github.io/Space-Exploration-Post/)
 [![Language](https://img.shields.io/badge/Language-HTML%20%7C%20CSS%20%7C%20JS-orange?style=flat-square&logo=html5)](https://github.com/polytrack114514/Space-Exploration-Post)
+[![Supabase](https://img.shields.io/badge/Database-Supabase-green?style=flat-square&logo=supabase)](https://supabase.com/)
 
 **[🌐 在线预览 / Live Demo](https://polytrack114514.github.io/Space-Exploration-Post/)** · 
 **[📦 仓库 / Repository](https://github.com/polytrack114514/Space-Exploration-Post)**
@@ -25,13 +26,26 @@
 
 ### 📖 项目简介
 
-**Space-Exploration-Post** 是一个以太空探索为主题的社区帖子平台，采用 Grok 风格暗色极简 UI，集帖子发布、评论互动、火箭发射时间表于一体。
+**Space-Exploration-Post** 是一个以太空探索为主题的社区帖子平台，采用 Grok 风格暗色极简 UI，集帖子发布、评论互动、火箭发射时间表于一体。前端代码已模块化拆分，结构清晰易于维护。
+
+### 📁 项目结构
+
+```
+Space-Exploration-Post/
+├── index.html          # HTML 页面结构（引用 style.css 和 app.js）
+├── style.css           # 全部 CSS 样式（暗色主题）
+├── app.js              # 全部 JavaScript 逻辑（Supabase 交互、倒计时等）
+├── supabase_setup.sql  # Supabase 数据库初始化脚本
+└── README.md           # 项目说明文档
+```
 
 ### ✨ 核心功能
 
 | 功能 | 说明 |
 |------|------|
 | 📝 帖子系统 | 图文发布，热门/最新双标签切换 |
+| 🔍 搜索帖子 | 按标题、内容、作者、来源 URL 实时搜索 |
+| 🔗 内容来源 | 发帖时可填写原文网址，帖子中可点击访问 |
 | 💬 评论互动 | 帖子下方可展开评论区 |
 | 📌 置顶帖子 | 管理员可置顶重要帖子 |
 | ❤️ 点赞分享 | 一键点赞与链接分享 |
@@ -46,8 +60,9 @@
 
 | 技术 | 用途 |
 |------|------|
-| HTML5 / CSS3 | 页面结构与暗色 UI |
-| JavaScript | 前端逻辑与实时倒计时 |
+| HTML5 | 页面结构（`index.html`） |
+| CSS3 | 暗色极简 UI 样式（`style.css`） |
+| JavaScript | 前端逻辑、Supabase 交互、实时倒计时（`app.js`） |
 | Supabase | 云端数据库（PostgreSQL） |
 | GitHub Pages | 静态网站托管 |
 
@@ -63,10 +78,10 @@
 │  │ 倒计时: 03天 14:22:08           │    │
 │  └─────────────────────────────────┘    │
 ├─────────────────────────────────────────┤
-│  🔥 热门 │ 🆕 最新      [登录/注册]     │
+│  🔥 热门 │ 🆕 最新  🔍搜索  [登录/注册] │
 │  ┌─────────────────────────────────┐    │
 │  │ 📌 [置顶] NASA 发现新行星        │    │
-│  │ ❤️ 42  💬 8  🔗 分享             │    │
+│  │ ❤️ 42  💬 8  🔗 来源  🔗 分享     │    │
 │  └─────────────────────────────────┘    │
 └─────────────────────────────────────────┘
 ```
@@ -81,13 +96,26 @@
 
 ### 📖 About
 
-**Space-Exploration-Post** is a space-themed community platform with a Grok-style dark UI, integrating post publishing, comments, and rocket launch schedules.
+**Space-Exploration-Post** is a space-themed community platform with a Grok-style dark UI, integrating post publishing, comments, and rocket launch schedules. The frontend code is modularized into separate files for clarity and maintainability.
+
+### 📁 Project Structure
+
+```
+Space-Exploration-Post/
+├── index.html          # HTML page structure (links style.css and app.js)
+├── style.css           # All CSS styles (dark theme)
+├── app.js              # All JavaScript logic (Supabase, countdown, etc.)
+├── supabase_setup.sql  # Supabase database initialization script
+└── README.md           # Project documentation
+```
 
 ### ✨ Key Features
 
 | Feature | Description |
 |---------|-------------|
 | 📝 Posts | Image/text posts with Hot/New tabs |
+| 🔍 Search | Real-time search by title, content, author, source URL |
+| 🔗 Content Source | Add original URL to posts, clickable in post view |
 | 💬 Comments | Expandable comment section |
 | 📌 Pin | Admins can pin posts |
 | ❤️ Like & Share | One-click like and link share |
@@ -102,8 +130,9 @@
 
 | Tech | Purpose |
 |------|---------|
-| HTML5 / CSS3 | Structure & dark UI |
-| JavaScript | Logic & real-time countdown |
+| HTML5 | Page structure (`index.html`) |
+| CSS3 | Dark minimalist UI styles (`style.css`) |
+| JavaScript | Logic, Supabase interaction, countdown (`app.js`) |
 | Supabase | Cloud database (PostgreSQL) |
 | GitHub Pages | Static hosting |
 
@@ -119,10 +148,10 @@
 │  │ Countdown: 03d 14:22:08         │    │
 │  └─────────────────────────────────┘    │
 ├─────────────────────────────────────────┤
-│  🔥 Hot │ 🆕 New        [Login/Register] │
+│  🔥 Hot │ 🆕 New  🔍Search  [Login]     │
 │  ┌─────────────────────────────────┐    │
 │  │ 📌 [Pinned] NASA Finds New Planet│    │
-│  │ ❤️ 42  💬 8  🔗 Share            │    │
+│  │ ❤️ 42  💬 8  🔗 Source  🔗 Share │    │
 │  └─────────────────────────────────┘    │
 └─────────────────────────────────────────┘
 ```
