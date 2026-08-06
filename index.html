@@ -1885,6 +1885,503 @@
             background: var(--surface-hover);
             color: var(--text-primary);
         }
+/* ============================================================
+   太空探索网站 - 新功能 CSS 样式 (深色主题 / Grok风格)
+   CSS变量: --bg-primary, --bg-secondary, --bg-tertiary,
+   --text-primary, --text-secondary, --text-muted,
+   --border-color, --accent-color, --accent-hover
+   ============================================================ */
+
+
+/* ============================================================
+   1. 通知系统样式
+   ============================================================ */
+
+/* 通知铃铛按钮 - 与 .theme-toggle 样式一致 */
+.notify-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    position: relative;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.notify-btn:hover {
+    background: var(--bg-secondary);
+    border-color: var(--accent-color);
+}
+
+/* 红色未读徽章 */
+.notify-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ff4444;
+    color: white;
+    font-size: 0.65rem;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    font-weight: 700;
+}
+
+/* 通知弹窗遮罩 - 与 .profile-modal-overlay 一致 */
+.notification-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* 通知弹窗 - 与 .profile-modal 一致 */
+.notification-modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    max-width: 480px;
+    max-height: 70vh;
+    overflow-y: auto;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* 每条通知 */
+.notification-item {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.notification-item:hover {
+    background: var(--bg-tertiary);
+}
+
+/* 未读通知 */
+.notification-item.unread {
+    background: var(--bg-tertiary);
+}
+
+/* 通知图标圆圈 */
+.notification-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+    background: var(--bg-primary);
+}
+
+/* 通知内容区 */
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 通知文字 */
+.notification-text {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+/* 通知时间 */
+.notification-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+
+/* ============================================================
+   2. 私信系统样式
+   ============================================================ */
+
+/* 私信按钮 - 与 .notify-btn 一致 */
+.message-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    position: relative;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.message-btn:hover {
+    background: var(--bg-secondary);
+    border-color: var(--accent-color);
+}
+
+/* 私信未读徽章 - 与 .notify-badge 一致 */
+.message-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ff4444;
+    color: white;
+    font-size: 0.65rem;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    font-weight: 700;
+}
+
+/* 私信弹窗遮罩 - 与 .notification-modal-overlay 一致 */
+.message-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* 私信弹窗 - 与 .notification-modal 一致 */
+.message-modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    max-width: 500px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+/* 弹窗头部 */
+.message-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 会话列表区 */
+.message-conversations {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* 会话项 */
+.message-conv-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    transition: background 0.15s;
+}
+
+.message-conv-item:hover {
+    background: var(--bg-tertiary);
+}
+
+/* 会话项激活状态 */
+.message-conv-item.active {
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-color);
+}
+
+/* 聊天区域 */
+.message-chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 聊天头部 */
+.message-chat-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 消息列表 */
+.message-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 消息气泡 */
+.message-bubble {
+    max-width: 70%;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    word-break: break-word;
+}
+
+/* 发出的消息 */
+.message-bubble.sent {
+    background: var(--accent-color);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+/* 收到的消息 */
+.message-bubble.received {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+/* 聊天输入区 */
+.message-chat-input {
+    padding: 12px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 8px;
+}
+
+/* 输入框 */
+.message-input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    outline: none;
+}
+
+.message-input:focus {
+    border-color: var(--accent-color);
+}
+
+/* 发送按钮 */
+.message-send-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.message-send-btn:hover {
+    background: var(--accent-hover);
+}
+
+/* 返回按钮 */
+.message-back-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.message-back-btn:hover {
+    color: var(--text-primary);
+}
+
+
+/* ============================================================
+   3. 收藏功能样式
+   ============================================================ */
+
+/* 收藏按钮 - 与 .action-btn 一致但用金色 */
+.favorite-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.favorite-btn:hover {
+    background: var(--bg-tertiary);
+    color: #ffd700;
+}
+
+/* 已收藏状态 */
+.favorite-btn.favorited {
+    color: #ffd700;
+}
+
+.favorite-btn.favorited:hover {
+    color: #ffd700;
+}
+
+
+/* ============================================================
+   4. 视频嵌入样式
+   ============================================================ */
+
+/* 视频容器 */
+.video-embed {
+    margin: 10px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+/* iframe样式 */
+.video-embed iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border: none;
+    display: block;
+}
+
+
+/* ============================================================
+   5. 发射结果样式
+   ============================================================ */
+
+/* 发射结果徽章 */
+.launch-result-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* 成功 */
+.launch-result-success {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+/* 失败 */
+.launch-result-fail {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* 部分成功 */
+.launch-result-partial {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+/* 结果操作按钮区 */
+.launch-result-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* 结果按钮 */
+.launch-result-btn {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s;
+}
+
+.launch-result-btn:hover {
+    border-color: var(--accent-color);
+}
+
+/* 结果按钮激活状态 */
+.launch-result-btn.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* 发射统计区 */
+.launch-stats {
+    display: flex;
+    gap: 16px;
+    padding: 12px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+/* 统计项 */
+.launch-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 统计数字 */
+.launch-stat-num {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* 统计标签 */
+.launch-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+
+/* Modal show rules for notification and message modals */
+.notification-modal-overlay { display: none; }
+.notification-modal-overlay.show { display: flex; }
+.message-modal-overlay { display: none; }
+.message-modal-overlay.show { display: flex; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1929,6 +2426,11 @@
                 <button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
             </div>
             <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换主题">🌙</button>
+                        HTML 代码 - top-bar 图标
+                        在主题切换按钮后面添加通知和私信按钮
+                        ============================================================ -->
+                        <button class="notify-btn" id="notifyBtn" onclick="openNotifyModal()" title="消息通知">🔔<span class="notify-badge" id="notifyBadge" style="display:none;">0</span></button>
+                        <button class="message-btn" id="messageBtn" onclick="openMessageModal()" title="私信">✉️<span class="message-badge" id="messageBadge" style="display:none;">0</span></button>
             <div class="auth-area" id="authArea">
                 <button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>
             </div>
@@ -2110,7 +2612,7 @@
             if (e.target === this) closeModal();
         });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); }
+            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); closeNotifyModal(); closeMessageModal(); }
         });
         // ==================== 发帖 ====================
         async function submitPost() {
@@ -2204,6 +2706,9 @@
             const post = posts.find(p => p.id === id);
             if (post) {
                 post.likes = isLiked ? Math.max(0, (post.likes || 0) - 1) : (post.likes || 0) + 1;
+                if (!isLiked && currentUser && post.author !== currentUser.name) {
+                    addNotification(post.author, currentUser.name, 'like', post.id, currentUser.name + ' 赞了你的帖子' + (post.title ? '「' + post.title + '」' : ''));
+                }
             }
             likedPosts[id] = !isLiked;
             localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
@@ -2286,7 +2791,7 @@
                             </div>
                         </div>
                         ${post.title ? `<div class="post-title">${post.pinned ? '📌 ' : ''}${escapeHtml(post.title)}</div>` : ''}
-                        ${post.image ? `<div class='post-images'><img src='${escapeHtml(post.image)}' class='post-image' alt='图片' onerror="this.style.display='none'"></div>` : ''}
+                        ${hasVideoUrl(post) ? getPostVideoHtml(post) : (post.image ? `<div class='post-images'><img src='${escapeHtml(post.image)}' class='post-image' alt='图片' onerror="this.style.display='none'"></div>` : '')}
                         <div class="post-content">${escapeHtml(post.content)}</div>
                         ${post.source_url ? `<div class="post-source"><span class="source-label">📄 内容来源：</span><a href="${escapeHtml(post.source_url)}" target="_blank" rel="noopener noreferrer" class="source-link">${escapeHtml(post.source_url.length > 60 ? post.source_url.substring(0, 60) + '...' : post.source_url)}</a></div>` : ''}
                         <div class="post-footer">
@@ -2297,6 +2802,10 @@
                             <button class="comments-toggle-btn" onclick="toggleComments('${post.id}')">
                                 <span>💬</span>
                                 <span>${(post.comments && post.comments.length) || 0}</span>
+                            </button>
+                            <button class="action-btn favorite-btn ${isFavorited(post.id) ? 'favorited' : ''}" onclick="toggleFavorite('${post.id}')" title="收藏">
+                                <span>${isFavorited(post.id) ? '⭐' : '☆'}</span>
+                                <span>收藏</span>
                             </button>
                         </div>
                         <div class="comments-section" id="comments-${post.id}">
@@ -2396,6 +2905,12 @@
                 const section = document.getElementById('comments-' + postId);
                 if (section) section.classList.add('show');
             }, 50);
+            // 发送通知
+            if (currentUser && post.author !== currentUser.name) {
+                addNotification(post.author, currentUser.name, 'comment', postId, currentUser.name + ' 评论了你的帖子' + (post.title ? '「' + post.title + '」' : ''));
+            } else if (!currentUser && post.author !== name) {
+                addNotification(post.author, name, 'comment', postId, name + ' 评论了你的帖子' + (post.title ? '「' + post.title + '」' : ''));
+            }
         }
         async function deleteComment(postId, commentId) {
             const pwd = prompt('请输入删除密码：');
@@ -2588,6 +3103,7 @@
         function handleLogout() {
             currentUser = null;
             localStorage.removeItem('space_user');
+            if (typeof stopNotifyMessageSystem === 'function') stopNotifyMessageSystem();
             renderAuthArea();
             renderLaunchControls();
         }
@@ -2719,7 +3235,7 @@
             }).join('') : '<div class="empty-state"><div class="emoji">🚀</div><p>暂无即将发射的火箭</p></div>';
             // 渲染已发射
             if (launchedList) {
-                launchedList.innerHTML = launched.length > 0 ? launched.map((item) => {
+                launchedList.innerHTML = getLaunchStatsHtml() + (launched.length > 0 ? launched.map((item) => {
                     const l = item.data;
                     const i = item.origIndex;
                     const dateStr = new Date(l.date).toLocaleString('zh-CN', {
@@ -2748,8 +3264,10 @@
                                 <span class="launch-badge badge-launched">已发射</span>
                             </div>
                             <div class="launched-time">🚀 发射于 <strong>${agoStr}</strong></div>
+                            ${getLaunchResultBadge(l.result)}
                             ${l.image ? `<img src="${escapeHtml(l.image)}" class="launch-image" alt="发射图片" onerror="this.style.display='none'">` : ''}
                             <div class="launch-desc">${escapeHtml(l.description)}</div>
+                            ${getLaunchResultActions(i, true)}
                             ${currentUser && isOfficialUser(currentUser.name) ? `
                             <div class="launch-card-actions">
                                 <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
@@ -2758,7 +3276,7 @@
                             ` : ''}
                         </div>
                     `;
-                }).join('') : '<div class="empty-state"><div class="emoji">🏁</div><p>暂无已发射的火箭</p></div>';
+                }).join('') : '<div class="empty-state"><div class="emoji">🏁</div><p>暂无已发射的火箭</p></div>');
             }
         }
         // Tab 切换
@@ -2983,6 +3501,10 @@
                 followed.push(username);
             }
             localStorage.setItem('space_follows', JSON.stringify(followed));
+            // Send follow notification
+            if (!isFollowing && currentUser) {
+                addNotification(username, currentUser.name, 'follow', null, currentUser.name + ' 关注了你');
+            }
             // Sync to Supabase users table
             if (currentUser) {
                 sb.from('users').update({ follows: JSON.stringify(followed) }).eq('name', currentUser.name)
@@ -3047,7 +3569,7 @@
             } else {
                 postsHtml = '<div class="profile-posts"><div class="profile-posts-title">暂无帖子</div></div>';
             }
-            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + followingCount + '</span><span>关注</span></div><div class="profile-stat"><span class="profile-stat-num">' + followersCount + '</span><span>粉丝</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div></div></div>' + followBtnHtml + '</div>' + postsHtml;
+            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + followingCount + '</span><span>关注</span></div><div class="profile-stat"><span class="profile-stat-num">' + followersCount + '</span><span>粉丝</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div>' + (currentUser && currentUser.name === username ? '<div class="profile-stat"><span class="profile-stat-num">' + getFavoriteCount() + '</span><span>收藏</span></div>' : '') + '</div></div>' + followBtnHtml + (currentUser && currentUser.name !== username ? '<button class="profile-follow-btn" style="margin-left:8px;" onclick="startChatFromProfile(\'' + escapeHtml(username) + '\')">\u2709\ufe0f \u79c1\u4fe1</button>' : '') + '</div>' + postsHtml;
             modal.classList.add('show');
         }
 
@@ -3055,6 +3577,799 @@
             const modal = document.getElementById('profileModal');
             if (modal) modal.classList.remove('show');
         }
+
+// ============================================
+// 通知系统 & 私信系统 - 太空探索帖子网站
+// ============================================
+//
+// 依赖全局变量：
+//   sb          - Supabase 客户端实例 (supabase.createClient)
+//   currentUser - 当前登录用户对象 (有 .name 属性)
+//   posts       - 帖点数组
+//   allUsers    - 所有用户数组
+//
+// 依赖已有函数：
+//   escapeHtml(str)        - HTML 转义
+//   formatTime(timestamp)  - 时间格式化
+//   getAvatar(username)    - 获取头像 (返回 URL 或 emoji)
+//   openAuthModal()        - 打开登录弹窗
+//   closeProfileModal()    - 关闭用户主页弹窗
+//   showUserProfile(name)  - 显示用户主页
+//   toggleComments(postId) - 切换帖子评论区
+//
+// 数据库表：
+//   notifications(id, target_user, from_user, type, post_id, content, is_read, created_at)
+//   messages(id, from_user, to_user, content, is_read, created_at)
+//
+// 弹窗显示规则：modal 元素添加 class="show" 时显示 (display:flex)
+// 所需 DOM 元素 ID：
+//   通知：notifyBadge, notifyModal, notifyList
+//   私信：messageBadge, messageModal, messageContent, messageModalTitle
+// ============================================
+
+
+// ===== 全局变量 =====
+
+// 通知系统
+let notifications = [];
+
+// 私信系统
+let conversations = [];
+let currentChatUser = null;
+let chatMessages = [];
+
+// 定时器 ID
+let _notifyMsgIntervalId = null;
+
+
+// ============================================
+// 通知系统
+// ============================================
+
+/**
+ * 加载当前用户的通知（最多 50 条，按时间倒序）
+ */
+async function loadNotifications() {
+    if (!currentUser) return;
+    try {
+        const { data, error } = await sb.from('notifications')
+            .select('*')
+            .eq('target_user', currentUser.name)
+            .order('created_at', { ascending: false })
+            .limit(50);
+        if (error) throw error;
+        notifications = data || [];
+        updateNotifyBadge();
+    } catch (e) {
+        console.error('加载通知失败:', e);
+    }
+}
+
+/**
+ * 更新通知徽章（未读数）
+ */
+function updateNotifyBadge() {
+    const unread = notifications.filter(function (n) { return !n.is_read; }).length;
+    const badge = document.getElementById('notifyBadge');
+    if (badge) {
+        badge.textContent = unread > 99 ? '99+' : unread;
+        badge.style.display = unread > 0 ? 'flex' : 'none';
+    }
+}
+
+/**
+ * 打开通知弹窗并标记已读
+ */
+function openNotifyModal() {
+    if (!currentUser) { openAuthModal(); return; }
+    const modal = document.getElementById('notifyModal');
+    if (modal) {
+        modal.classList.add('show');
+        renderNotifications();
+        // 标记所有为已读
+        markAllNotificationsRead();
+    }
+}
+
+/**
+ * 关闭通知弹窗
+ */
+function closeNotifyModal() {
+    const modal = document.getElementById('notifyModal');
+    if (modal) modal.classList.remove('show');
+}
+
+/**
+ * 处理通知点击事件
+ * - 如果帖子存在，跳转到帖子并展开评论
+ * - 如果帖子已删除，仅关闭弹窗
+ * - 如果是关注通知（无 post_id），跳转到用户主页
+ * @param {number} index - 通知在 notifications 数组中的索引
+ */
+function handleNotificationClick(index) {
+    var n = notifications[index];
+    if (!n) return;
+    closeNotifyModal();
+    if (n.post_id) {
+        // 检查帖子是否仍然存在
+        var post = null;
+        if (typeof posts !== 'undefined' && Array.isArray(posts)) {
+            post = posts.find(function (p) { return String(p.id) === String(n.post_id); });
+        }
+        if (post && typeof toggleComments === 'function') {
+            toggleComments(n.post_id);
+        }
+        // 帖子已删除则不做跳转，仅关闭弹窗
+    } else {
+        // 无 post_id 的通知（如关注），跳转到发起者主页
+        if (typeof showUserProfile === 'function') {
+            showUserProfile(n.from_user);
+        }
+    }
+}
+
+/**
+ * 删除单条通知
+ * @param {number} index - 通知索引
+ * @param {Event} event - 事件对象（阻止冒泡）
+ */
+async function deleteNotification(index, event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    var n = notifications[index];
+    if (!n) return;
+    try {
+        var { error } = await sb.from('notifications').delete().eq('id', n.id);
+        if (error) throw error;
+        notifications.splice(index, 1);
+        updateNotifyBadge();
+        renderNotifications();
+    } catch (e) {
+        console.error('删除通知失败:', e);
+    }
+}
+
+/**
+ * 渲染通知列表
+ * 使用 index 索引方式绑定点击事件，避免字符串转义问题
+ */
+function renderNotifications() {
+    var list = document.getElementById('notifyList');
+    if (!list) return;
+
+    if (notifications.length === 0) {
+        list.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">暂无通知</div>';
+        return;
+    }
+
+    var iconMap = { 'like': '❤️', 'comment': '💬', 'follow': '👥' };
+
+    list.innerHTML = notifications.map(function (n, index) {
+        var icon = iconMap[n.type] || '🔔';
+        var timeStr = formatTime(n.created_at);
+
+        var html = '';
+        html += '<div class="notification-item' + (n.is_read ? '' : ' unread') + '"';
+        html += ' onclick="handleNotificationClick(' + index + ')"';
+        html += ' style="cursor:pointer;">';
+        html +=   '<div class="notification-icon">' + icon + '</div>';
+        html +=   '<div class="notification-content">';
+        html +=     '<div class="notification-text">' + escapeHtml(n.content) + '</div>';
+        html +=     '<div class="notification-time">' + timeStr + '</div>';
+        html +=   '</div>';
+        html +=   '<button class="notification-delete-btn"';
+        html +=     ' onclick="deleteNotification(' + index + ', event)"';
+        html +=     ' title="删除该通知"';
+        html +=     ' style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.9rem;padding:4px 8px;opacity:0.6;flex-shrink:0;"';
+        html +=     ' onmouseover="this.style.opacity=1"';
+        html +=     ' onmouseout="this.style.opacity=0.6">✕</button>';
+        html += '</div>';
+        return html;
+    }).join('');
+}
+
+/**
+ * 标记所有未读通知为已读
+ */
+async function markAllNotificationsRead() {
+    if (!currentUser || notifications.length === 0) return;
+    var unreadIds = notifications.filter(function (n) { return !n.is_read; }).map(function (n) { return n.id; });
+    if (unreadIds.length === 0) return;
+    try {
+        var { error } = await sb.from('notifications')
+            .update({ is_read: true })
+            .in('id', unreadIds);
+        if (error) throw error;
+        notifications.forEach(function (n) { n.is_read = true; });
+        updateNotifyBadge();
+    } catch (e) {
+        console.error('标记已读失败:', e);
+    }
+}
+
+/**
+ * 创建通知（不会给自己发通知）
+ * @param {string} targetUser - 通知接收者用户名
+ * @param {string} fromUser   - 通知发起者用户名
+ * @param {string} type       - 通知类型: 'like' | 'comment' | 'follow'
+ * @param {string|null} postId - 相关帖子 ID（可选）
+ * @param {string} content    - 通知内容
+ */
+async function addNotification(targetUser, fromUser, type, postId, content) {
+    if (!targetUser || !fromUser || targetUser === fromUser) return;
+    try {
+        var { error } = await sb.from('notifications').insert({
+            target_user: targetUser,
+            from_user: fromUser,
+            type: type,
+            post_id: postId || null,
+            content: content,
+            is_read: false,
+            created_at: Date.now()
+        });
+        if (error) throw error;
+    } catch (e) {
+        console.error('创建通知失败:', e);
+    }
+}
+
+
+// ============================================
+// 私信系统
+// ============================================
+
+/**
+ * 加载未读私信数量并更新徽章
+ */
+async function loadMessageCount() {
+    if (!currentUser) return;
+    try {
+        var { count, error } = await sb.from('messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('to_user', currentUser.name)
+            .eq('is_read', false);
+        if (error) throw error;
+        var badge = document.getElementById('messageBadge');
+        if (badge) {
+            var c = count || 0;
+            badge.textContent = c > 99 ? '99+' : c;
+            badge.style.display = c > 0 ? 'flex' : 'none';
+        }
+    } catch (e) {
+        console.error('加载私信数失败:', e);
+    }
+}
+
+/**
+ * 打开私信弹窗
+ */
+function openMessageModal() {
+    if (!currentUser) { openAuthModal(); return; }
+    var modal = document.getElementById('messageModal');
+    if (modal) {
+        modal.classList.add('show');
+        currentChatUser = null;
+        loadConversations();
+    }
+}
+
+/**
+ * 关闭私信弹窗
+ */
+function closeMessageModal() {
+    var modal = document.getElementById('messageModal');
+    if (modal) modal.classList.remove('show');
+    currentChatUser = null;
+}
+
+/**
+ * 加载会话列表
+ * 按对话伙伴分组，显示最后一条消息和未读数
+ */
+async function loadConversations() {
+    if (!currentUser) return;
+    try {
+        // 获取所有与当前用户相关的消息（按时间倒序）
+        var { data, error } = await sb.from('messages')
+            .select('*')
+            .or('from_user.eq.' + currentUser.name + ',to_user.eq.' + currentUser.name)
+            .order('created_at', { ascending: false });
+        if (error) throw error;
+
+        // 按对话伙伴分组
+        var convMap = {};
+        (data || []).forEach(function (m) {
+            var other = m.from_user === currentUser.name ? m.to_user : m.from_user;
+
+            // 初始化会话条目
+            if (!convMap[other]) {
+                convMap[other] = {
+                    user: other,
+                    lastMessage: '',
+                    lastTime: 0,
+                    unread: 0
+                };
+            }
+
+            // 更新最后一条消息（data 已按时间倒序，但为安全起见仍做比较）
+            if (m.created_at > convMap[other].lastTime) {
+                convMap[other].lastMessage = m.content;
+                convMap[other].lastTime = m.created_at;
+            }
+
+            // 统计未读数（仅对方发给我的未读消息）
+            if (m.to_user === currentUser.name && !m.is_read) {
+                convMap[other].unread++;
+            }
+        });
+
+        conversations = Object.values(convMap).sort(function (a, b) {
+            return b.lastTime - a.lastTime;
+        });
+
+        renderConversations();
+    } catch (e) {
+        console.error('加载会话失败:', e);
+    }
+}
+
+/**
+ * 渲染会话列表
+ */
+function renderConversations() {
+    var content = document.getElementById('messageContent');
+    if (!content) return;
+
+    var titleEl = document.getElementById('messageModalTitle');
+    if (titleEl) titleEl.textContent = '✉️ 私信';
+
+    if (conversations.length === 0) {
+        content.innerHTML =
+            '<div style="padding:40px;text-align:center;color:var(--text-muted);">' +
+                '<div style="font-size:2rem;margin-bottom:10px;">📭</div>' +
+                '暂无私信<br>' +
+                '<span style="font-size:0.8rem;">去帖子页面点击用户头像，进入主页发送私信</span>' +
+            '</div>';
+        return;
+    }
+
+    content.innerHTML = '<div class="message-conversations">' + conversations.map(function (c, index) {
+        var avatar = getAvatar(c.user);
+        var avHtml;
+        if (avatar.startsWith('http')) {
+            avHtml = '<img src="' + avatar + '" alt="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">';
+        } else {
+            avHtml = '<div style="width:40px;height:40px;border-radius:50%;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:1.2rem;">' + avatar + '</div>';
+        }
+
+        var html = '';
+        html += '<div class="message-conv-item" onclick="openChatByIndex(' + index + ')" style="cursor:pointer;">';
+        html +=   avHtml;
+        html +=   '<div style="flex:1;min-width:0;">';
+        html +=     '<div style="display:flex;justify-content:space-between;align-items:center;">';
+        html +=       '<span style="font-weight:600;color:var(--text-primary);">' + escapeHtml(c.user) + '</span>';
+        html +=       '<span style="font-size:0.7rem;color:var(--text-muted);">' + formatTime(c.lastTime) + '</span>';
+        html +=     '</div>';
+        html +=     '<div style="font-size:0.8rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(c.lastMessage) + '</div>';
+        html +=   '</div>';
+        if (c.unread > 0) {
+            html += '<span class="notify-badge" style="position:static;">' + c.unread + '</span>';
+        }
+        html += '</div>';
+        return html;
+    }).join('') + '</div>';
+}
+
+/**
+ * 通过索引打开聊天（避免用户名转义问题）
+ * @param {number} index - 会话在 conversations 数组中的索引
+ */
+function openChatByIndex(index) {
+    var c = conversations[index];
+    if (c) {
+        openChat(c.user);
+    }
+}
+
+/**
+ * 打开与某用户的聊天界面
+ * @param {string} otherUser - 对方用户名
+ */
+async function openChat(otherUser) {
+    currentChatUser = otherUser;
+
+    var titleEl = document.getElementById('messageModalTitle');
+    if (titleEl) titleEl.textContent = '与 ' + otherUser + ' 的对话';
+
+    var content = document.getElementById('messageContent');
+    if (!content) return;
+
+    // 构建头像 HTML
+    var avatar = getAvatar(otherUser);
+    var avatarHtml;
+    if (avatar.startsWith('http')) {
+        avatarHtml = '<img src="' + avatar + '" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">';
+    } else {
+        avatarHtml = avatar;
+    }
+
+    // 构建聊天界面
+    content.innerHTML =
+        '<div class="message-chat-area">' +
+            '<div class="message-chat-header">' +
+                '<button class="message-back-btn" onclick="loadConversations()">← 返回</button>' +
+                '<div class="avatar" style="width:32px;height:32px;font-size:1rem;display:flex;align-items:center;justify-content:center;">' + avatarHtml + '</div>' +
+                '<span style="font-weight:600;">' + escapeHtml(otherUser) + '</span>' +
+            '</div>' +
+            '<div class="message-chat-messages" id="chatMessages"></div>' +
+            '<div class="message-chat-input">' +
+                '<input type="text" class="message-input" id="chatInput" placeholder="输入消息..." onkeydown="if(event.key===\'Enter\') sendMessageTo()" maxlength="500">' +
+                '<button class="message-send-btn" onclick="sendMessageTo()">发送</button>' +
+            '</div>' +
+        '</div>';
+
+    // 加载聊天记录
+    await loadChatMessages(otherUser);
+
+    // 标记来自对方的消息为已读
+    try {
+        var { error } = await sb.from('messages')
+            .update({ is_read: true })
+            .eq('from_user', otherUser)
+            .eq('to_user', currentUser.name);
+        if (error) throw error;
+        // 刷新未读徽章
+        loadMessageCount();
+    } catch (e) {
+        console.error('标记消息已读失败:', e);
+    }
+}
+
+/**
+ * 加载与某用户的聊天记录
+ * @param {string} otherUser - 对方用户名
+ */
+async function loadChatMessages(otherUser) {
+    try {
+        var { data, error } = await sb.from('messages')
+            .select('*')
+            .or('and(from_user.eq.' + currentUser.name + ',to_user.eq.' + otherUser + '),' +
+                'and(from_user.eq.' + otherUser + ',to_user.eq.' + currentUser.name + ')')
+            .order('created_at', { ascending: true })
+            .limit(100);
+        if (error) throw error;
+        chatMessages = data || [];
+        renderChatMessages();
+    } catch (e) {
+        console.error('加载聊天消息失败:', e);
+    }
+}
+
+/**
+ * 渲染聊天消息列表
+ */
+function renderChatMessages() {
+    var container = document.getElementById('chatMessages');
+    if (!container) return;
+
+    if (chatMessages.length === 0) {
+        container.innerHTML =
+            '<div style="text-align:center;color:var(--text-muted);padding:20px;font-size:0.85rem;">' +
+            '开始你们的对话吧 💬</div>';
+        return;
+    }
+
+    container.innerHTML = chatMessages.map(function (m) {
+        var isSent = m.from_user === currentUser.name;
+        return '<div class="message-bubble ' + (isSent ? 'sent' : 'received') + '">' +
+            escapeHtml(m.content) +
+            '<div style="font-size:0.65rem;margin-top:3px;opacity:0.7;">' + formatTime(m.created_at) + '</div>' +
+            '</div>';
+    }).join('');
+
+    // 滚动到底部
+    container.scrollTop = container.scrollHeight;
+}
+
+/**
+ * 发送消息（乐观更新）
+ */
+async function sendMessageTo() {
+    if (!currentChatUser || !currentUser) return;
+    var input = document.getElementById('chatInput');
+    if (!input) return;
+
+    var contentText = input.value.trim();
+    if (!contentText) return;
+
+    // 清空输入框
+    input.value = '';
+
+    // 乐观更新：先添加临时消息到界面
+    var tempMsg = {
+        from_user: currentUser.name,
+        to_user: currentChatUser,
+        content: contentText,
+        created_at: Date.now(),
+        is_read: false
+    };
+    chatMessages.push(tempMsg);
+    renderChatMessages();
+
+    // 写入数据库
+    try {
+        var { data, error } = await sb.from('messages').insert({
+            from_user: currentUser.name,
+            to_user: currentChatUser,
+            content: contentText,
+            is_read: false,
+            created_at: Date.now()
+        }).select();
+
+        if (error) throw error;
+
+        // 用数据库返回的真实记录替换临时消息
+        if (data && data[0]) {
+            chatMessages[chatMessages.length - 1] = data[0];
+            renderChatMessages();
+        }
+    } catch (e) {
+        console.error('发送消息失败:', e);
+        // 回滚：移除临时消息
+        var tempIdx = chatMessages.indexOf(tempMsg);
+        if (tempIdx > -1) {
+            chatMessages.splice(tempIdx, 1);
+            renderChatMessages();
+        }
+        alert('发送失败: ' + e.message);
+    }
+}
+
+/**
+ * 从用户主页发起私信
+ * 先关闭用户主页弹窗，再打开私信弹窗并进入与该用户的聊天
+ * @param {string} username - 目标用户名
+ */
+function startChatFromProfile(username) {
+    if (typeof closeProfileModal === 'function') {
+        closeProfileModal();
+    }
+    setTimeout(function () {
+        openMessageModal();
+        setTimeout(function () {
+            openChat(username);
+        }, 300);
+    }, 200);
+}
+
+
+// ============================================
+// 定时刷新 & 初始化
+// ============================================
+
+/**
+ * 手动刷新通知和未读私信数
+ */
+async function refreshNotifyAndMessages() {
+    if (!currentUser) return;
+    try {
+        await Promise.all([loadNotifications(), loadMessageCount()]);
+    } catch (e) {
+        console.error('刷新通知和私信失败:', e);
+    }
+}
+
+/**
+ * 初始化通知和私信系统
+ * 在页面加载完成或用户登录成功后调用
+ * 每 30 秒自动刷新通知和未读私信数
+ */
+function initNotifyMessageSystem() {
+    // 立即加载一次
+    if (currentUser) {
+        loadNotifications();
+        loadMessageCount();
+    }
+
+    // 清除旧的定时器（防止重复初始化）
+    if (_notifyMsgIntervalId) {
+        clearInterval(_notifyMsgIntervalId);
+    }
+
+    // 每 30 秒定时刷新
+    _notifyMsgIntervalId = setInterval(function () {
+        if (currentUser) {
+            loadNotifications();
+            loadMessageCount();
+        }
+    }, 30000);
+}
+
+/**
+ * 停止通知和私信定时刷新
+ * 在用户登出时调用
+ */
+function stopNotifyMessageSystem() {
+    if (_notifyMsgIntervalId) {
+        clearInterval(_notifyMsgIntervalId);
+        _notifyMsgIntervalId = null;
+    }
+    // 清空状态
+    notifications = [];
+    conversations = [];
+    chatMessages = [];
+    currentChatUser = null;
+    updateNotifyBadge();
+
+    var msgBadge = document.getElementById('messageBadge');
+    if (msgBadge) {
+        msgBadge.style.display = 'none';
+    }
+}
+
+
+// ============================================================
+// 太空探索帖子网站 - 收藏/视频嵌入/发射结果记录功能
+// 数据库: Supabase (客户端变量: sb)
+// 全局变量: currentUser, posts, launches, isOfficialUser, OFFICIAL_USERS
+// ============================================================
+
+
+// ==================== 收藏功能 ====================
+
+let favorites = JSON.parse(localStorage.getItem('space_favorites')) || {};
+
+function toggleFavorite(postId) {
+    if (!currentUser) { openAuthModal(); return; }
+    if (favorites[postId]) {
+        delete favorites[postId];
+    } else {
+        favorites[postId] = true;
+    }
+    localStorage.setItem('space_favorites', JSON.stringify(favorites));
+    renderPosts();
+}
+
+function isFavorited(postId) {
+    return !!favorites[postId];
+}
+
+function getFavoriteCount() {
+    return Object.keys(favorites).length;
+}
+
+
+// ==================== 视频嵌入功能 ====================
+
+function getVideoEmbed(text) {
+    if (!text) return '';
+    var url = '';
+
+    // YouTube 链接检测
+    // 格式: https://www.youtube.com/watch?v=VIDEO_ID 或 https://youtu.be/VIDEO_ID
+    var ytMatch = text.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (ytMatch) {
+        var videoId = ytMatch[1];
+        return '<div class="video-embed"><iframe src="https://www.youtube.com/embed/' + videoId + '" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>';
+    }
+
+    // B站链接检测
+    // 格式: https://www.bilibili.com/video/BVxxxxxx 或 https://b23.tv/xxxxxx
+    var biliMatch = text.match(/(?:https?:\/\/)?(?:www\.)?(?:bilibili\.com\/video\/|b23\.tv\/)([a-zA-Z0-9]+)/);
+    if (biliMatch) {
+        var bvid = biliMatch[1];
+        // 对于b23.tv短链接，无法直接获取BVID，使用外链跳转
+        if (bvid.length <= 8) {
+            // b23.tv 短链接，使用跳转
+            return '<div class="video-embed" style="display:flex;align-items:center;justify-content:center;background:var(--bg-tertiary);padding:20px;"><a href="https://b23.tv/' + bvid + '" target="_blank" style="color:var(--accent-color);font-size:0.9rem;">📹 点击观看B站视频</a></div>';
+        }
+        // 提取BV号
+        var bvId = bvid.startsWith('BV') ? bvid : 'BV' + bvid;
+        return '<div class="video-embed"><iframe src="https://player.bilibili.com/player.html?bvid=' + bvId + '&page=1&high_quality=1" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe></div>';
+    }
+
+    return '';
+}
+
+// 检查帖子是否包含视频链接，返回嵌入HTML
+function getPostVideoHtml(post) {
+    // 检查图片字段和内容字段
+    var fromImage = getVideoEmbed(post.image);
+    if (fromImage) return fromImage;
+    var fromContent = getVideoEmbed(post.content);
+    if (fromContent) return fromContent;
+    var fromSource = getVideoEmbed(post.source_url);
+    if (fromSource) return fromSource;
+    return '';
+}
+
+// 判断帖子是否包含视频（用于决定是否隐藏图片显示）
+function hasVideoUrl(post) {
+    return !!(getVideoEmbed(post.image) || getVideoEmbed(post.content) || getVideoEmbed(post.source_url));
+}
+
+
+// ==================== 发射结果记录功能 ====================
+
+// 标记发射结果
+async function markLaunchResult(index, result) {
+    if (!currentUser || !isOfficialUser(currentUser.name)) {
+        alert('只有官方机构账号才能标记发射结果');
+        return;
+    }
+    var launch = launches[index];
+    if (!launch || !launch.id) return;
+
+    // 切换：如果已是这个结果，则取消标记回到pending
+    var newResult = launch.result === result ? 'pending' : result;
+
+    try {
+        const { error } = await sb.from('launches')
+            .update({ result: newResult })
+            .eq('id', launch.id);
+        if (error) throw error;
+        launch.result = newResult;
+        renderLaunches();
+    } catch(e) {
+        console.error('标记发射结果失败:', e);
+        alert('标记失败: ' + e.message);
+    }
+}
+
+// 获取发射结果徽章HTML
+function getLaunchResultBadge(result) {
+    if (!result || result === 'pending') return '';
+    var resultMap = {
+        'success': { text: '✅ 发射成功', class: 'launch-result-success' },
+        'failure': { text: '❌ 发射失败', class: 'launch-result-fail' },
+        'partial': { text: '⚠️ 部分成功', class: 'launch-result-partial' }
+    };
+    var info = resultMap[result];
+    if (!info) return '';
+    return '<span class="launch-result-badge ' + info.class + '">' + info.text + '</span>';
+}
+
+// 获取发射结果操作按钮HTML（仅官方账号可见）
+function getLaunchResultActions(index, isLaunched) {
+    if (!currentUser || !isOfficialUser(currentUser.name) || !isLaunched) return '';
+    var launch = launches[index];
+    if (!launch) return '';
+    var currentResult = launch.result || 'pending';
+    return '<div class="launch-result-actions">' +
+        '<button class="launch-result-btn' + (currentResult === 'success' ? ' active' : '') + '" onclick="markLaunchResult(' + index + ', \'success\')" style="' + (currentResult === 'success' ? 'background:rgba(34,197,94,0.2);color:#22c55e;border-color:#22c55e;' : '') + '">✅ 成功</button>' +
+        '<button class="launch-result-btn' + (currentResult === 'partial' ? ' active' : '') + '" onclick="markLaunchResult(' + index + ', \'partial\')" style="' + (currentResult === 'partial' ? 'background:rgba(245,158,11,0.2);color:#f59e0b;border-color:#f59e0b;' : '') + '">⚠️ 部分</button>' +
+        '<button class="launch-result-btn' + (currentResult === 'failure' ? ' active' : '') + '" onclick="markLaunchResult(' + index + ', \'failure\')" style="' + (currentResult === 'failure' ? 'background:rgba(239,68,68,0.2);color:#ef4444;border-color:#ef4444;' : '') + '">❌ 失败</button>' +
+        '</div>';
+}
+
+// 获取发射统计HTML
+function getLaunchStatsHtml() {
+    var successCount = 0, failCount = 0, partialCount = 0, pendingCount = 0;
+    var now = Date.now();
+    launches.forEach(function(l) {
+        if (l.status === 'tbd') return;
+        if (l.date && l.date < now) {
+            var r = l.result || 'pending';
+            if (r === 'success') successCount++;
+            else if (r === 'failure') failCount++;
+            else if (r === 'partial') partialCount++;
+            else pendingCount++;
+        }
+    });
+    var total = successCount + failCount + partialCount;
+    if (total === 0 && pendingCount === 0) return '';
+    return '<div class="launch-stats">' +
+        '<div class="launch-stat-item"><span class="launch-stat-num" style="color:#22c55e;">' + successCount + '</span><span class="launch-stat-label">成功</span></div>' +
+        '<div class="launch-stat-item"><span class="launch-stat-num" style="color:#f59e0b;">' + partialCount + '</span><span class="launch-stat-label">部分成功</span></div>' +
+        '<div class="launch-stat-item"><span class="launch-stat-num" style="color:#ef4444;">' + failCount + '</span><span class="launch-stat-label">失败</span></div>' +
+        '<div class="launch-stat-item"><span class="launch-stat-num" style="color:var(--text-muted);">' + pendingCount + '</span><span class="launch-stat-label">待定</span></div>' +
+        '</div>';
+}
+
+
+
 
 // ==================== 初始化 ====================
         // launchModalOverlay 在 script 之后渲染，这里绑定事件
@@ -3074,9 +4389,47 @@
         if (pmo) pmo.addEventListener('click', function(e) {
             if (e.target === this) closeProfileModal();
         });
+        var nmo = document.getElementById('notifyModal');
+        if (nmo) nmo.addEventListener('click', function(e) {
+            if (e.target === this) closeNotifyModal();
+        });
+        var mmo = document.getElementById('messageModal');
+        if (mmo) mmo.addEventListener('click', function(e) {
+            if (e.target === this) closeMessageModal();
+        });
         renderAuthArea();
         loadUsers();
         loadPosts();
+        initNotifyMessageSystem();
 </script>
+     HTML 代码 - 新弹窗
+     包含：通知弹窗 + 私信弹窗
+     ============================================================ -->
+
+<!-- 通知弹窗 -->
+<div class="notification-modal-overlay" id="notifyModal">
+    <div class="notification-modal">
+        <div class="message-modal-header">
+            <h3 style="margin:0;font-size:1.1rem;">🔔 消息通知</h3>
+            <button class="modal-close" onclick="closeNotifyModal()">×</button>
+        </div>
+        <div id="notifyList" style="padding:0;">
+            <div style="padding:40px;text-align:center;color:var(--text-muted);">暂无通知</div>
+        </div>
+    </div>
+</div>
+
+<!-- 私信弹窗 -->
+<div class="message-modal-overlay" id="messageModal">
+    <div class="message-modal">
+        <div class="message-modal-header">
+            <h3 style="margin:0;font-size:1.1rem;" id="messageModalTitle">✉️ 私信</h3>
+            <button class="modal-close" onclick="closeMessageModal()">×</button>
+        </div>
+        <div id="messageContent" style="flex:1;overflow-y:auto;">
+            <div style="padding:40px;text-align:center;color:var(--text-muted);">暂无私信</div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
