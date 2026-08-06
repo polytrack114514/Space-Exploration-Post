@@ -3247,7 +3247,8 @@
         // ==================== 用户关注系统 ====================
         function toggleFollow(username) {
             let followed = JSON.parse(localStorage.getItem('space_follows')) || [];
-            if (followed.includes(username)) {
+            var isFollowing = followed.includes(username);
+            if (isFollowing) {
                 followed = followed.filter(function(u) { return u !== username; });
             } else {
                 followed.push(username);
