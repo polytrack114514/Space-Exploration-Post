@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS posts (
     author TEXT DEFAULT '',
     avatar TEXT DEFAULT '',
     image TEXT DEFAULT '',
+    source_url TEXT DEFAULT '',
     time BIGINT DEFAULT 0,
     likes INTEGER DEFAULT 0,
     comments JSONB DEFAULT '[]'::jsonb,
@@ -23,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
     name TEXT UNIQUE NOT NULL,
     password TEXT DEFAULT '',
     avatar TEXT DEFAULT '',
+    follows TEXT DEFAULT '[]',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -35,7 +37,7 @@ CREATE TABLE IF NOT EXISTS launches (
     location TEXT DEFAULT '',
     mission TEXT DEFAULT '',
     image TEXT DEFAULT '',
-    desc TEXT DEFAULT '',
+    description TEXT DEFAULT '',
     status TEXT DEFAULT 'tentative',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -61,3 +63,10 @@ CREATE POLICY "launches_select" ON launches FOR SELECT USING (true);
 CREATE POLICY "launches_insert" ON launches FOR INSERT WITH CHECK (true);
 CREATE POLICY "launches_update" ON launches FOR UPDATE USING (true);
 CREATE POLICY "launches_delete" ON launches FOR DELETE USING (true);
+
+-- ============================================
+-- 增量更新（如果表已存在，添加缺失的列）
+-- ============================================
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS source_url TEXT DEFAULT '';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS follows TEXT DEFAULT '[]';
+ALTER TABLE launches ADD COLUMN IF NOT EXISTS description TEXT DEFAULT '';
