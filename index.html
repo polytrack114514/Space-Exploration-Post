@@ -1898,6 +1898,14 @@
    ============================================================ */
 
 /* 通知铃铛按钮 - 与 .theme-toggle 样式一致 */
+.notify-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .notify-btn {
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
@@ -2017,254 +2025,6 @@
 
 
 /* ============================================================
-   2. 私信系统样式
-   ============================================================ */
-
-/* 私信按钮 - 与 .notify-btn 一致 */
-.message-btn {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-    position: relative;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.message-btn:hover {
-    background: var(--bg-secondary);
-    border-color: var(--accent-color);
-}
-
-/* 私信未读徽章 - 与 .notify-badge 一致 */
-.message-badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: #ff4444;
-    color: white;
-    font-size: 0.65rem;
-    min-width: 16px;
-    height: 16px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 4px;
-    font-weight: 700;
-}
-
-/* 私信弹窗遮罩 - 与 .notification-modal-overlay 一致 */
-.message-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-}
-
-/* 私信弹窗 - 与 .notification-modal 一致 */
-.message-modal {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    max-width: 500px;
-    height: 600px;
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
-
-/* 弹窗头部 */
-.message-modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* 会话列表区 */
-.message-conversations {
-    flex: 1;
-    overflow-y: auto;
-}
-
-/* 会话项 */
-.message-conv-item {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-color);
-    cursor: pointer;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    transition: background 0.15s;
-}
-
-.message-conv-item:hover {
-    background: var(--bg-tertiary);
-}
-
-/* 会话项激活状态 */
-.message-conv-item.active {
-    background: var(--bg-tertiary);
-    border-left: 3px solid var(--accent-color);
-}
-
-/* 聊天区域 */
-.message-chat-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-/* 聊天头部 */
-.message-chat-header {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* 消息列表 */
-.message-chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-/* 消息气泡 */
-.message-bubble {
-    max-width: 70%;
-    padding: 8px 14px;
-    border-radius: 12px;
-    font-size: 0.875rem;
-    word-break: break-word;
-}
-
-/* 发出的消息 */
-.message-bubble.sent {
-    background: var(--accent-color);
-    color: white;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-}
-
-/* 收到的消息 */
-.message-bubble.received {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
-}
-
-/* 聊天输入区 */
-.message-chat-input {
-    padding: 12px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    gap: 8px;
-}
-
-/* 输入框 */
-.message-input {
-    flex: 1;
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    font-size: 0.875rem;
-    outline: none;
-}
-
-.message-input:focus {
-    border-color: var(--accent-color);
-}
-
-/* 发送按钮 */
-.message-send-btn {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: none;
-    background: var(--accent-color);
-    color: white;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: background 0.2s;
-}
-
-.message-send-btn:hover {
-    background: var(--accent-hover);
-}
-
-/* 返回按钮 */
-.message-back-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-.message-back-btn:hover {
-    color: var(--text-primary);
-}
-
-
-/* ============================================================
-   3. 收藏功能样式
-   ============================================================ */
-
-/* 收藏按钮 - 与 .action-btn 一致但用金色 */
-.favorite-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 6px 10px;
-    border-radius: 8px;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.favorite-btn:hover {
-    background: var(--bg-tertiary);
-    color: #ffd700;
-}
-
-/* 已收藏状态 */
-.favorite-btn.favorited {
-    color: #ffd700;
-}
-
-.favorite-btn.favorited:hover {
-    color: #ffd700;
-}
-
-
-/* ============================================================
    4. 视频嵌入样式
    ============================================================ */
 
@@ -2380,8 +2140,8 @@
 /* Modal show rules for notification and message modals */
 .notification-modal-overlay { display: none; }
 .notification-modal-overlay.show { display: flex; }
-.message-modal-overlay { display: none; }
-.message-modal-overlay.show { display: flex; }
+
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2426,12 +2186,8 @@
                 <button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
             </div>
             <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换主题">🌙</button>
-                        HTML 代码 - top-bar 图标
-                        在主题切换按钮后面添加通知和私信按钮
-                        ============================================================ -->
                         <button class="notify-btn" id="notifyBtn" onclick="openNotifyModal()" title="消息通知">🔔<span class="notify-badge" id="notifyBadge" style="display:none;">0</span></button>
-                        <button class="message-btn" id="messageBtn" onclick="openMessageModal()" title="私信">✉️<span class="message-badge" id="messageBadge" style="display:none;">0</span></button>
-            <div class="auth-area" id="authArea">
+                        <div class="auth-area" id="authArea">
                 <button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>
             </div>
             <button class="fab-post" onclick="openModal()">✨ 发布帖子</button>
@@ -2612,7 +2368,7 @@
             if (e.target === this) closeModal();
         });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); closeNotifyModal(); closeMessageModal(); }
+            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); closeNotifyModal(); }
         });
         // ==================== 发帖 ====================
         async function submitPost() {
@@ -2803,11 +2559,7 @@
                                 <span>💬</span>
                                 <span>${(post.comments && post.comments.length) || 0}</span>
                             </button>
-                            <button class="action-btn favorite-btn ${isFavorited(post.id) ? 'favorited' : ''}" onclick="toggleFavorite('${post.id}')" title="收藏">
-                                <span>${isFavorited(post.id) ? '⭐' : '☆'}</span>
-                                <span>收藏</span>
-                            </button>
-                        </div>
+                            </div>
                         <div class="comments-section" id="comments-${post.id}">
                             <div class="comments-list" id="comments-list-${post.id}">
                                 ${(post.comments && post.comments.length > 0) ? post.comments.map(c => `
@@ -3569,7 +3321,7 @@
             } else {
                 postsHtml = '<div class="profile-posts"><div class="profile-posts-title">暂无帖子</div></div>';
             }
-            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + followingCount + '</span><span>关注</span></div><div class="profile-stat"><span class="profile-stat-num">' + followersCount + '</span><span>粉丝</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div>' + (currentUser && currentUser.name === username ? '<div class="profile-stat"><span class="profile-stat-num">' + getFavoriteCount() + '</span><span>收藏</span></div>' : '') + '</div></div>' + followBtnHtml + (currentUser && currentUser.name !== username ? '<button class="profile-follow-btn" style="margin-left:8px;" onclick="startChatFromProfile(\'' + escapeHtml(username) + '\')">\u2709\ufe0f \u79c1\u4fe1</button>' : '') + '</div>' + postsHtml;
+            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + followingCount + '</span><span>关注</span></div><div class="profile-stat"><span class="profile-stat-num">' + followersCount + '</span><span>粉丝</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div>' + '</div></div>' + followBtnHtml + '</div>' + postsHtml;
             modal.classList.add('show');
         }
 
@@ -3604,7 +3356,7 @@
 // 弹窗显示规则：modal 元素添加 class="show" 时显示 (display:flex)
 // 所需 DOM 元素 ID：
 //   通知：notifyBadge, notifyModal, notifyList
-//   私信：messageBadge, messageModal, messageContent, messageModalTitle
+
 // ============================================
 
 
@@ -3613,10 +3365,7 @@
 // 通知系统
 let notifications = [];
 
-// 私信系统
-let conversations = [];
-let currentChatUser = null;
-let chatMessages = [];
+
 
 // 定时器 ID
 let _notifyMsgIntervalId = null;
@@ -3817,333 +3566,7 @@ async function addNotification(targetUser, fromUser, type, postId, content) {
 
 
 // ============================================
-// 私信系统
 // ============================================
-
-/**
- * 加载未读私信数量并更新徽章
- */
-async function loadMessageCount() {
-    if (!currentUser) return;
-    try {
-        var { count, error } = await sb.from('messages')
-            .select('*', { count: 'exact', head: true })
-            .eq('to_user', currentUser.name)
-            .eq('is_read', false);
-        if (error) throw error;
-        var badge = document.getElementById('messageBadge');
-        if (badge) {
-            var c = count || 0;
-            badge.textContent = c > 99 ? '99+' : c;
-            badge.style.display = c > 0 ? 'flex' : 'none';
-        }
-    } catch (e) {
-        console.error('加载私信数失败:', e);
-    }
-}
-
-/**
- * 打开私信弹窗
- */
-function openMessageModal() {
-    if (!currentUser) { openAuthModal(); return; }
-    var modal = document.getElementById('messageModal');
-    if (modal) {
-        modal.classList.add('show');
-        currentChatUser = null;
-        loadConversations();
-    }
-}
-
-/**
- * 关闭私信弹窗
- */
-function closeMessageModal() {
-    var modal = document.getElementById('messageModal');
-    if (modal) modal.classList.remove('show');
-    currentChatUser = null;
-}
-
-/**
- * 加载会话列表
- * 按对话伙伴分组，显示最后一条消息和未读数
- */
-async function loadConversations() {
-    if (!currentUser) return;
-    try {
-        // 获取所有与当前用户相关的消息（按时间倒序）
-        var { data, error } = await sb.from('messages')
-            .select('*')
-            .or('from_user.eq.' + currentUser.name + ',to_user.eq.' + currentUser.name)
-            .order('created_at', { ascending: false });
-        if (error) throw error;
-
-        // 按对话伙伴分组
-        var convMap = {};
-        (data || []).forEach(function (m) {
-            var other = m.from_user === currentUser.name ? m.to_user : m.from_user;
-
-            // 初始化会话条目
-            if (!convMap[other]) {
-                convMap[other] = {
-                    user: other,
-                    lastMessage: '',
-                    lastTime: 0,
-                    unread: 0
-                };
-            }
-
-            // 更新最后一条消息（data 已按时间倒序，但为安全起见仍做比较）
-            if (m.created_at > convMap[other].lastTime) {
-                convMap[other].lastMessage = m.content;
-                convMap[other].lastTime = m.created_at;
-            }
-
-            // 统计未读数（仅对方发给我的未读消息）
-            if (m.to_user === currentUser.name && !m.is_read) {
-                convMap[other].unread++;
-            }
-        });
-
-        conversations = Object.values(convMap).sort(function (a, b) {
-            return b.lastTime - a.lastTime;
-        });
-
-        renderConversations();
-    } catch (e) {
-        console.error('加载会话失败:', e);
-    }
-}
-
-/**
- * 渲染会话列表
- */
-function renderConversations() {
-    var content = document.getElementById('messageContent');
-    if (!content) return;
-
-    var titleEl = document.getElementById('messageModalTitle');
-    if (titleEl) titleEl.textContent = '✉️ 私信';
-
-    if (conversations.length === 0) {
-        content.innerHTML =
-            '<div style="padding:40px;text-align:center;color:var(--text-muted);">' +
-                '<div style="font-size:2rem;margin-bottom:10px;">📭</div>' +
-                '暂无私信<br>' +
-                '<span style="font-size:0.8rem;">去帖子页面点击用户头像，进入主页发送私信</span>' +
-            '</div>';
-        return;
-    }
-
-    content.innerHTML = '<div class="message-conversations">' + conversations.map(function (c, index) {
-        var avatar = getAvatar(c.user);
-        var avHtml;
-        if (avatar.startsWith('http')) {
-            avHtml = '<img src="' + avatar + '" alt="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">';
-        } else {
-            avHtml = '<div style="width:40px;height:40px;border-radius:50%;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:1.2rem;">' + avatar + '</div>';
-        }
-
-        var html = '';
-        html += '<div class="message-conv-item" onclick="openChatByIndex(' + index + ')" style="cursor:pointer;">';
-        html +=   avHtml;
-        html +=   '<div style="flex:1;min-width:0;">';
-        html +=     '<div style="display:flex;justify-content:space-between;align-items:center;">';
-        html +=       '<span style="font-weight:600;color:var(--text-primary);">' + escapeHtml(c.user) + '</span>';
-        html +=       '<span style="font-size:0.7rem;color:var(--text-muted);">' + formatTime(c.lastTime) + '</span>';
-        html +=     '</div>';
-        html +=     '<div style="font-size:0.8rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(c.lastMessage) + '</div>';
-        html +=   '</div>';
-        if (c.unread > 0) {
-            html += '<span class="notify-badge" style="position:static;">' + c.unread + '</span>';
-        }
-        html += '</div>';
-        return html;
-    }).join('') + '</div>';
-}
-
-/**
- * 通过索引打开聊天（避免用户名转义问题）
- * @param {number} index - 会话在 conversations 数组中的索引
- */
-function openChatByIndex(index) {
-    var c = conversations[index];
-    if (c) {
-        openChat(c.user);
-    }
-}
-
-/**
- * 打开与某用户的聊天界面
- * @param {string} otherUser - 对方用户名
- */
-async function openChat(otherUser) {
-    currentChatUser = otherUser;
-
-    var titleEl = document.getElementById('messageModalTitle');
-    if (titleEl) titleEl.textContent = '与 ' + otherUser + ' 的对话';
-
-    var content = document.getElementById('messageContent');
-    if (!content) return;
-
-    // 构建头像 HTML
-    var avatar = getAvatar(otherUser);
-    var avatarHtml;
-    if (avatar.startsWith('http')) {
-        avatarHtml = '<img src="' + avatar + '" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">';
-    } else {
-        avatarHtml = avatar;
-    }
-
-    // 构建聊天界面
-    content.innerHTML =
-        '<div class="message-chat-area">' +
-            '<div class="message-chat-header">' +
-                '<button class="message-back-btn" onclick="loadConversations()">← 返回</button>' +
-                '<div class="avatar" style="width:32px;height:32px;font-size:1rem;display:flex;align-items:center;justify-content:center;">' + avatarHtml + '</div>' +
-                '<span style="font-weight:600;">' + escapeHtml(otherUser) + '</span>' +
-            '</div>' +
-            '<div class="message-chat-messages" id="chatMessages"></div>' +
-            '<div class="message-chat-input">' +
-                '<input type="text" class="message-input" id="chatInput" placeholder="输入消息..." onkeydown="if(event.key===\'Enter\') sendMessageTo()" maxlength="500">' +
-                '<button class="message-send-btn" onclick="sendMessageTo()">发送</button>' +
-            '</div>' +
-        '</div>';
-
-    // 加载聊天记录
-    await loadChatMessages(otherUser);
-
-    // 标记来自对方的消息为已读
-    try {
-        var { error } = await sb.from('messages')
-            .update({ is_read: true })
-            .eq('from_user', otherUser)
-            .eq('to_user', currentUser.name);
-        if (error) throw error;
-        // 刷新未读徽章
-        loadMessageCount();
-    } catch (e) {
-        console.error('标记消息已读失败:', e);
-    }
-}
-
-/**
- * 加载与某用户的聊天记录
- * @param {string} otherUser - 对方用户名
- */
-async function loadChatMessages(otherUser) {
-    try {
-        var { data, error } = await sb.from('messages')
-            .select('*')
-            .or('and(from_user.eq.' + currentUser.name + ',to_user.eq.' + otherUser + '),' +
-                'and(from_user.eq.' + otherUser + ',to_user.eq.' + currentUser.name + ')')
-            .order('created_at', { ascending: true })
-            .limit(100);
-        if (error) throw error;
-        chatMessages = data || [];
-        renderChatMessages();
-    } catch (e) {
-        console.error('加载聊天消息失败:', e);
-    }
-}
-
-/**
- * 渲染聊天消息列表
- */
-function renderChatMessages() {
-    var container = document.getElementById('chatMessages');
-    if (!container) return;
-
-    if (chatMessages.length === 0) {
-        container.innerHTML =
-            '<div style="text-align:center;color:var(--text-muted);padding:20px;font-size:0.85rem;">' +
-            '开始你们的对话吧 💬</div>';
-        return;
-    }
-
-    container.innerHTML = chatMessages.map(function (m) {
-        var isSent = m.from_user === currentUser.name;
-        return '<div class="message-bubble ' + (isSent ? 'sent' : 'received') + '">' +
-            escapeHtml(m.content) +
-            '<div style="font-size:0.65rem;margin-top:3px;opacity:0.7;">' + formatTime(m.created_at) + '</div>' +
-            '</div>';
-    }).join('');
-
-    // 滚动到底部
-    container.scrollTop = container.scrollHeight;
-}
-
-/**
- * 发送消息（乐观更新）
- */
-async function sendMessageTo() {
-    if (!currentChatUser || !currentUser) return;
-    var input = document.getElementById('chatInput');
-    if (!input) return;
-
-    var contentText = input.value.trim();
-    if (!contentText) return;
-
-    // 清空输入框
-    input.value = '';
-
-    // 乐观更新：先添加临时消息到界面
-    var tempMsg = {
-        from_user: currentUser.name,
-        to_user: currentChatUser,
-        content: contentText,
-        created_at: Date.now(),
-        is_read: false
-    };
-    chatMessages.push(tempMsg);
-    renderChatMessages();
-
-    // 写入数据库
-    try {
-        var { data, error } = await sb.from('messages').insert({
-            from_user: currentUser.name,
-            to_user: currentChatUser,
-            content: contentText,
-            is_read: false,
-            created_at: Date.now()
-        }).select();
-
-        if (error) throw error;
-
-        // 用数据库返回的真实记录替换临时消息
-        if (data && data[0]) {
-            chatMessages[chatMessages.length - 1] = data[0];
-            renderChatMessages();
-        }
-    } catch (e) {
-        console.error('发送消息失败:', e);
-        // 回滚：移除临时消息
-        var tempIdx = chatMessages.indexOf(tempMsg);
-        if (tempIdx > -1) {
-            chatMessages.splice(tempIdx, 1);
-            renderChatMessages();
-        }
-        alert('发送失败: ' + e.message);
-    }
-}
-
-/**
- * 从用户主页发起私信
- * 先关闭用户主页弹窗，再打开私信弹窗并进入与该用户的聊天
- * @param {string} username - 目标用户名
- */
-function startChatFromProfile(username) {
-    if (typeof closeProfileModal === 'function') {
-        closeProfileModal();
-    }
-    setTimeout(function () {
-        openMessageModal();
-        setTimeout(function () {
-            openChat(username);
-        }, 300);
-    }, 200);
-}
-
 
 // ============================================
 // 定时刷新 & 初始化
@@ -4155,7 +3578,7 @@ function startChatFromProfile(username) {
 async function refreshNotifyAndMessages() {
     if (!currentUser) return;
     try {
-        await Promise.all([loadNotifications(), loadMessageCount()]);
+        await loadNotifications();
     } catch (e) {
         console.error('刷新通知和私信失败:', e);
     }
@@ -4170,7 +3593,6 @@ function initNotifyMessageSystem() {
     // 立即加载一次
     if (currentUser) {
         loadNotifications();
-        loadMessageCount();
     }
 
     // 清除旧的定时器（防止重复初始化）
@@ -4182,7 +3604,6 @@ function initNotifyMessageSystem() {
     _notifyMsgIntervalId = setInterval(function () {
         if (currentUser) {
             loadNotifications();
-            loadMessageCount();
         }
     }, 30000);
 }
@@ -4198,15 +3619,8 @@ function stopNotifyMessageSystem() {
     }
     // 清空状态
     notifications = [];
-    conversations = [];
-    chatMessages = [];
-    currentChatUser = null;
     updateNotifyBadge();
-
-    var msgBadge = document.getElementById('messageBadge');
-    if (msgBadge) {
-        msgBadge.style.display = 'none';
-    }
+}
 }
 
 
@@ -4215,30 +3629,6 @@ function stopNotifyMessageSystem() {
 // 数据库: Supabase (客户端变量: sb)
 // 全局变量: currentUser, posts, launches, isOfficialUser, OFFICIAL_USERS
 // ============================================================
-
-
-// ==================== 收藏功能 ====================
-
-let favorites = JSON.parse(localStorage.getItem('space_favorites')) || {};
-
-function toggleFavorite(postId) {
-    if (!currentUser) { openAuthModal(); return; }
-    if (favorites[postId]) {
-        delete favorites[postId];
-    } else {
-        favorites[postId] = true;
-    }
-    localStorage.setItem('space_favorites', JSON.stringify(favorites));
-    renderPosts();
-}
-
-function isFavorited(postId) {
-    return !!favorites[postId];
-}
-
-function getFavoriteCount() {
-    return Object.keys(favorites).length;
-}
 
 
 // ==================== 视频嵌入功能 ====================
@@ -4393,23 +3783,16 @@ function getLaunchStatsHtml() {
         if (nmo) nmo.addEventListener('click', function(e) {
             if (e.target === this) closeNotifyModal();
         });
-        var mmo = document.getElementById('messageModal');
-        if (mmo) mmo.addEventListener('click', function(e) {
-            if (e.target === this) closeMessageModal();
-        });
+        
         renderAuthArea();
         loadUsers();
         loadPosts();
         initNotifyMessageSystem();
 </script>
-     HTML 代码 - 新弹窗
-     包含：通知弹窗 + 私信弹窗
-     ============================================================ -->
-
 <!-- 通知弹窗 -->
 <div class="notification-modal-overlay" id="notifyModal">
     <div class="notification-modal">
-        <div class="message-modal-header">
+        <div class="notify-modal-header">
             <h3 style="margin:0;font-size:1.1rem;">🔔 消息通知</h3>
             <button class="modal-close" onclick="closeNotifyModal()">×</button>
         </div>
@@ -4419,17 +3802,7 @@ function getLaunchStatsHtml() {
     </div>
 </div>
 
-<!-- 私信弹窗 -->
-<div class="message-modal-overlay" id="messageModal">
-    <div class="message-modal">
-        <div class="message-modal-header">
-            <h3 style="margin:0;font-size:1.1rem;" id="messageModalTitle">✉️ 私信</h3>
-            <button class="modal-close" onclick="closeMessageModal()">×</button>
-        </div>
-        <div id="messageContent" style="flex:1;overflow-y:auto;">
-            <div style="padding:40px;text-align:center;color:var(--text-muted);">暂无私信</div>
-        </div>
-    </div>
+</div>
 </div>
 </body>
 </html>
