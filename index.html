@@ -2457,6 +2457,16 @@
                 const { data, error } = await sb.from('users').select('*');
                 if (error) throw error;
                 allUsers = data || [];
+                // Sync current user's follows from Supabase to localStorage
+                if (currentUser) {
+                    var u = allUsers.find(function(x) { return x.name === currentUser.name; });
+                    if (u && u.follows) {
+                        try {
+                            var dbFollows = JSON.parse(u.follows);
+                            localStorage.setItem('space_follows', JSON.stringify(dbFollows));
+                        } catch(e) {}
+                    }
+                }
             } catch (e) {
                 console.error('加载用户失败:', e);
             }
@@ -2973,6 +2983,12 @@
                 followed.push(username);
             }
             localStorage.setItem('space_follows', JSON.stringify(followed));
+            // Sync to Supabase users table
+            if (currentUser) {
+                sb.from('users').update({ follows: JSON.stringify(followed) }).eq('name', currentUser.name)
+                    .then(function() { loadUsers(); })
+                    .catch(function(e) { console.error('sync follows failed:', e); });
+            }
             const profileModal = document.getElementById('profileModal');
             if (profileModal && profileModal.classList.contains('show') && profileModal.dataset.username === username) {
                 showUserProfile(username);
@@ -2993,6 +3009,20 @@
             const badge = OFFICIAL_USERS[username] ? '<span class="badge-official">' + OFFICIAL_USERS[username].badge + '</span>' : '';
             const followed = JSON.parse(localStorage.getItem('space_follows')) || [];
             const isFollowing = followed.includes(username);
+            // Calculate following and followers counts from allUsers
+            var followingCount = 0;
+            var followersCount = 0;
+            for (var i = 0; i < allUsers.length; i++) {
+                var u = allUsers[i];
+                var uFollows = [];
+                try { uFollows = JSON.parse(u.follows || '[]'); } catch(e) { uFollows = []; }
+                if (u.name === username) followingCount = uFollows.length;
+                if (uFollows.includes(username)) followersCount++;
+            }
+            // Also check localStorage for current user's follows
+            if (currentUser && currentUser.name === username) {
+                followingCount = followed.length;
+            }
             var followBtnHtml = '';
             if (currentUser && currentUser.name !== username) {
                 followBtnHtml = '<button class="profile-follow-btn ' + (isFollowing ? 'following' : 'follow') + '" id="profileFollowBtn" data-username="' + escapeHtml(username) + '" onclick="toggleFollow(this.dataset.username)">' + (isFollowing ? '✓ 已关注' : '+ 关注') + '</button>';
@@ -3017,7 +3047,7 @@
             } else {
                 postsHtml = '<div class="profile-posts"><div class="profile-posts-title">暂无帖子</div></div>';
             }
-            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div></div></div>' + followBtnHtml + '</div>' + postsHtml;
+            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + followingCount + '</span><span>关注</span></div><div class="profile-stat"><span class="profile-stat-num">' + followersCount + '</span><span>粉丝</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div></div></div>' + followBtnHtml + '</div>' + postsHtml;
             modal.classList.add('show');
         }
 
