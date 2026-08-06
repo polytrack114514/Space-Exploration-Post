@@ -1763,8 +1763,8 @@
             border-color: rgba(100, 160, 255, 0.6);
             color: #64a0ff;
         }
-        
-        /* === Profile Modal === */
+        /* === Space Calendar === */
+        ............./* === Profile Modal === */
         .profile-modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.6);
@@ -2966,7 +2966,8 @@
         }
 
         // ==================== 历史上的今天 ====================
-        ],
+        const SPACE_HISTORY_EVENTS = {
+            '01/28': [{ year: 1986, text: '挑战者号航天飞机升空73秒后爆炸，7名宇航员遇难' }],
             '02/20': [{ year: 1962, text: '约翰·格伦成为首个绕地球飞行的美国宇航员（友谊7号）' }],
             '03/18': [{ year: 1965, text: '阿列克谢·列昂诺夫完成人类首次太空行走' }],
             '04/12': [
@@ -2987,23 +2988,6 @@
             '11/26': [{ year: 2011, text: '好奇号火星车发射升空（2012年8月登陆火星）' }],
             '12/21': [{ year: 1968, text: '阿波罗8号发射，人类首次离开地球轨道环绕月球飞行' }]
         };
-
-        let html = '';
-            if (isToday) {
-                html += '<div style="color: var(--gold); font-size: 0.85rem; margin-bottom: 8px; font-weight: 600;">🗕 ' + todayKey + ' 历史上的今天</div>';
-            } else {
-                html += '<div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">今天暂无记载事件，为你随机展示一条</div>';
-            }
-            if (events) {
-                events.forEach(function(ev) {
-                    html += '<div class="calendar-event' + (isToday ? ' calendar-event-highlight' : '') + '">';
-                    html += '<span class="calendar-event-year">' + ev.year + '</span>';
-                    html += '<span class="calendar-event-text">' + ev.text + '</span>';
-                    html += '</div>';
-                });
-            }
-            body.innerHTML = html;
-        }
 
         // ==================== 用户关注系统 ====================
         function toggleFollow(username) {
