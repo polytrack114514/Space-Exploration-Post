@@ -2142,10 +2142,288 @@
 .notification-modal-overlay.show { display: flex; }
 
 
+
+/* ==================== 加载动画 ==================== */
+.space-loader-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #0a0e27;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease;
+}
+.space-loader-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.rocket-loader {
+    font-size: 3rem;
+    animation: rocketLaunch 2s ease-in infinite;
+}
+.loader-text {
+    margin-top: 20px;
+    color: #8b9cb7;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    animation: loaderPulse 1.5s ease-in-out infinite;
+}
+.loader-stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+.loader-star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: starTwinkle 2s ease-in-out infinite;
+}
+@keyframes rocketLaunch {
+    0% { transform: translateY(40px) rotate(-5deg); opacity: 0.3; }
+    30% { opacity: 1; }
+    100% { transform: translateY(-80px) rotate(5deg); opacity: 0; }
+}
+@keyframes loaderPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+@keyframes starTwinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+}
+
+/* ==================== 帖子编辑历史 ==================== */
+.edit-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    transition: background 0.2s;
+    margin-left: 6px;
+}
+.edit-badge:hover {
+    background: rgba(255,255,255,0.12);
+    color: var(--text-primary);
+}
+.edit-history-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 10001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.edit-history-modal-overlay.show {
+    display: flex;
+}
+.edit-history-modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+}
+.edit-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+.edit-history-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+.edit-history-item {
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+}
+.edit-history-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+.edit-history-content {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.edit-history-content strong {
+    color: var(--text-primary);
+    font-size: 0.8rem;
+}
+
+/* ==================== @提及功能 ==================== */
+.mention-link {
+    color: #5b9bf5;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.mention-link:hover {
+    color: #7db4ff;
+    text-decoration: underline;
+}
+
+/* ==================== 发射日历视图 ==================== */
+.launch-tab[data-launch-tab="calendar"] {
+    margin-left: auto;
+}
+.calendar-container {
+    padding: 16px;
+}
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.calendar-nav-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+.calendar-nav-btn:hover {
+    background: rgba(255,255,255,0.15);
+}
+.calendar-month-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    min-width: 140px;
+    text-align: center;
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+.calendar-day-header {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 6px 0;
+    font-weight: 600;
+}
+.calendar-day {
+    min-height: 60px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 4px;
+    font-size: 0.75rem;
+    position: relative;
+    background: rgba(255,255,255,0.02);
+    transition: background 0.2s;
+}
+.calendar-day.empty {
+    background: transparent;
+    border: none;
+}
+.calendar-day.today {
+    border-color: var(--accent-color);
+    background: rgba(91,155,245,0.1);
+}
+.calendar-day.has-launch {
+    cursor: pointer;
+}
+.calendar-day.has-launch:hover {
+    background: rgba(255,255,255,0.1);
+}
+.calendar-day-num {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.calendar-day.today .calendar-day-num {
+    color: var(--accent-color);
+}
+.calendar-launch-item {
+    font-size: 0.65rem;
+    background: rgba(91,155,245,0.15);
+    color: #5b9bf5;
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.calendar-launch-item.launched {
+    background: rgba(34,197,94,0.15);
+    color: #22c55e;
+}
+.calendar-launch-item.tbd {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+}
+.calendar-tooltip {
+    position: fixed;
+    z-index: 10002;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    max-width: 280px;
+    display: none;
+    font-size: 0.85rem;
+}
+.calendar-tooltip.show {
+    display: block;
+}
+.calendar-tooltip-rocket {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.calendar-tooltip-meta {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+}
+.calendar-tooltip-desc {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-top: 6px;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<!-- 加载动画 -->
+<div class="space-loader-overlay" id="spaceLoader">
+    <div class="loader-stars" id="loaderStars"></div>
+    <div class="rocket-loader">🚀</div>
+    <div class="loader-text">正在探索宇宙...</div>
+</div>
 <div class="bg-image"></div>
     <div class="bg-overlay"></div>
     <header class="header">
@@ -2162,10 +2440,14 @@
             <button class="launch-tab" data-launch-tab="launched">
                 <span>🏁 已发射</span>
             </button>
+            <button class="launch-tab" data-launch-tab="calendar">
+                <span>📅 日历</span>
+            </button>
             <div class="launch-controls-wrap" id="launchControlsWrap"></div>
         </div>
         <div class="launch-list" id="launchList"></div>
         <div class="launch-list" id="launchedList" style="display:none;"></div>
+        <div class="launch-list" id="calendarList" style="display:none;"><div class="calendar-container" id="calendarContainer"></div></div>
     </div>
     <div class="container">
         <div class="top-bar">
@@ -2327,12 +2609,14 @@
             const post = posts.find(p => String(p.id) === String(postId));
             if (!post) return;
             try {
-                const { error } = await sb.from('posts').update({
+                const updateData = {
                     likes: post.likes || 0,
                     comments: post.comments || [],
                     pinned: post.pinned || false,
                     source_url: post.source_url || ''
-                }).eq('id', postId);
+                };
+                if (post.edit_history) updateData.edit_history = post.edit_history;
+                const { error } = await sb.from('posts').update(updateData).eq('id', postId);
                 if (error) console.error('更新帖子失败:', error);
             } catch (err) {
                 console.error('更新帖子失败:', err);
@@ -2368,7 +2652,7 @@
             if (e.target === this) closeModal();
         });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); closeNotifyModal(); }
+            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); closeNotifyModal(); closeEditHistory(); }
         });
         // ==================== 发帖 ====================
         async function submitPost() {
@@ -2392,19 +2676,33 @@
             if (editingPostId) {
                 try {
                     const editImage = document.getElementById('modalImage') ? (document.getElementById('modalImage').value.trim() || '') : '';
+                    const ep = posts.find(p => String(p.id) === String(editingPostId));
+                    // Save edit history
+                    var editHistory = [];
+                    if (ep && ep.edit_history) {
+                        try { editHistory = JSON.parse(JSON.stringify(ep.edit_history)); } catch(e) { editHistory = []; }
+                    }
+                    if (ep) {
+                        editHistory.push({
+                            title: ep.title || '',
+                            content: ep.content || '',
+                            time: Date.now()
+                        });
+                    }
                     const { error: editErr } = await sb.from('posts').update({
                         title: title,
                         content: content,
                         image: editImage,
-                        source_url: sourceUrl
+                        source_url: sourceUrl,
+                        edit_history: editHistory
                     }).eq('id', editingPostId);
                     if (editErr) throw editErr;
-                    const ep = posts.find(p => String(p.id) === String(editingPostId));
                     if (ep) {
                         ep.title = title;
                         ep.content = content;
                         ep.image = editImage;
                         ep.source_url = sourceUrl;
+                        ep.edit_history = editHistory;
                     }
                     closeModal();
                     renderPosts();
@@ -2446,6 +2744,13 @@
                 if (error) throw error;
                 posts.unshift(newPost);
                 closeModal();
+                // Send mention notifications
+                var mentionedUsers = extractMentions(content + ' ' + title);
+                mentionedUsers.forEach(function(uname) {
+                    if (uname !== newPost.author && allUsers.some(function(u) { return u.name === uname; })) {
+                        addNotification(uname, newPost.author, 'mention', newPost.id, newPost.author + ' 在帖子中提到了你' + (title ? '「' + title + '」' : ''));
+                    }
+                });
                 currentTab = 'new';
                 updateTabs();
                 renderPosts();
@@ -2538,6 +2843,7 @@
                                         ${OFFICIAL_USERS[post.author] ? `<span class="badge-official">${OFFICIAL_USERS[post.author].badge}</span>` : ''}
                                     </span>
                                     <span class="post-time">${formatTime(post.time)}</span>
+                                    ${(post.edit_history && post.edit_history.length > 0) ? '<span class="edit-badge" onclick="showEditHistory(\'' + post.id + '\')">✏️ 已编辑</span>' : ''}
                                 </div>
                             </div>
                             <div style="display: flex; flex-shrink: 0; gap: 4px;">
@@ -2548,7 +2854,7 @@
                         </div>
                         ${post.title ? `<div class="post-title">${post.pinned ? '📌 ' : ''}${escapeHtml(post.title)}</div>` : ''}
                         ${hasVideoUrl(post) ? getPostVideoHtml(post) : (post.image ? `<div class='post-images'><img src='${escapeHtml(post.image)}' class='post-image' alt='图片' onerror="this.style.display='none'"></div>` : '')}
-                        <div class="post-content">${escapeHtml(post.content)}</div>
+                        <div class="post-content">${parseMentions(post.content)}</div>
                         ${post.source_url ? `<div class="post-source"><span class="source-label">📄 内容来源：</span><a href="${escapeHtml(post.source_url)}" target="_blank" rel="noopener noreferrer" class="source-link">${escapeHtml(post.source_url.length > 60 ? post.source_url.substring(0, 60) + '...' : post.source_url)}</a></div>` : ''}
                         <div class="post-footer">
                             <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
@@ -2567,7 +2873,7 @@
                                         <div class="comment-avatar">🌟</div>
                                         <div class="comment-body">
                                             <div class="comment-author">${escapeHtml(c.author)}</div>
-                                            <div class="comment-text">${escapeHtml(c.content)}</div>
+                                            <div class="comment-text">${parseMentions(c.content)}</div>
                                             <div class="comment-time">${formatTime(c.time)}</div>
                                         </div>
                                         <button class="action-btn" style="color:#ff5555;font-size:12px;" onclick="deleteComment('${post.id}', '${c.id}')">🗑️</button>
@@ -2663,6 +2969,14 @@
             } else if (!currentUser && post.author !== name) {
                 addNotification(post.author, name, 'comment', postId, name + ' 评论了你的帖子' + (post.title ? '「' + post.title + '」' : ''));
             }
+            // @提及通知
+            var commentMentions = extractMentions(content);
+            var commentAuthor = currentUser ? currentUser.name : name;
+            commentMentions.forEach(function(uname) {
+                if (uname !== commentAuthor && uname !== post.author && allUsers.some(function(u) { return u.name === uname; })) {
+                    addNotification(uname, commentAuthor, 'mention', postId, commentAuthor + ' 在评论中提到了你' + (post.title ? '「' + post.title + '」' : ''));
+                }
+            });
         }
         async function deleteComment(postId, commentId) {
             const pwd = prompt('请输入删除密码：');
@@ -3038,8 +3352,11 @@
             });
             const list = document.getElementById('launchList');
             const launchedList = document.getElementById('launchedList');
+            const calendarList = document.getElementById('calendarList');
             if (list) list.style.display = currentLaunchTab === 'upcoming' ? '' : 'none';
             if (launchedList) launchedList.style.display = currentLaunchTab === 'launched' ? '' : 'none';
+            if (calendarList) calendarList.style.display = currentLaunchTab === 'calendar' ? '' : 'none';
+            if (currentLaunchTab === 'calendar') renderCalendar();
         }
         document.querySelectorAll('.launch-tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -3761,6 +4078,174 @@ function getLaunchStatsHtml() {
 
 
 
+
+// ==================== 加载动画控制 ====================
+function hideSpaceLoader() {
+    var loader = document.getElementById('spaceLoader');
+    if (loader) {
+        loader.classList.add('hidden');
+        setTimeout(function() { if (loader) loader.style.display = 'none'; }, 800);
+    }
+}
+function generateLoaderStars() {
+    var container = document.getElementById('loaderStars');
+    if (!container) return;
+    for (var i = 0; i < 50; i++) {
+        var star = document.createElement('div');
+        star.className = 'loader-star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        var size = Math.random() * 2 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        container.appendChild(star);
+    }
+}
+generateLoaderStars();
+
+// ==================== 日历视图 ====================
+var calendarCurrentMonth = new Date();
+calendarCurrentMonth.setDate(1);
+
+function renderCalendar() {
+    var container = document.getElementById('calendarContainer');
+    if (!container) return;
+    var year = calendarCurrentMonth.getFullYear();
+    var month = calendarCurrentMonth.getMonth();
+    var monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    var dayHeaders = ['日','一','二','三','四','五','六'];
+    var firstDay = new Date(year, month, 1).getDay();
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var today = new Date();
+    var todayStr = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
+
+    var html = '<div class="calendar-header">';
+    html += '<button class="calendar-nav-btn" onclick="calendarPrevMonth()">‹</button>';
+    html += '<span class="calendar-month-label">' + year + '年 ' + monthNames[month] + '</span>';
+    html += '<button class="calendar-nav-btn" onclick="calendarNextMonth()">›</button>';
+    html += '</div>';
+    html += '<div class="calendar-grid">';
+    for (var d = 0; d < 7; d++) {
+        html += '<div class="calendar-day-header">' + dayHeaders[d] + '</div>';
+    }
+    for (var i = 0; i < firstDay; i++) {
+        html += '<div class="calendar-day empty"></div>';
+    }
+    for (var day = 1; day <= daysInMonth; day++) {
+        var cellDate = new Date(year, month, day);
+        var cellDateStr = year + '-' + month + '-' + day;
+        var isToday = cellDateStr === todayStr;
+        var dayLaunches = [];
+        launches.forEach(function(l) {
+            if (l.status === 'tbd') return;
+            if (!l.date) return;
+            var ld = new Date(l.date);
+            if (ld.getFullYear() === year && ld.getMonth() === month && ld.getDate() === day) {
+                dayLaunches.push(l);
+            }
+        });
+        var classes = 'calendar-day';
+        if (isToday) classes += ' today';
+        if (dayLaunches.length > 0) classes += ' has-launch';
+        html += '<div class="' + classes + '">';
+        html += '<div class="calendar-day-num">' + day + '</div>';
+        dayLaunches.forEach(function(l) {
+            var launchClass = 'calendar-launch-item';
+            var now = Date.now();
+            if (l.date < now) launchClass += ' launched';
+            if (l.status === 'tentative') launchClass += ' tbd';
+            var timeStr = new Date(l.date).toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+            html += '<div class="' + launchClass + '" onclick="showCalendarTooltip(event, \'' + (l.id || '') + '\')">' + timeStr + ' ' + escapeHtml(l.rocket) + '</div>';
+        });
+        html += '</div>';
+    }
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function calendarPrevMonth() {
+    calendarCurrentMonth.setMonth(calendarCurrentMonth.getMonth() - 1);
+    renderCalendar();
+}
+function calendarNextMonth() {
+    calendarCurrentMonth.setMonth(calendarCurrentMonth.getMonth() + 1);
+    renderCalendar();
+}
+function showCalendarTooltip(e, launchId) {
+    e.stopPropagation();
+    var tooltip = document.getElementById('calendarTooltip');
+    if (!tooltip) return;
+    var launch = launches.find(function(l) { return String(l.id) === String(launchId); });
+    if (!launch) return;
+    var now = Date.now();
+    var statusText = launch.date < now ? '✅ 已发射' : '🚀 即将发射';
+    if (launch.status === 'tbd') statusText = '⏳ 日期待定';
+    var dateStr = new Date(launch.date).toLocaleString('zh-CN', {month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    var html = '<div class="calendar-tooltip-rocket">' + escapeHtml(launch.rocket) + '</div>';
+    html += '<div class="calendar-tooltip-meta">' + escapeHtml(launch.agency) + ' · ' + statusText + '</div>';
+    html += '<div class="calendar-tooltip-meta">📅 ' + dateStr + '</div>';
+    html += '<div class="calendar-tooltip-meta">📍 ' + escapeHtml(launch.location) + '</div>';
+    html += '<div class="calendar-tooltip-meta">🎯 ' + escapeHtml(launch.mission) + '</div>';
+    if (launch.description) html += '<div class="calendar-tooltip-desc">' + escapeHtml(launch.description) + '</div>';
+    tooltip.innerHTML = html;
+    tooltip.classList.add('show');
+    tooltip.style.left = Math.min(e.clientX + 10, window.innerWidth - 300) + 'px';
+    tooltip.style.top = Math.min(e.clientY + 10, window.innerHeight - 200) + 'px';
+}
+document.addEventListener('click', function() {
+    var tooltip = document.getElementById('calendarTooltip');
+    if (tooltip) tooltip.classList.remove('show');
+});
+
+// ==================== 帖子编辑历史 ====================
+function closeEditHistory() {
+    var modal = document.getElementById('editHistoryModal');
+    if (modal) modal.classList.remove('show');
+}
+function showEditHistory(postId) {
+    var post = posts.find(function(p) { return String(p.id) === String(postId); });
+    if (!post || !post.edit_history || post.edit_history.length === 0) {
+        alert('此帖子没有编辑历史');
+        return;
+    }
+    var content = document.getElementById('editHistoryContent');
+    var html = '';
+    // Show current version first
+    html += '<div class="edit-history-item" style="border-color: var(--accent-color);">';
+    html += '<div class="edit-history-time">📅 当前版本 · ' + formatTime(post.time) + '</div>';
+    if (post.title) html += '<div class="edit-history-content"><strong>标题:</strong> ' + escapeHtml(post.title) + '</div>';
+    if (post.content) html += '<div class="edit-history-content"><strong>内容:</strong> ' + escapeHtml(post.content) + '</div>';
+    html += '</div>';
+    // Show history versions in reverse order
+    for (var i = post.edit_history.length - 1; i >= 0; i--) {
+        var h = post.edit_history[i];
+        html += '<div class="edit-history-item">';
+        html += '<div class="edit-history-time">✏️ 编辑于 ' + formatTime(h.time) + '</div>';
+        if (h.title) html += '<div class="edit-history-content"><strong>标题:</strong> ' + escapeHtml(h.title) + '</div>';
+        if (h.content) html += '<div class="edit-history-content"><strong>内容:</strong> ' + escapeHtml(h.content) + '</div>';
+        html += '</div>';
+    }
+    content.innerHTML = html;
+    var modal = document.getElementById('editHistoryModal');
+    if (modal) modal.classList.add('show');
+}
+
+// ==================== @提及功能 ====================
+function parseMentions(text) {
+    if (!text) return '';
+    var escaped = escapeHtml(text);
+    return escaped.replace(/@([\u4e00-\u9fa5a-zA-Z0-9_]+)/g, function(match, username) {
+        return '<span class="mention-link" onclick="showUserProfile(\'' + username + '\')">@' + username + '</span>';
+    });
+}
+function extractMentions(text) {
+    if (!text) return [];
+    var matches = text.match(/@([\u4e00-\u9fa5a-zA-Z0-9_]+)/g) || [];
+    return matches.map(function(m) { return m.substring(1); });
+}
+
+
 // ==================== 初始化 ====================
         // launchModalOverlay 在 script 之后渲染，这里绑定事件
         var lmo = document.getElementById('launchModalOverlay');
@@ -3783,11 +4268,17 @@ function getLaunchStatsHtml() {
         if (nmo) nmo.addEventListener('click', function(e) {
             if (e.target === this) closeNotifyModal();
         });
+        var ehm = document.getElementById('editHistoryModal');
+        if (ehm) ehm.addEventListener('click', function(e) {
+            if (e.target === this) closeEditHistory();
+        });
         
         renderAuthArea();
         loadUsers();
-        loadPosts();
+        loadPosts().then(function() { hideSpaceLoader(); });
         initNotifyMessageSystem();
+        // Safety: hide loader after 5s even if loadPosts hangs
+        setTimeout(function() { hideSpaceLoader(); }, 5000);
 </script>
 <!-- 通知弹窗 -->
 <div class="notification-modal-overlay" id="notifyModal">
@@ -3804,5 +4295,19 @@ function getLaunchStatsHtml() {
 
 </div>
 </div>
+
+<!-- 编辑历史弹窗 -->
+<div class="edit-history-modal-overlay" id="editHistoryModal">
+    <div class="edit-history-modal">
+        <div class="edit-history-header">
+            <span class="edit-history-title">📝 编辑历史</span>
+            <button class="modal-close" onclick="closeEditHistory()">×</button>
+        </div>
+        <div id="editHistoryContent"></div>
+    </div>
+</div>
+<!-- 日历tooltip -->
+<div class="calendar-tooltip" id="calendarTooltip"></div>
+
 </body>
 </html>
