@@ -2101,131 +2101,39 @@
 .space-loader-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: #0a0e27;
+    background: #000000;
     z-index: 99999;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     transition: opacity 0.8s ease;
+    overflow: hidden;
 }
 .space-loader-overlay.hidden {
     opacity: 0;
     pointer-events: none;
 }
-.rocket-loader {
-    font-size: 3rem;
-    animation: rocketLaunch 2s ease-in infinite;
-}
-.loader-text {
-    margin-top: 20px;
-    color: #8b9cb7;
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    animation: loaderPulse 1.5s ease-in-out infinite;
-}
-.loader-stars {
+.warp-canvas {
     position: absolute;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    pointer-events: none;
 }
-.loader-star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    opacity: 0.6;
-    animation: starTwinkle 2s ease-in-out infinite;
-}
-@keyframes rocketLaunch {
-    0% { transform: translateY(40px) rotate(-5deg); opacity: 0.3; }
-    30% { opacity: 1; }
-    100% { transform: translateY(-80px) rotate(5deg); opacity: 0; }
+.loader-text {
+    position: relative;
+    z-index: 10;
+    margin-top: 20px;
+    color: #5b9bf5;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    font-weight: 600;
+    animation: loaderPulse 1.5s ease-in-out infinite;
+    text-shadow: 0 0 10px rgba(91,155,245,0.5);
 }
 @keyframes loaderPulse {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 1; }
-}
-@keyframes starTwinkle {
-    0%, 100% { opacity: 0.2; transform: scale(0.8); }
-    50% { opacity: 0.8; transform: scale(1.2); }
-}
-
-/* ==================== 帖子编辑历史 ==================== */
-.edit-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.05);
-    transition: background 0.2s;
-    margin-left: 6px;
-}
-.edit-badge:hover {
-    background: rgba(255,255,255,0.12);
-    color: var(--text-primary);
-}
-.edit-history-modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 10001;
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-.edit-history-modal-overlay.show {
-    display: flex;
-}
-.edit-history-modal {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 70vh;
-    overflow-y: auto;
-    padding: 24px;
-    position: relative;
-}
-.edit-history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-color);
-}
-.edit-history-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-.edit-history-item {
-    padding: 12px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.03);
-    margin-bottom: 10px;
-    border: 1px solid var(--border-color);
-}
-.edit-history-time {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-}
-.edit-history-content {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-.edit-history-content strong {
-    color: var(--text-primary);
-    font-size: 0.8rem;
 }
 
 /* ==================== @提及功能 ==================== */
@@ -2389,9 +2297,8 @@
 <body>
 <!-- 加载动画 -->
 <div class="space-loader-overlay" id="spaceLoader">
-    <div class="loader-stars" id="loaderStars"></div>
-    <div class="rocket-loader">🚀</div>
-    <div class="loader-text">正在探索宇宙...</div>
+    <canvas class="warp-canvas" id="warpCanvas"></canvas>
+    <div class="loader-text">正在进入曲速飞行...</div>
 </div>
 <div class="bg-image"></div>
     <div class="bg-overlay"></div>
@@ -2577,14 +2484,12 @@
             const post = posts.find(p => String(p.id) === String(postId));
             if (!post) return;
             try {
-                const updateData = {
+                const { error } = await sb.from('posts').update({
                     likes: post.likes || 0,
                     comments: post.comments || [],
                     pinned: post.pinned || false,
                     source_url: post.source_url || ''
-                };
-                if (post.edit_history) updateData.edit_history = post.edit_history;
-                const { error } = await sb.from('posts').update(updateData).eq('id', postId);
+                }).eq('id', postId);
                 if (error) console.error('更新帖子失败:', error);
             } catch (err) {
                 console.error('更新帖子失败:', err);
@@ -2620,7 +2525,7 @@
             if (e.target === this) closeModal();
         });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); closeNotifyModal(); closeEditHistory(); }
+            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); closeNotifyModal(); }
         });
         // ==================== 发帖 ====================
         async function submitPost() {
@@ -2645,24 +2550,12 @@
                 try {
                     const editImage = document.getElementById('modalImage') ? (document.getElementById('modalImage').value.trim() || '') : '';
                     const ep = posts.find(p => String(p.id) === String(editingPostId));
-                    // Save edit history
-                    var editHistory = [];
-                    if (ep && ep.edit_history) {
-                        try { editHistory = JSON.parse(JSON.stringify(ep.edit_history)); } catch(e) { editHistory = []; }
-                    }
-                    if (ep) {
-                        editHistory.push({
-                            title: ep.title || '',
-                            content: ep.content || '',
-                            time: Date.now()
-                        });
-                    }
+
                     const { error: editErr } = await sb.from('posts').update({
                         title: title,
                         content: content,
                         image: editImage,
-                        source_url: sourceUrl,
-                        edit_history: editHistory
+                        source_url: sourceUrl
                     }).eq('id', editingPostId);
                     if (editErr) throw editErr;
                     if (ep) {
@@ -2670,7 +2563,6 @@
                         ep.content = content;
                         ep.image = editImage;
                         ep.source_url = sourceUrl;
-                        ep.edit_history = editHistory;
                     }
                     closeModal();
                     renderPosts();
@@ -2811,8 +2703,7 @@
                                         ${OFFICIAL_USERS[post.author] ? `<span class="badge-official">${OFFICIAL_USERS[post.author].badge}</span>` : ''}
                                     </span>
                                     <span class="post-time">${formatTime(post.time)}</span>
-                                    ${(post.edit_history && post.edit_history.length > 0) ? '<span class="edit-badge" onclick="showEditHistory(\'' + post.id + '\')">✏️ 已编辑</span>' : ''}
-                                </div>
+                                    </div>
                             </div>
                             <div style="display: flex; flex-shrink: 0; gap: 4px;">
                                 <button class="pin-btn" onclick="togglePin('${post.id}')" title="置顶/取消置顶">${post.pinned ? '📌 取消置顶' : '📌 置顶'}</button>
@@ -4028,22 +3919,79 @@ function hideSpaceLoader() {
         setTimeout(function() { if (loader) loader.style.display = 'none'; }, 800);
     }
 }
-function generateLoaderStars() {
-    var container = document.getElementById('loaderStars');
-    if (!container) return;
-    for (var i = 0; i < 50; i++) {
-        var star = document.createElement('div');
-        star.className = 'loader-star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        var size = Math.random() * 2 + 1;
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
-        star.style.animationDelay = Math.random() * 2 + 's';
-        container.appendChild(star);
+function initWarpSpeed() {
+    var canvas = document.getElementById('warpCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var w = canvas.width = window.innerWidth;
+    var h = canvas.height = window.innerHeight;
+    var cx = w / 2;
+    var cy = h / 2;
+    var stars = [];
+    var numStars = 300;
+    var speed = 2;
+    var maxSpeed = 25;
+
+    for (var i = 0; i < numStars; i++) {
+        stars.push({
+            x: (Math.random() - 0.5) * w,
+            y: (Math.random() - 0.5) * h,
+            z: Math.random() * w
+        });
     }
+
+    var animationId = null;
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+        ctx.fillRect(0, 0, w, h);
+
+        if (speed < maxSpeed) speed += 0.15;
+
+        for (var i = 0; i < numStars; i++) {
+            var star = stars[i];
+            star.z -= speed;
+            if (star.z <= 0) {
+                star.x = (Math.random() - 0.5) * w;
+                star.y = (Math.random() - 0.5) * h;
+                star.z = w;
+            }
+            var sx = (star.x / star.z) * w + cx;
+            var sy = (star.y / star.z) * h + cy;
+            if (sx < 0 || sx > w || sy < 0 || sy > h) continue;
+
+            var size = (1 - star.z / w) * 3;
+            var opacity = 1 - star.z / w;
+            var prevZ = star.z + speed;
+            var psx = (star.x / prevZ) * w + cx;
+            var psy = (star.y / prevZ) * h + cy;
+
+            var dist = Math.sqrt((sx - psx) * (sx - psx) + (sy - psy) * (sy - psy));
+            if (dist > 1) {
+                ctx.strokeStyle = 'rgba(' + Math.floor(91 + opacity * 100) + ',' + Math.floor(155 + opacity * 50) + ',' + Math.floor(245) + ',' + opacity + ')';
+                ctx.lineWidth = size;
+                ctx.beginPath();
+                ctx.moveTo(psx, psy);
+                ctx.lineTo(sx, sy);
+                ctx.stroke();
+            } else {
+                ctx.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
+                ctx.beginPath();
+                ctx.arc(sx, sy, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        animationId = requestAnimationFrame(draw);
+    }
+    draw();
+
+    window.addEventListener('resize', function() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        cx = w / 2;
+        cy = h / 2;
+    });
 }
-generateLoaderStars();
+initWarpSpeed();
 
 // ==================== 日历视图 ====================
 var calendarCurrentMonth = new Date();
@@ -4139,39 +4087,6 @@ document.addEventListener('click', function() {
     if (tooltip) tooltip.classList.remove('show');
 });
 
-// ==================== 帖子编辑历史 ====================
-function closeEditHistory() {
-    var modal = document.getElementById('editHistoryModal');
-    if (modal) modal.classList.remove('show');
-}
-function showEditHistory(postId) {
-    var post = posts.find(function(p) { return String(p.id) === String(postId); });
-    if (!post || !post.edit_history || post.edit_history.length === 0) {
-        alert('此帖子没有编辑历史');
-        return;
-    }
-    var content = document.getElementById('editHistoryContent');
-    var html = '';
-    // Show current version first
-    html += '<div class="edit-history-item" style="border-color: var(--accent-color);">';
-    html += '<div class="edit-history-time">📅 当前版本 · ' + formatTime(post.time) + '</div>';
-    if (post.title) html += '<div class="edit-history-content"><strong>标题:</strong> ' + escapeHtml(post.title) + '</div>';
-    if (post.content) html += '<div class="edit-history-content"><strong>内容:</strong> ' + escapeHtml(post.content) + '</div>';
-    html += '</div>';
-    // Show history versions in reverse order
-    for (var i = post.edit_history.length - 1; i >= 0; i--) {
-        var h = post.edit_history[i];
-        html += '<div class="edit-history-item">';
-        html += '<div class="edit-history-time">✏️ 编辑于 ' + formatTime(h.time) + '</div>';
-        if (h.title) html += '<div class="edit-history-content"><strong>标题:</strong> ' + escapeHtml(h.title) + '</div>';
-        if (h.content) html += '<div class="edit-history-content"><strong>内容:</strong> ' + escapeHtml(h.content) + '</div>';
-        html += '</div>';
-    }
-    content.innerHTML = html;
-    var modal = document.getElementById('editHistoryModal');
-    if (modal) modal.classList.add('show');
-}
-
 // ==================== @提及功能 ====================
 function parseMentions(text) {
     if (!text) return '';
@@ -4202,10 +4117,7 @@ function extractMentions(text) {
         if (nmo) nmo.addEventListener('click', function(e) {
             if (e.target === this) closeNotifyModal();
         });
-        var ehm = document.getElementById('editHistoryModal');
-        if (ehm) ehm.addEventListener('click', function(e) {
-            if (e.target === this) closeEditHistory();
-        });
+
         
         renderAuthArea();
         loadUsers();
@@ -4230,16 +4142,6 @@ function extractMentions(text) {
 </div>
 </div>
 
-<!-- 编辑历史弹窗 -->
-<div class="edit-history-modal-overlay" id="editHistoryModal">
-    <div class="edit-history-modal">
-        <div class="edit-history-header">
-            <span class="edit-history-title">📝 编辑历史</span>
-            <button class="modal-close" onclick="closeEditHistory()">×</button>
-        </div>
-        <div id="editHistoryContent"></div>
-    </div>
-</div>
 <!-- 日历tooltip -->
 <div class="calendar-tooltip" id="calendarTooltip"></div>
 
