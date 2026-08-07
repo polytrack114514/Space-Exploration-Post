@@ -4,22 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>探索宇宙帖子</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
 :root {
             --bg: #000000;
-            --surface: rgba(20, 20, 25, 0.75);
-            --surface-hover: rgba(30, 30, 38, 0.85);
-            --text-primary: #f0f0f5;
-            --text-secondary: #888899;
-            --text-muted: #555566;
-            --accent: #e8e8f0;
-            --accent-hover: #ffffff;
-            --border: rgba(255, 255, 255, 0.06);
-            --border-focus: rgba(255, 255, 255, 0.15);
-            --danger: #ff5555;
-            --gold: #ffd700;
-            --gold-hover: #ffe44d;
+            --surface: rgba(8, 12, 22, 0.82);
+            --surface-hover: rgba(12, 18, 32, 0.90);
+            --text-primary: #d0e8ff;
+            --text-secondary: #6080a0;
+            --text-muted: #3a5068;
+            --accent: #00d4ff;
+            --accent-hover: #00eaff;
+            --border: rgba(0, 212, 255, 0.12);
+            --border-focus: rgba(0, 212, 255, 0.4);
+            --danger: #ff4466;
+            --gold: #00d4ff;
+            --gold-hover: #00eaff;
+            --neon-blue: #00d4ff;
+            --neon-cyan: #00ffea;
+            --neon-purple: #a040ff;
+            --glow-blue: rgba(0, 212, 255, 0.5);
+            --glow-cyan: rgba(0, 255, 234, 0.4);
         }
         * {
             margin: 0;
@@ -2304,6 +2309,509 @@
     margin-top: 6px;
 }
 
+
+
+/* ==================== 科幻UI全面增强 ==================== */
+
+/* --- 扫描线效果 --- */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 3px,
+        rgba(0, 212, 255, 0.02) 3px,
+        rgba(0, 212, 255, 0.02) 4px
+    );
+    pointer-events: none;
+    z-index: 99998;
+    animation: scanlineMove 8s linear infinite;
+}
+@keyframes scanlineMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+}
+
+/* --- 全息网格背景 --- */
+.bg-overlay {
+    background: rgba(0, 5, 15, 0.55) !important;
+    background-image:
+        linear-gradient(rgba(0, 212, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.025) 1px, transparent 1px) !important;
+    background-size: 50px 50px !important;
+}
+
+/* --- 标题霓虹发光 --- */
+.header h1 {
+    text-shadow:
+        0 0 10px rgba(0, 212, 255, 0.6),
+        0 0 20px rgba(0, 212, 255, 0.4),
+        0 0 40px rgba(0, 212, 255, 0.2) !important;
+    letter-spacing: 3px !important;
+}
+.header p {
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.3) !important;
+    letter-spacing: 1px !important;
+}
+
+/* --- 帖子卡片全息效果 --- */
+.post-card {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 212, 255, 0.05),
+        0 4px 24px rgba(0, 0, 0, 0.4) !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative !important;
+    overflow: hidden;
+}
+.post-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.6), transparent);
+    opacity: 0;
+    transition: opacity 0.35s;
+}
+.post-card:hover {
+    background: var(--surface-hover) !important;
+    border-color: rgba(0, 212, 255, 0.35) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 212, 255, 0.15),
+        0 0 24px rgba(0, 212, 255, 0.15),
+        0 8px 32px rgba(0, 0, 0, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+.post-card:hover::before {
+    opacity: 1;
+}
+
+/* --- 置顶帖特殊发光 --- */
+.post-card:has(.pinned) {
+    border-color: rgba(255, 215, 0, 0.3) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 215, 0, 0.1),
+        0 0 20px rgba(255, 215, 0, 0.08),
+        0 4px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* --- 搜索框科幻样式 --- */
+.search-box input {
+    background: rgba(8, 12, 22, 0.8) !important;
+    border: 1px solid rgba(0, 212, 255, 0.15) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    transition: all 0.3s !important;
+}
+.search-box input:focus {
+    border-color: var(--neon-blue) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.2) !important;
+}
+.search-box .search-icon {
+    color: var(--neon-blue) !important;
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.5) !important;
+}
+
+/* --- 标签栏科幻样式 --- */
+.tabs {
+    background: rgba(8, 12, 22, 0.8) !important;
+    border: 1px solid rgba(0, 212, 255, 0.12) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+.tab {
+    border-radius: 8px !important;
+    transition: all 0.3s !important;
+}
+.tab:hover {
+    color: var(--neon-blue) !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4) !important;
+}
+.tab.active {
+    background: rgba(0, 212, 255, 0.12) !important;
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.5) !important;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.1) !important;
+}
+
+/* --- 发布按钮科幻样式 --- */
+.fab-post {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.9), rgba(0, 150, 255, 0.9)) !important;
+    color: #000714 !important;
+    border-radius: 12px !important;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.3) !important;
+    transition: all 0.3s !important;
+}
+.fab-post:hover {
+    background: linear-gradient(135deg, rgba(0, 234, 255, 1), rgba(0, 170, 255, 1)) !important;
+    box-shadow: 0 0 28px rgba(0, 212, 255, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* --- 模态框科幻样式 --- */
+.modal-overlay {
+    background: rgba(0, 2, 8, 0.75) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+.modal {
+    background: rgba(6, 10, 20, 0.95) !important;
+    border: 1px solid rgba(0, 212, 255, 0.2) !important;
+    border-radius: 20px !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 212, 255, 0.08),
+        0 0 40px rgba(0, 212, 255, 0.1),
+        0 20px 60px rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+.modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.6), transparent);
+}
+.modal-title {
+    text-shadow: 0 0 12px rgba(0, 212, 255, 0.4) !important;
+}
+.modal-input {
+    background: rgba(0, 5, 15, 0.6) !important;
+    border: 1px solid rgba(0, 212, 255, 0.12) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s !important;
+}
+.modal-input:focus {
+    border-color: var(--neon-blue) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.15) !important;
+}
+.modal-input::placeholder {
+    color: rgba(96, 128, 160, 0.5) !important;
+}
+.modal-submit {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.9), rgba(0, 150, 255, 0.9)) !important;
+    color: #000714 !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.25) !important;
+    transition: all 0.3s !important;
+}
+.modal-submit:hover {
+    box-shadow: 0 0 28px rgba(0, 212, 255, 0.45) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* --- 头像发光环 --- */
+.avatar {
+    border: 1px solid rgba(0, 212, 255, 0.2) !important;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.1) !important;
+    transition: all 0.3s !important;
+}
+.avatar:hover {
+    border-color: rgba(0, 212, 255, 0.5) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.3) !important;
+}
+
+/* --- 作者名发光 --- */
+.author-name {
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.15) !important;
+}
+
+/* --- 评论区域科幻样式 --- */
+.comment-item {
+    border-left: 2px solid rgba(0, 212, 255, 0.15) !important;
+    transition: all 0.3s !important;
+}
+.comment-item:hover {
+    border-left-color: rgba(0, 212, 255, 0.4) !important;
+    background: rgba(0, 212, 255, 0.02) !important;
+}
+.comment-submit {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.85), rgba(0, 150, 255, 0.85)) !important;
+    color: #000714 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.2) !important;
+    transition: all 0.3s !important;
+}
+.comment-submit:hover {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4) !important;
+}
+
+/* --- 火箭发射卡片科幻样式 --- */
+.launch-card {
+    background: rgba(8, 12, 22, 0.82) !important;
+    border: 1px solid rgba(0, 212, 255, 0.12) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative;
+    overflow: hidden;
+}
+.launch-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.35s;
+}
+.launch-card:hover {
+    border-color: rgba(0, 212, 255, 0.35) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 212, 255, 0.12),
+        0 0 24px rgba(0, 212, 255, 0.12),
+        0 8px 32px rgba(0, 0, 0, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+.launch-card:hover::before {
+    opacity: 1;
+}
+.launch-card.launching-soon {
+    border-color: rgba(0, 255, 234, 0.25) !important;
+    box-shadow: 0 0 12px rgba(0, 255, 234, 0.08) !important;
+}
+
+/* --- 通知项科幻样式 --- */
+.notification-item {
+    background: rgba(8, 12, 22, 0.8) !important;
+    border: 1px solid rgba(0, 212, 255, 0.1) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    transition: all 0.3s !important;
+}
+.notification-item:hover {
+    border-color: rgba(0, 212, 255, 0.3) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.1) !important;
+}
+.notification-item.unread {
+    border-left: 3px solid var(--neon-blue) !important;
+    box-shadow: -2px 0 12px rgba(0, 212, 255, 0.1) !important;
+}
+
+/* --- 认证按钮科幻样式 --- */
+.btn-auth {
+    background: rgba(8, 12, 22, 0.8) !important;
+    border: 1px solid rgba(0, 212, 255, 0.2) !important;
+    border-radius: 12px !important;
+    color: var(--neon-blue) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    transition: all 0.3s !important;
+}
+.btn-auth:hover {
+    background: rgba(0, 212, 255, 0.1) !important;
+    border-color: rgba(0, 212, 255, 0.5) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.2) !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.5) !important;
+}
+.auth-submit {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.9), rgba(0, 150, 255, 0.9)) !important;
+    color: #000714 !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.2) !important;
+    transition: all 0.3s !important;
+}
+.auth-submit:hover {
+    box-shadow: 0 0 28px rgba(0, 212, 255, 0.45) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* --- 自定义滚动条 --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 5, 15, 0.5);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.3);
+    border-radius: 4px;
+    box-shadow: 0 0 4px rgba(0, 212, 255, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 212, 255, 0.5);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+/* --- 文字选中颜色 --- */
+::selection {
+    background: rgba(0, 212, 255, 0.3);
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+}
+
+/* --- 链接科幻样式 --- */
+a {
+    color: var(--neon-blue);
+    text-shadow: 0 0 4px rgba(0, 212, 255, 0.2);
+    transition: all 0.3s;
+}
+a:hover {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* --- 日历科幻样式 --- */
+.calendar-day {
+    background: rgba(8, 12, 22, 0.7) !important;
+    border: 1px solid rgba(0, 212, 255, 0.08) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s !important;
+}
+.calendar-day:hover {
+    border-color: rgba(0, 212, 255, 0.3) !important;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.1) !important;
+}
+.calendar-day.has-launch {
+    border-color: rgba(0, 212, 255, 0.2) !important;
+}
+.calendar-day.today {
+    border-color: var(--neon-blue) !important;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.2) !important;
+}
+.calendar-tooltip {
+    background: rgba(4, 8, 18, 0.96) !important;
+    border: 1px solid rgba(0, 212, 255, 0.25) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 24px rgba(0, 212, 255, 0.15), 0 12px 40px rgba(0,0,0,0.6) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}
+.calendar-tooltip-rocket {
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.3) !important;
+}
+
+/* --- 倒计时数字发光 --- */
+.countdown {
+    font-family: 'Audiowide', sans-serif !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4) !important;
+    letter-spacing: 1px !important;
+}
+
+/* --- 统计数字发光 --- */
+.stat-value, .stat-number {
+    font-family: 'Audiowide', sans-serif !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.3) !important;
+}
+
+/* --- HUD角标装饰 --- */
+.post-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 20px;
+    height: 20px;
+    border-right: 1px solid rgba(0, 212, 255, 0.15);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+    border-bottom-right-radius: 16px;
+    transition: all 0.35s;
+    opacity: 0.5;
+}
+.post-card:hover::after {
+    width: 40px;
+    height: 40px;
+    border-color: rgba(0, 212, 255, 0.5);
+    opacity: 1;
+}
+
+/* --- 加载动画文字发光 --- */
+.loader-text {
+    text-shadow:
+        0 0 10px rgba(0, 212, 255, 0.8),
+        0 0 20px rgba(0, 212, 255, 0.5),
+        0 0 40px rgba(0, 212, 255, 0.3) !important;
+    letter-spacing: 4px !important;
+}
+
+/* --- 输入框通用科幻样式 --- */
+input[type="text"], input[type="password"], input[type="email"], textarea {
+    background: rgba(0, 5, 15, 0.6) !important;
+    border: 1px solid rgba(0, 212, 255, 0.12) !important;
+    border-radius: 12px !important;
+    color: var(--text-primary) !important;
+    transition: all 0.3s !important;
+}
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, textarea:focus {
+    border-color: var(--neon-blue) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.15) !important;
+    outline: none !important;
+}
+
+/* --- 个人主页卡片 --- */
+.profile-header, .profile-section {
+    background: rgba(8, 12, 22, 0.82) !important;
+    border: 1px solid rgba(0, 212, 255, 0.12) !important;
+    border-radius: 16px !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* --- 关注按钮科幻样式 --- */
+.follow-btn, .btn-follow {
+    background: rgba(0, 212, 255, 0.1) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: var(--neon-blue) !important;
+    border-radius: 10px !important;
+    transition: all 0.3s !important;
+}
+.follow-btn:hover, .btn-follow:hover {
+    background: rgba(0, 212, 255, 0.2) !important;
+    border-color: var(--neon-blue) !important;
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.2) !important;
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.4) !important;
+}
+
+/* --- 发射状态标签发光 --- */
+.launch-status, .status-badge {
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.3) !important;
+    letter-spacing: 1px !important;
+}
+
+/* --- 页脚科幻样式 --- */
+.footer, .footer-text {
+    color: rgba(96, 128, 160, 0.5) !important;
+    text-align: center;
+    letter-spacing: 1px !important;
+}
+
+/* --- 分隔线科幻样式 --- */
+hr, .divider {
+    border: none !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent) !important;
+}
+
+/* --- 移动端优化 --- */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2rem !important;
+        text-shadow: 0 0 8px rgba(0, 212, 255, 0.5), 0 0 16px rgba(0, 212, 255, 0.3) !important;
+    }
+    .post-card {
+        padding: 16px !important;
+    }
+    .post-card::after {
+        display: none;
+    }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="favicon.png">
@@ -2319,6 +2827,7 @@
 </div>
 <div class="bg-image"></div>
     <div class="bg-overlay"></div>
+        <canvas id="starField" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
     <header class="header">
         <h1>探索宇宙帖子</h1>
         <p>探索浩瀚宇宙，分享星辰大海，一起畅聊太空奥秘</p>
@@ -4142,25 +4651,53 @@ function extractMentions(text) {
         initNotifyMessageSystem();
         // Safety: hide loader after 5s even if loadPosts hangs
         setTimeout(function() { hideSpaceLoader(); }, 5000);
+
+// ==================== 背景星空动画 ====================
+(function() {
+    var canvas = document.getElementById('starField');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var stars = [];
+    var numStars = 80;
+    var w, h;
+
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    for (var i = 0; i < numStars; i++) {
+        stars.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            size: Math.random() * 1.5 + 0.3,
+            speed: Math.random() * 0.15 + 0.05,
+            opacity: Math.random() * 0.5 + 0.2,
+            twinkle: Math.random() * Math.PI * 2
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (var i = 0; i < numStars; i++) {
+            var s = stars[i];
+            s.y += s.speed;
+            if (s.y > h) {
+                s.y = 0;
+                s.x = Math.random() * w;
+            }
+            s.twinkle += 0.02;
+            var tw = Math.sin(s.twinkle) * 0.3 + 0.7;
+            ctx.fillStyle = 'rgba(0, 212, 255, ' + (s.opacity * tw) + ')';
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
 </script>
-<!-- 通知弹窗 -->
-<div class="notification-modal-overlay" id="notifyModal">
-    <div class="notification-modal">
-        <div class="notify-modal-header">
-            <h3 style="margin:0;font-size:1.1rem;">🔔 消息通知</h3>
-            <button class="modal-close" onclick="closeNotifyModal()">×</button>
-        </div>
-        <div id="notifyList" style="padding:0;">
-            <div style="padding:40px;text-align:center;color:var(--text-muted);">暂无通知</div>
-        </div>
-    </div>
-</div>
-
-</div>
-</div>
-
-<!-- 日历tooltip -->
-<div class="calendar-tooltip" id="calendarTooltip"></div>
-
-</body>
-</html>
