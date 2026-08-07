@@ -1706,41 +1706,8 @@
     cursor: not-allowed;
 }
 
-        /* === Light Theme === */
-        [data-theme="light"] {
-            --bg: #f5f5f7;
-            --surface: rgba(255, 255, 255, 0.85);
-            --surface-hover: rgba(240, 240, 245, 0.95);
-            --text-primary: #1a1a2e;
-            --text-secondary: #555566;
-            --text-muted: #9999aa;
-            --accent: #2a2a3e;
-            --accent-hover: #000000;
-            --border: rgba(0, 0, 0, 0.08);
-            --border-focus: rgba(0, 0, 0, 0.2);
-            --danger: #d63638;
-            --gold: #b8860b;
-            --gold-hover: #d4a017;
-        }
-        .theme-toggle {
-            background: transparent;
-            border: 1px solid var(--border-focus);
-            color: var(--text-primary);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-        .theme-toggle:hover {
-            background: var(--surface-hover);
-            border-color: var(--accent);
-        }
+        
+        
         /* === Edit Button === */
         .edit-btn {
             background: transparent;
@@ -1892,19 +1859,11 @@
    --border-color, --accent-color, --accent-hover
    ============================================================ */
 
-
 /* ============================================================
    1. 通知系统样式
    ============================================================ */
 
-/* 通知铃铛按钮 - 与 .theme-toggle 样式一致 */
-.notify-modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+/* 通知铃铛按钮 - 与 
 
 .notify-btn {
     background: var(--bg-tertiary);
@@ -2023,7 +1982,6 @@
     margin-top: 2px;
 }
 
-
 /* ============================================================
    4. 视频嵌入样式
    ============================================================ */
@@ -2044,7 +2002,6 @@
     border: none;
     display: block;
 }
-
 
 /* ============================================================
    5. 发射结果样式
@@ -2136,12 +2093,9 @@
     color: var(--text-muted);
 }
 
-
 /* Modal show rules for notification and message modals */
 .notification-modal-overlay { display: none; }
 .notification-modal-overlay.show { display: flex; }
-
-
 
 /* ==================== 加载动画 ==================== */
 .space-loader-overlay {
@@ -2481,8 +2435,7 @@
                 <input type="text" id="searchInput" placeholder="搜索帖子标题或内容..." oninput="handleSearch(this.value)">
                 <button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
             </div>
-            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换主题">🌙</button>
-                        <button class="notify-btn" id="notifyBtn" onclick="openNotifyModal()" title="消息通知">🔔<span class="notify-badge" id="notifyBadge" style="display:none;">0</span></button>
+                                    <button class="notify-btn" id="notifyBtn" onclick="openNotifyModal()" title="消息通知">🔔<span class="notify-badge" id="notifyBadge" style="display:none;">0</span></button>
                         <div class="auth-area" id="authArea">
                 <button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>
             </div>
@@ -3541,21 +3494,6 @@
         renderLaunchControls();
         setInterval(updateCountdowns, 1000);
         // ==================== 主题切换 ====================
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            const btn = document.getElementById('themeToggle');
-            if (current === 'light') {
-                html.removeAttribute('data-theme');
-                localStorage.setItem('space_theme', 'dark');
-                if (btn) btn.textContent = '🌙';
-            } else {
-                html.setAttribute('data-theme', 'light');
-                localStorage.setItem('space_theme', 'light');
-                if (btn) btn.textContent = '☀️';
-            }
-        }
-
         // ==================== 编辑帖子 ====================
         let editingPostId = null;
 
@@ -3691,17 +3629,13 @@
 
 // ============================================
 
-
 // ===== 全局变量 =====
 
 // 通知系统
 let notifications = [];
 
-
-
 // 定时器 ID
 let _notifyMsgIntervalId = null;
-
 
 // ============================================
 // 通知系统
@@ -3896,7 +3830,6 @@ async function addNotification(targetUser, fromUser, type, postId, content) {
     }
 }
 
-
 // ============================================
 // ============================================
 
@@ -3954,13 +3887,11 @@ function stopNotifyMessageSystem() {
     updateNotifyBadge();
 }
 
-
 // ============================================================
 // 太空探索帖子网站 - 收藏/视频嵌入/发射结果记录功能
 // 数据库: Supabase (客户端变量: sb)
 // 全局变量: currentUser, posts, launches, isOfficialUser, OFFICIAL_USERS
 // ============================================================
-
 
 // ==================== 视频嵌入功能 ====================
 
@@ -4010,7 +3941,6 @@ function getPostVideoHtml(post) {
 function hasVideoUrl(post) {
     return !!(getVideoEmbed(post.image) || getVideoEmbed(post.content) || getVideoEmbed(post.source_url));
 }
-
 
 // ==================== 发射结果记录功能 ====================
 
@@ -4088,10 +4018,6 @@ function getLaunchStatsHtml() {
         '<div class="launch-stat-item"><span class="launch-stat-num" style="color:var(--text-muted);">' + pendingCount + '</span><span class="launch-stat-label">待定</span></div>' +
         '</div>';
 }
-
-
-
-
 
 // ==================== 加载动画控制 ====================
 function hideSpaceLoader() {
@@ -4259,20 +4185,13 @@ function extractMentions(text) {
     return matches.map(function(m) { return m.substring(1); });
 }
 
-
 // ==================== 初始化 ====================
         // launchModalOverlay 在 script 之后渲染，这里绑定事件
         var lmo = document.getElementById('launchModalOverlay');
         if (lmo) lmo.addEventListener('click', function(e) {
             if (e.target === this) closeLaunchEditor();
         });
-        // 主题初始化
-        const savedTheme = localStorage.getItem('space_theme') || 'dark';
-        if (savedTheme === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-            const themeBtn = document.getElementById('themeToggle');
-            if (themeBtn) themeBtn.textContent = '☀️';
-        }
+
         // 用户资料弹窗点击关闭
         var pmo = document.getElementById('profileModal');
         if (pmo) pmo.addEventListener('click', function(e) {
