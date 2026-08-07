@@ -13,7 +13,7 @@
 [![Language](https://img.shields.io/badge/Language-HTML%20%7C%20CSS%20%7C%20JS-orange?style=flat-square&logo=html5)](https://github.com/polytrack114514/Space-Exploration-Post)
 [![Supabase](https://img.shields.io/badge/Database-Supabase-green?style=flat-square&logo=supabase)](https://supabase.com/)
 
-**[🌐 在线预览 / Live Demo](https://polytrack114514.github.io/Space-Exploration-Post/)** · 
+**[🌐 在线预览 / Live Demo](https://polytrack114514.github.io/Space-Exploration-Post/)** ·
 **[📦 仓库 / Repository](https://github.com/polytrack114514/Space-Exploration-Post)**
 
 🌐 **语言 / Language:** [简体中文](#-简体中文) · [English](#-english)
@@ -26,15 +26,13 @@
 
 ### 📖 项目简介
 
-**Space-Exploration-Post** 是一个以太空探索为主题的社区帖子平台，采用 Grok 风格暗色极简 UI，集帖子发布、评论互动、火箭发射时间表于一体。前端代码已模块化拆分，结构清晰易于维护。
+**Space-Exploration-Post** 是一个以太空探索为主题的社区帖子平台，采用 Grok 风格暗色极简 UI，集帖子发布、评论互动、用户关注、消息通知、火箭发射时间表、发射日历于一体。全部代码整合在单个 `index.html` 文件中，部署简单。
 
 ### 📁 项目结构
 
 ```
 Space-Exploration-Post/
-├── index.html          # HTML 页面结构（引用 style.css 和 app.js）
-├── style.css           # 全部 CSS 样式（暗色主题）
-├── app.js              # 全部 JavaScript 逻辑（Supabase 交互、倒计时等）
+├── index.html          # 全部代码（HTML + CSS + JavaScript 单文件）
 ├── supabase_setup.sql  # Supabase 数据库初始化脚本
 └── README.md           # 项目说明文档
 ```
@@ -43,28 +41,43 @@ Space-Exploration-Post/
 
 | 功能 | 说明 |
 |------|------|
-| 📝 帖子系统 | 图文发布，热门/最新双标签切换 |
+| 📝 帖子系统 | 图文发布，热门/最新/关注三标签切换 |
+| ✏️ 编辑历史 | 帖子编辑后显示"已编辑"徽章，可查看完整编辑历史 |
 | 🔍 搜索帖子 | 按标题、内容、作者、来源 URL 实时搜索 |
-| 🔗 内容来源 | 发帖时可填写原文网址，帖子中可点击访问 |
-| 💬 评论互动 | 帖子下方可展开评论区 |
+| 💬 评论互动 | 帖子下方可展开评论区，支持 @提及 |
+| @ 提及功能 | 帖子/评论中 @用户名 自动变为可点击链接，并通知对方 |
 | 📌 置顶帖子 | 管理员可置顶重要帖子 |
-| ❤️ 点赞分享 | 一键点赞与链接分享 |
-| 👤 用户系统 | 注册/登录，个性化头像 |
-| 🖼️ 图片上传 | 发帖支持上传图片 |
+| ❤️ 点赞 | 一键点赞，自动通知帖子作者 |
+| 👤 用户系统 | 注册/登录（Supabase Auth），个性化头像 |
+| 👥 关注系统 | 关注/取消关注，用户主页显示关注数和粉丝数 |
+| 🔔 消息通知 | 点赞、评论、关注、@提及 实时通知 |
+| 🎬 视频嵌入 | 自动识别 YouTube 和 B站链接，嵌入视频播放器 |
 | 🚀 发射时间表 | 实时倒计时，精确到秒 |
-| 🏁 已发射归档 | 自动归档，保留最近 20 条 |
-| 🏛️ 官方账号 | NASA/CNSA/SpaceX 专属徽标与权限 |
-| 💓 心跳保活 | 每 12 小时自动访问防止数据过期 |
+| 📅 发射日历 | 月历视图展示所有发射计划，支持月份切换 |
+| 🏁 已发射归档 | 自动归档，保留最近 15 条 |
+| 📊 发射结果 | 官方账号可标记发射结果（成功/部分成功/失败），含统计 |
+| 🏛️ 官方账号 | NASA/CNSA/SpaceX/其他火箭发射 专属徽标与权限 |
+| 🌗 主题切换 | 暗色/亮色主题一键切换 |
+| 🚀 加载动画 | 太空主题火箭起飞加载动画 |
 
 ### 🛠️ 技术栈
 
 | 技术 | 用途 |
 |------|------|
-| HTML5 | 页面结构（`index.html`） |
-| CSS3 | 暗色极简 UI 样式（`style.css`） |
-| JavaScript | 前端逻辑、Supabase 交互、实时倒计时（`app.js`） |
-| Supabase | 云端数据库（PostgreSQL） |
+| HTML5 | 页面结构 |
+| CSS3 | 暗色/亮色主题样式 |
+| JavaScript | 前端逻辑、Supabase 交互、实时倒计时、日历等 |
+| Supabase | 云端数据库（PostgreSQL）+ 用户认证 |
 | GitHub Pages | 静态网站托管 |
+
+### 📊 数据库结构
+
+| 表名 | 主要字段 |
+|------|---------|
+| posts | id, title, content, author, avatar, image, source_url, time, likes, comments, pinned, edit_history |
+| users | name, password, follows, source_url |
+| launches | id, rocket, agency, date, location, mission, image, description, status, result |
+| notifications | id, target_user, from_user, type, post_id, content, is_read, created_at |
 
 ### 📸 功能预览
 
@@ -72,16 +85,17 @@ Space-Exploration-Post/
 ┌─────────────────────────────────────────┐
 │           🌌 探索宇宙帖子                │
 ├─────────────────────────────────────────┤
-│  🚀 近期发射  │  🏁 已发射              │
+│  🚀 近期发射 │ 🏁 已发射 │ 📅 日历      │
 │  ┌─────────────────────────────────┐    │
 │  │ SpaceX · Starship               │    │
 │  │ 倒计时: 03天 14:22:08           │    │
 │  └─────────────────────────────────┘    │
 ├─────────────────────────────────────────┤
-│  🔥 热门 │ 🆕 最新  🔍搜索  [登录/注册] │
+│  🔥 热门 │ 🆕 最新 │ 👥 关注  🔔  🌙   │
 │  ┌─────────────────────────────────┐    │
-│  │ 📌 [置顶] NASA 发现新行星        │    │
-│  │ ❤️ 42  💬 8  🔗 来源  🔗 分享     │    │
+│  │ 📌 [置顶] NASA 发现新行星  ✏️已编辑│   │
+│  │ @SpaceX 你怎么看这个发现？       │    │
+│  │ ❤️ 42  💬 8                      │    │
 │  └─────────────────────────────────┘    │
 └─────────────────────────────────────────┘
 ```
@@ -96,15 +110,13 @@ Space-Exploration-Post/
 
 ### 📖 About
 
-**Space-Exploration-Post** is a space-themed community platform with a Grok-style dark UI, integrating post publishing, comments, and rocket launch schedules. The frontend code is modularized into separate files for clarity and maintainability.
+**Space-Exploration-Post** is a space-themed community platform with a Grok-style dark UI, integrating post publishing, comments, user following, message notifications, rocket launch schedules, and a launch calendar. All code is combined in a single `index.html` file for easy deployment.
 
 ### 📁 Project Structure
 
 ```
 Space-Exploration-Post/
-├── index.html          # HTML page structure (links style.css and app.js)
-├── style.css           # All CSS styles (dark theme)
-├── app.js              # All JavaScript logic (Supabase, countdown, etc.)
+├── index.html          # All code (HTML + CSS + JavaScript in one file)
 ├── supabase_setup.sql  # Supabase database initialization script
 └── README.md           # Project documentation
 ```
@@ -113,28 +125,43 @@ Space-Exploration-Post/
 
 | Feature | Description |
 |---------|-------------|
-| 📝 Posts | Image/text posts with Hot/New tabs |
+| 📝 Posts | Image/text posts with Hot/New/Following tabs |
+| ✏️ Edit History | Edited posts show "Edited" badge with full edit history |
 | 🔍 Search | Real-time search by title, content, author, source URL |
-| 🔗 Content Source | Add original URL to posts, clickable in post view |
-| 💬 Comments | Expandable comment section |
+| 💬 Comments | Expandable comment section with @mention support |
+| @ Mentions | @username auto-links to user profile & sends notification |
 | 📌 Pin | Admins can pin posts |
-| ❤️ Like & Share | One-click like and link share |
-| 👤 Users | Register/login with avatars |
-| 🖼️ Image Upload | Upload images in posts |
+| ❤️ Likes | One-click like with auto-notification to author |
+| 👤 Users | Register/login (Supabase Auth) with avatars |
+| 👥 Follow | Follow/unfollow users, profile shows following/follower counts |
+| 🔔 Notifications | Real-time notifications for likes, comments, follows, mentions |
+| 🎬 Video Embed | Auto-detects YouTube and Bilibili links, embeds video player |
 | 🚀 Launch Schedule | Real-time countdown to the second |
-| 🏁 Archive | Auto-archived, keeps latest 20 |
+| 📅 Launch Calendar | Monthly calendar view of all launches with month navigation |
+| 🏁 Archive | Auto-archived, keeps latest 15 |
+| 📊 Launch Results | Official accounts can mark results (success/partial/failure) with stats |
 | 🏛️ Official Accounts | NASA/CNSA/SpaceX badges & permissions |
-| 💓 Heartbeat | Auto-ping every 12h to prevent expiry |
+| 🌗 Theme Toggle | Dark/light theme switch |
+| 🚀 Loading Animation | Space-themed rocket launch loading animation |
 
 ### 🛠️ Tech Stack
 
 | Tech | Purpose |
 |------|---------|
-| HTML5 | Page structure (`index.html`) |
-| CSS3 | Dark minimalist UI styles (`style.css`) |
-| JavaScript | Logic, Supabase interaction, countdown (`app.js`) |
-| Supabase | Cloud database (PostgreSQL) |
+| HTML5 | Page structure |
+| CSS3 | Dark/light theme styles |
+| JavaScript | Logic, Supabase interaction, countdown, calendar |
+| Supabase | Cloud database (PostgreSQL) + Authentication |
 | GitHub Pages | Static hosting |
+
+### 📊 Database Schema
+
+| Table | Key Fields |
+|-------|-----------|
+| posts | id, title, content, author, avatar, image, source_url, time, likes, comments, pinned, edit_history |
+| users | name, password, follows, source_url |
+| launches | id, rocket, agency, date, location, mission, image, description, status, result |
+| notifications | id, target_user, from_user, type, post_id, content, is_read, created_at |
 
 ### 📸 Preview
 
@@ -142,16 +169,17 @@ Space-Exploration-Post/
 ┌─────────────────────────────────────────┐
 │        🌌 Space-Exploration-Post         │
 ├─────────────────────────────────────────┤
-│  🚀 Upcoming  │  🏁 Launched             │
+│  🚀 Upcoming │ 🏁 Launched │ 📅 Calendar │
 │  ┌─────────────────────────────────┐    │
 │  │ SpaceX · Starship               │    │
 │  │ Countdown: 03d 14:22:08         │    │
 │  └─────────────────────────────────┘    │
 ├─────────────────────────────────────────┤
-│  🔥 Hot │ 🆕 New  🔍Search  [Login]     │
+│  🔥 Hot │ 🆕 New │ 👥 Following  🔔  🌙 │
 │  ┌─────────────────────────────────┐    │
-│  │ 📌 [Pinned] NASA Finds New Planet│    │
-│  │ ❤️ 42  💬 8  🔗 Source  🔗 Share │    │
+│  │ 📌 [Pinned] NASA Finds Planet ✏️│    │
+│  │ @SpaceX what do you think?      │    │
+│  │ ❤️ 42  💬 8                     │    │
 │  └─────────────────────────────────┘    │
 └─────────────────────────────────────────┘
 ```
