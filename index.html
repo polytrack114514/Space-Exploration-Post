@@ -2636,6 +2636,471 @@ hr, .divider {
     }
 }
 
+
+
+/* ==================== 在线用户显示 ==================== */
+.online-users-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(8, 12, 22, 0.6);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+.online-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+    animation: onlinePulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+@keyframes onlinePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(0, 255, 136, 0.6); }
+    50% { opacity: 0.6; box-shadow: 0 0 12px rgba(0, 255, 136, 0.9); }
+}
+.online-label {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+}
+.online-count {
+    color: var(--neon-cyan);
+    font-weight: 700;
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.4);
+}
+.online-avatars {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    flex-wrap: wrap;
+}
+.online-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.online-avatar:hover {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    transform: scale(1.1);
+}
+.online-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ==================== NASA APOD ==================== */
+.apod-container {
+    background: rgba(8, 12, 22, 0.82);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    transition: all 0.35s;
+}
+.apod-container:hover {
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 0 24px rgba(0, 212, 255, 0.1), 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+.apod-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+}
+.apod-badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    background: rgba(0, 212, 255, 0.15);
+    border-radius: 6px;
+    color: var(--neon-cyan);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.apod-title {
+    font-family: 'Michroma', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.apod-body {
+    display: flex;
+    gap: 0;
+}
+.apod-image-wrap {
+    flex: 0 0 45%;
+    max-width: 300px;
+    cursor: pointer;
+}
+.apod-image-wrap img {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    max-height: 280px;
+    object-fit: cover;
+    display: block;
+}
+.apod-info {
+    flex: 1;
+    padding: 16px 20px;
+    overflow-y: auto;
+    max-height: 280px;
+}
+.apod-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.2);
+}
+.apod-info p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+.apod-info .apod-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+.apod-loading {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-muted);
+}
+@media (max-width: 600px) {
+    .apod-body { flex-direction: column; }
+    .apod-image-wrap { max-width: 100%; }
+    .apod-image-wrap img { max-height: 200px; }
+}
+
+/* ==================== 举报弹窗 ==================== */
+.report-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 2, 8, 0.75);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.report-modal-overlay.show { display: flex; }
+.report-modal {
+    background: rgba(6, 10, 20, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 20px;
+    padding: 32px 28px 28px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.1), 0 20px 60px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    position: relative;
+}
+.report-modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 100, 100, 0.6), transparent);
+}
+.report-reason-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: rgba(0, 5, 15, 0.6);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+    font-family: inherit;
+}
+.report-reason-btn:hover {
+    border-color: rgba(255, 100, 100, 0.4);
+    background: rgba(255, 100, 100, 0.05);
+}
+.report-reason-btn.selected {
+    border-color: rgba(255, 100, 100, 0.5);
+    background: rgba(255, 100, 100, 0.1);
+}
+.report-submit-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    background: linear-gradient(135deg, rgba(255, 68, 102, 0.9), rgba(200, 50, 80, 0.9));
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+.report-submit-btn:hover {
+    box-shadow: 0 0 20px rgba(255, 68, 102, 0.4);
+}
+.report-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.report-btn:hover {
+    color: rgba(255, 100, 100, 0.8);
+    background: rgba(255, 100, 100, 0.08);
+}
+
+/* ==================== 管理员后台 ==================== */
+.admin-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 2, 8, 0.8);
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+.admin-modal-overlay.show { display: flex; }
+.admin-modal {
+    background: rgba(6, 10, 20, 0.97);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 20px;
+    width: 95%;
+    max-width: 700px;
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 50px rgba(0, 212, 255, 0.1), 0 20px 60px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(20px);
+}
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+}
+.admin-header h2 {
+    font-family: 'Michroma', sans-serif;
+    font-size: 1.1rem;
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    letter-spacing: 1px;
+}
+.admin-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 16px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+}
+.admin-tab {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+.admin-tab:hover { color: var(--neon-blue); }
+.admin-tab.active {
+    background: rgba(0, 212, 255, 0.12);
+    color: var(--neon-cyan);
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.3);
+}
+.admin-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+}
+.admin-user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid rgba(0, 212, 255, 0.08);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    transition: all 0.2s;
+    background: rgba(0, 5, 15, 0.4);
+}
+.admin-user-row:hover {
+    border-color: rgba(0, 212, 255, 0.2);
+}
+.admin-user-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 80px;
+}
+.admin-user-pass {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-family: monospace;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.admin-user-status {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+.admin-user-status.normal { background: rgba(0, 255, 136, 0.15); color: #00ff88; }
+.admin-user-status.banned { background: rgba(255, 68, 102, 0.15); color: #ff4466; }
+.admin-ban-btn {
+    padding: 4px 12px;
+    border: 1px solid rgba(255, 68, 102, 0.3);
+    background: rgba(255, 68, 102, 0.08);
+    color: #ff4466;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.admin-ban-btn:hover {
+    background: rgba(255, 68, 102, 0.2);
+    box-shadow: 0 0 8px rgba(255, 68, 102, 0.2);
+}
+.admin-ban-btn.unban {
+    border-color: rgba(0, 255, 136, 0.3);
+    background: rgba(0, 255, 136, 0.08);
+    color: #00ff88;
+}
+.admin-ban-btn.unban:hover {
+    background: rgba(0, 255, 136, 0.2);
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.2);
+}
+.admin-reg-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(0, 5, 15, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+.admin-reg-toggle label {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+.admin-reg-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: rgba(255, 68, 102, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+    flex-shrink: 0;
+}
+.admin-reg-switch.open {
+    background: rgba(0, 255, 136, 0.2);
+}
+.admin-reg-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    background: #ff4466;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+.admin-reg-switch.open::after {
+    left: 22px;
+    background: #00ff88;
+}
+.admin-report-row {
+    padding: 12px;
+    border: 1px solid rgba(0, 212, 255, 0.08);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    background: rgba(0, 5, 15, 0.4);
+}
+.admin-report-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+.admin-report-reason {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+.admin-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.4rem;
+    cursor: pointer;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+.admin-close-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+.admin-btn-entry {
+    padding: 6px 14px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    color: var(--neon-blue);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: all 0.3s;
+    font-family: inherit;
+    display: none;
+}
+.admin-btn-entry:hover {
+    background: rgba(0, 212, 255, 0.2);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="/Space-Exploration-Post/favicon.png">
@@ -2673,6 +3138,15 @@ hr, .divider {
         <div class="launch-list" id="launchedList" style="display:none;"></div>
         
     </div>
+        <!-- NASA 每日天文一图 -->
+    <div class="container" style="margin-bottom:0;">
+        <div id="apodContainer"></div>
+        <div class="online-users-bar" id="onlineUsersBar" style="display:none;">
+            <div class="online-dot"></div>
+            <span class="online-label">在线: <span class="online-count" id="onlineCount">0</span> 人</span>
+            <div class="online-avatars" id="onlineAvatars"></div>
+        </div>
+    </div>
     <div class="container">
         <div class="top-bar">
             <div class="tabs">
@@ -2695,6 +3169,7 @@ hr, .divider {
                         <div class="auth-area" id="authArea">
                 <button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>
             </div>
+            <button class="admin-btn-entry" id="adminEntryBtn" onclick="openAdminModal()">⚙ 管理</button>
             <button class="fab-post" onclick="openModal()">✨ 发布帖子</button>
         </div>
         <div class="posts-list" id="postsList">
@@ -2776,6 +3251,30 @@ hr, .divider {
                 <button onclick="closeNotifyModal()" style="background:none;border:none;color:var(--text-muted);font-size:1.4rem;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all 0.2s;" onmouseover="this.style.color='var(--text-primary)';this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'">&times;</button>
             </div>
             <div id="notifyList"></div>
+        </div>
+    </div>
+    <!-- 举报弹窗 -->
+    <div class="report-modal-overlay" id="reportModal">
+        <div class="report-modal">
+            <button class="admin-close-btn" onclick="closeReportModal()" style="position:absolute;top:12px;right:14px;">&times;</button>
+            <div style="font-family:'Michroma',sans-serif;font-size:1rem;text-align:center;margin-bottom:16px;color:#ff4466;letter-spacing:1px;">举报帖子</div>
+            <div id="reportReasons"></div>
+            <button class="report-submit-btn" id="reportSubmitBtn" onclick="submitReport()">提交举报</button>
+        </div>
+    </div>
+    <!-- 管理员后台弹窗 -->
+    <div class="admin-modal-overlay" id="adminModal">
+        <div class="admin-modal">
+            <div class="admin-header">
+                <h2>⚙ 管理员后台</h2>
+                <button class="admin-close-btn" onclick="closeAdminModal()">&times;</button>
+            </div>
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('users', this)">用户管理</button>
+                <button class="admin-tab" onclick="switchAdminTab('reports', this)">举报列表</button>
+                <button class="admin-tab" onclick="switchAdminTab('settings', this)">站点设置</button>
+            </div>
+            <div class="admin-content" id="adminContent"></div>
         </div>
     </div>
 
@@ -3082,6 +3581,7 @@ hr, .divider {
                                 <span>💬</span>
                                 <span>${(post.comments && post.comments.length) || 0}</span>
                             </button>
+                            ${currentUser && post.author !== currentUser.name ? `<button class="report-btn" onclick="openReportModal('${post.id}')">🚩 举报</button>` : ''}
                             </div>
                         <div class="comments-section" id="comments-${post.id}">
                             <div class="comments-list" id="comments-list-${post.id}">
@@ -3297,6 +3797,8 @@ hr, .divider {
                     </div>
                 `;
                 renderLaunchControls();
+                var adminBtn = document.getElementById('adminEntryBtn');
+                if (adminBtn) adminBtn.style.display = 'inline-flex';
             } else {
                 area.innerHTML = `<button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>`;
             }
@@ -3352,6 +3854,8 @@ hr, .divider {
             await loadUsers();
             if (authMode === 'signup') {
                 if (password !== confirm) { showAuthErr('两次密码不一致'); btn.disabled = false; btn.textContent = '注册'; return; }
+                var regOpen = await isRegistrationOpen();
+                if (!regOpen) { showAuthErr('管理员已关闭注册'); btn.disabled = false; btn.textContent = '注册'; return; }
                 const exists = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
                 if (exists) { showAuthErr('该用户名已被注册'); btn.disabled = false; btn.textContent = '注册'; return; }
                 const newUser = { name: username, password: password, avatar: getAvatar(username) };
@@ -3365,6 +3869,7 @@ hr, .divider {
             } else {
                 const user = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
                 if (!user || user.password !== password) { showAuthErr('用户名或密码错误'); btn.disabled = false; btn.textContent = '登录'; return; }
+                if (user.banned) { showAuthErr('该账号已被禁言，请联系管理员'); btn.disabled = false; btn.textContent = '登录'; return; }
                 currentUser = { name: user.name, avatar: user.avatar };
                 localStorage.setItem('space_user', JSON.stringify(currentUser));
                 closeAuthModal();
@@ -3389,12 +3894,19 @@ hr, .divider {
             if (typeof stopNotifyMessageSystem === 'function') stopNotifyMessageSystem();
             renderAuthArea();
             renderLaunchControls();
+            var adminBtn = document.getElementById('adminEntryBtn');
+            if (adminBtn) adminBtn.style.display = 'none';
         }
         // Override openModal to require login
         const _origOpenModal = openModal;
         openModal = function() {
             if (!currentUser) {
                 openAuthModal();
+                return;
+            }
+            var u = allUsers.find(function(x) { return x.name === currentUser.name; });
+            if (u && u.banned) {
+                alert('你已被禁言，无法发帖');
                 return;
             }
             _origOpenModal();
@@ -4434,5 +4946,279 @@ function extractMentions(text) {
     }
     draw();
 })();
+
+
+// ==================== NASA 每日天文一图 ====================
+async function loadAPOD() {
+    var container = document.getElementById('apodContainer');
+    if (!container) return;
+    try {
+        var today = new Date().toISOString().split('T')[0];
+        var cacheKey = 'apod_' + today;
+        var cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            renderAPOD(JSON.parse(cached));
+            return;
+        }
+        container.innerHTML = '<div class="apod-container"><div class="apod-loading">📡 正在获取今日天文图片...</div></div>';
+        var resp = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&thumbs=true');
+        if (!resp.ok) throw new Error('APOD fetch failed');
+        var data = await resp.json();
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        renderAPOD(data);
+    } catch (e) {
+        console.error('APOD error:', e);
+        container.innerHTML = '';
+    }
+}
+function renderAPOD(data) {
+    var container = document.getElementById('apodContainer');
+    if (!container || !data) return;
+    var imgUrl = data.thumbnail_url || data.url || data.hdurl || '';
+    var isVideo = data.media_type === 'video';
+    var html = '<div class="apod-container">';
+    html += '<div class="apod-header">';
+    html += '<span class="apod-badge">NASA APOD</span>';
+    html += '<span class="apod-title">每日天文一图</span>';
+    html += '</div>';
+    html += '<div class="apod-body">';
+    if (isVideo) {
+        html += '<div class="apod-image-wrap"><a href="' + (data.url||'') + '" target="_blank"><img src="' + (data.thumbnail_url||'') + '" alt="APOD"></a></div>';
+    } else {
+        html += '<div class="apod-image-wrap"><img src="' + imgUrl + '" alt="' + escapeHtml(data.title||'') + '" onerror="this.style.display=\'none\'"></div>';
+    }
+    html += '<div class="apod-info">';
+    html += '<div class="apod-date">' + escapeHtml(data.date||'') + '</div>';
+    html += '<h3>' + escapeHtml(data.title||'') + '</h3>';
+    var desc = (data.explanation||'').substring(0, 300);
+    if ((data.explanation||'').length > 300) desc += '...';
+    html += '<p>' + escapeHtml(desc) + '</p>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// ==================== 在线用户显示 ====================
+async function updateLastActive() {
+    if (!currentUser) return;
+    try {
+        await sb.from('users').update({ last_active: new Date().toISOString() }).eq('name', currentUser.name);
+    } catch(e) {}
+}
+async function loadOnlineUsers() {
+    try {
+        var fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+        var { data, error } = await sb.from('users').select('name,avatar,last_active,banned').gte('last_active', fiveMinAgo);
+        if (error) throw error;
+        renderOnlineUsers(data || []);
+    } catch(e) {
+        console.error('loadOnlineUsers error:', e);
+    }
+}
+function renderOnlineUsers(users) {
+    var bar = document.getElementById('onlineUsersBar');
+    var countEl = document.getElementById('onlineCount');
+    var avatarsEl = document.getElementById('onlineAvatars');
+    if (!bar) return;
+    if (users.length === 0) {
+        bar.style.display = 'none';
+        return;
+    }
+    bar.style.display = 'flex';
+    if (countEl) countEl.textContent = users.length;
+    if (avatarsEl) {
+        var html = '';
+        users.forEach(function(u) {
+            var av = u.avatar || getAvatar(u.name);
+            var avHtml = av && av.startsWith('http') ? '<img src="' + av + '" alt="' + escapeHtml(u.name) + '">' : (av || '?');
+            html += '<div class="online-avatar" title="' + escapeHtml(u.name) + '" onclick="showUserProfile(\'' + escapeHtml(u.name).replace(/'/g, "\\'") + '\')">' + avHtml + '</div>';
+        });
+        avatarsEl.innerHTML = html;
+    }
+}
+
+// ==================== 帖子举报系统 ====================
+var reportPostId = null;
+var reportReason = '';
+var reportReasons = ['垃圾广告', '不当内容', '恶意攻击', '虚假信息', '侵犯隐私', '其他'];
+function openReportModal(postId) {
+    reportPostId = postId;
+    reportReason = '';
+    var container = document.getElementById('reportReasons');
+    if (container) {
+        container.innerHTML = reportReasons.map(function(r, i) {
+            return '<button class="report-reason-btn" onclick="selectReportReason(' + i + ')" id="reportReasonBtn_' + i + '">' + r + '</button>';
+        }).join('');
+    }
+    document.getElementById('reportModal').classList.add('show');
+}
+function closeReportModal() {
+    document.getElementById('reportModal').classList.remove('show');
+    reportPostId = null;
+}
+function selectReportReason(idx) {
+    reportReason = reportReasons[idx];
+    for (var i = 0; i < reportReasons.length; i++) {
+        var btn = document.getElementById('reportReasonBtn_' + i);
+        if (btn) btn.classList.toggle('selected', i === idx);
+    }
+}
+async function submitReport() {
+    if (!reportReason) { alert('请选择举报原因'); return; }
+    if (!currentUser) { openAuthModal(); return; }
+    var btn = document.getElementById('reportSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = '提交中...';
+    try {
+        var { error } = await sb.from('reports').insert({
+            post_id: String(reportPostId),
+            reporter: currentUser.name,
+            reason: reportReason
+        });
+        if (error) throw error;
+        closeReportModal();
+        alert('举报已提交，管理员会尽快处理');
+    } catch(e) {
+        alert('举报失败: ' + e.message);
+    }
+    btn.disabled = false;
+    btn.textContent = '提交举报';
+}
+
+// ==================== 管理员后台 ====================
+var adminCurrentTab = 'users';
+function openAdminModal() {
+    var pwd = prompt('请输入管理员密码：');
+    if (pwd === null) return;
+    if (pwd !== '1028') { alert('密码错误'); return; }
+    document.getElementById('adminModal').classList.add('show');
+    adminCurrentTab = 'users';
+    renderAdminContent();
+}
+function closeAdminModal() {
+    document.getElementById('adminModal').classList.remove('show');
+}
+function switchAdminTab(tab, btn) {
+    adminCurrentTab = tab;
+    document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    renderAdminContent();
+}
+async function renderAdminContent() {
+    var content = document.getElementById('adminContent');
+    if (!content) return;
+    if (adminCurrentTab === 'users') {
+        await loadUsers();
+        var html = '';
+        allUsers.forEach(function(u) {
+            var av = u.avatar || '?';
+            var avHtml = av && av.startsWith('http') ? '<img src="' + av + '" style="width:24px;height:24px;border-radius:50%;object-fit:cover;">' : av;
+            var isBanned = u.banned || false;
+            var statusClass = isBanned ? 'banned' : 'normal';
+            var statusText = isBanned ? '已禁言' : '正常';
+            var btnText = isBanned ? '解禁' : '禁言';
+            var btnClass = isBanned ? 'admin-ban-btn unban' : 'admin-ban-btn';
+            html += '<div class="admin-user-row">';
+            html += '<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.15);">' + avHtml + '</div>';
+            html += '<div class="admin-user-name">' + escapeHtml(u.name || '') + '</div>';
+            html += '<div class="admin-user-pass">' + escapeHtml(u.password || '') + '</div>';
+            html += '<span class="admin-user-status ' + statusClass + '">' + statusText + '</span>';
+            html += '<button class="' + btnClass + '" onclick="toggleBanUser(\'' + escapeHtml(u.name).replace(/'/g, "\\'") + '\')">' + btnText + '</button>';
+            html += '</div>';
+        });
+        content.innerHTML = html || '<div style="text-align:center;color:var(--text-muted);padding:40px;">暂无用户</div>';
+    } else if (adminCurrentTab === 'reports') {
+        try {
+            var { data, error } = await sb.from('reports').select('*').order('created_at', { ascending: false }).limit(100);
+            if (error) throw error;
+            if (!data || data.length === 0) {
+                content.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px;">暂无举报</div>';
+                return;
+            }
+            var html = '';
+            data.forEach(function(r) {
+                var post = posts.find(function(p) { return String(p.id) === String(r.post_id); });
+                var postTitle = post ? (post.title || post.content || '').substring(0, 40) : '[已删除]';
+                html += '<div class="admin-report-row">';
+                html += '<div class="admin-report-meta">举报人: ' + escapeHtml(r.reporter||'') + ' | 时间: ' + formatTime(r.created_at) + '</div>';
+                html += '<div class="admin-report-reason">原因: ' + escapeHtml(r.reason||'') + '</div>';
+                html += '<div class="admin-report-meta">帖子: ' + escapeHtml(postTitle) + '</div>';
+                if (post) {
+                    html += '<button class="admin-ban-btn" style="margin-top:6px;" onclick="deletePost(\'' + r.post_id + '\');deleteReport(' + r.id + ')">删除帖子</button> ';
+                    html += '<button class="admin-ban-btn unban" style="margin-top:6px;" onclick="deleteReport(' + r.id + ')">忽略</button>';
+                } else {
+                    html += '<button class="admin-ban-btn unban" style="margin-top:6px;" onclick="deleteReport(' + r.id + ')">删除记录</button>';
+                }
+                html += '</div>';
+            });
+            content.innerHTML = html;
+        } catch(e) {
+            content.innerHTML = '<div style="text-align:center;color:var(--danger);padding:40px;">加载失败: ' + e.message + '</div>';
+        }
+    } else if (adminCurrentTab === 'settings') {
+        var regOpen = await isRegistrationOpen();
+        var html = '<div class="admin-reg-toggle">';
+        html += '<div class="admin-reg-switch ' + (regOpen ? 'open' : '') + '" id="regSwitch" onclick="toggleRegistration()"></div>';
+        html += '<label>允许新用户注册' + (regOpen ? '（当前：开启）' : '（当前：关闭）') + '</label>';
+        html += '</div>';
+        html += '<div style="padding:12px;color:var(--text-muted);font-size:0.82rem;">关闭后，新用户将无法注册账号。已有账号的用户仍可正常登录。</div>';
+        content.innerHTML = html;
+    }
+}
+async function toggleBanUser(username) {
+    try {
+        var u = allUsers.find(function(x) { return x.name === username; });
+        if (!u) return;
+        var newBanned = !u.banned;
+        var { error } = await sb.from('users').update({ banned: newBanned }).eq('name', username);
+        if (error) throw error;
+        u.banned = newBanned;
+        renderAdminContent();
+    } catch(e) {
+        alert('操作失败: ' + e.message);
+    }
+}
+async function toggleRegistration() {
+    var current = await isRegistrationOpen();
+    var newVal = !current;
+    try {
+        var { error } = await sb.from('site_settings').upsert({ id: 1, registration_open: newVal });
+        if (error) throw error;
+        renderAdminContent();
+    } catch(e) {
+        alert('操作失败: ' + e.message);
+    }
+}
+async function isRegistrationOpen() {
+    try {
+        var { data, error } = await sb.from('site_settings').select('registration_open').eq('id', 1);
+        if (error) throw error;
+        if (data && data.length > 0) return data[0].registration_open !== false;
+        return true;
+    } catch(e) {
+        return true;
+    }
+}
+async function deleteReport(reportId) {
+    try {
+        var { error } = await sb.from('reports').delete().eq('id', reportId);
+        if (error) throw error;
+        renderAdminContent();
+    } catch(e) {
+        alert('删除失败: ' + e.message);
+    }
+}
+
+// ==================== 初始化新功能 ====================
+// Load APOD on page load
+loadAPOD();
+// Online users heartbeat
+if (currentUser) {
+    updateLastActive();
+    setInterval(updateLastActive, 30000);
+}
+loadOnlineUsers();
+setInterval(loadOnlineUsers, 30000);
 
 </script>
