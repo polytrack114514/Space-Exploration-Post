@@ -3462,8 +3462,8 @@ hr, .divider {
             if (displayPosts.length === 0) {
                 list.innerHTML = `
                     <div class="empty-state">
-                        <div class="emoji">${searchKeyword ? '🔍' : (currentTab === 'follow' ? '👥' : '🚀')}</div>
-                        <p>${searchKeyword ? '没有找到匹配的帖子，换个关键词试试吧' : (currentTab === 'follow' ? '还没有关注任何用户，去帖子中点击头像关注吧' : '还没有帖子，点击右上角发布第一条宇宙探索动态吧')}</p>
+                        <div class="emoji">${searchKeyword ? '🔍' : '🚀'}</div>
+                        <p>${searchKeyword ? '没有找到匹配的帖子，换个关键词试试吧' : '还没有帖子，点击右上角发布第一条宇宙探索动态吧'}</p>
                     </div>
                 `;
                 return;
@@ -4182,32 +4182,7 @@ hr, .divider {
             document.getElementById('modalOverlay').classList.add('show');
         }
 
-        // ==================== 用户关注系统 ====================
-        function toggleFollow(username) {
-            let followed = JSON.parse(localStorage.getItem('space_follows')) || [];
-            var isFollowing = followed.includes(username);
-            if (isFollowing) {
-                followed = followed.filter(function(u) { return u !== username; });
-            } else {
-                followed.push(username);
-            }
-            localStorage.setItem('space_follows', JSON.stringify(followed));
-            // Send follow notification
-            if (!isFollowing && currentUser) {
-                addNotification(username, currentUser.name, 'follow', null, currentUser.name + ' 关注了你');
-            }
-            // Sync to Supabase users table
-            if (currentUser) {
-                sb.from('users').update({ follows: JSON.stringify(followed) }).eq('name', currentUser.name)
-                    .then(function() { loadUsers(); })
-                    .catch(function(e) { console.error('sync follows failed:', e); });
-            }
-            const profileModal = document.getElementById('profileModal');
-            if (profileModal && profileModal.classList.contains('show') && profileModal.dataset.username === username) {
-                showUserProfile(username);
-            }
-            if (currentTab === 'follow') renderPosts();
-        }
+
 
         // ==================== 用户资料 ====================
         function showUserProfile(username) {
@@ -4347,7 +4322,7 @@ function closeNotifyModal() {
  * 处理通知点击事件
  * - 如果帖子存在，跳转到帖子并展开评论
  * - 如果帖子已删除，仅关闭弹窗
- * - 如果是关注通知（无 post_id），跳转到用户主页
+ * - 如果无 post_id，跳转到发起者主页
  * @param {number} index - 通知在 notifications 数组中的索引
  */
 function handleNotificationClick(index) {
