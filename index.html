@@ -2166,151 +2166,6 @@
     text-decoration: underline;
 }
 
-/* ==================== 发射日历视图 ==================== */
-.launch-tab[data-launch-tab="calendar"] {
-    margin-left: auto;
-}
-.calendar-container {
-    padding: 16px;
-    background: rgba(10, 14, 39, 0.85);
-    backdrop-filter: blur(12px);
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.08);
-}
-.calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-.calendar-nav-btn {
-    background: rgba(30, 40, 70, 0.8);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #e0e6f0;
-    border-radius: 8px;
-    padding: 6px 14px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.2s;
-    backdrop-filter: blur(4px);
-}
-.calendar-nav-btn:hover {
-    background: rgba(255,255,255,0.15);
-}
-.calendar-month-label {
-    font-size: 1.1rem;
-    font-weight: 600;
-    min-width: 140px;
-    text-align: center;
-    color: #e0e6f0;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-    font-family: 'Michroma', sans-serif;
-    letter-spacing: 2px;
-}
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-}
-.calendar-day-header {
-    text-align: center;
-    font-size: 0.75rem;
-    color: #a0aec0;
-    padding: 6px 0;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-}
-.calendar-day {
-    min-height: 60px;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 8px;
-    padding: 4px;
-    font-size: 0.75rem;
-    position: relative;
-    background: rgba(15, 20, 40, 0.7);
-    backdrop-filter: blur(8px);
-    transition: background 0.2s;
-}
-.calendar-day.empty {
-    background: transparent;
-    border: none;
-}
-.calendar-day.today {
-    border-color: #5b9bf5;
-    background: rgba(91,155,245,0.2);
-    box-shadow: 0 0 8px rgba(91,155,245,0.3);
-}
-.calendar-day.has-launch {
-    cursor: pointer;
-}
-.calendar-day.has-launch:hover {
-    background: rgba(30, 50, 90, 0.8);
-}
-.calendar-day-num {
-    font-weight: 600;
-    color: #e0e6f0;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-}
-.calendar-day.today .calendar-day-num {
-    color: var(--accent-color);
-}
-.calendar-launch-item {
-    font-size: 0.65rem;
-    background: rgba(91,155,245,0.25);
-    color: #7db4ff;
-    border-radius: 3px;
-    padding: 1px 4px;
-    margin-top: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-}
-.calendar-launch-item.launched {
-    background: rgba(34,197,94,0.15);
-    color: #22c55e;
-}
-.calendar-launch-item.tbd {
-    background: rgba(245,158,11,0.15);
-    color: #f59e0b;
-}
-.calendar-tooltip {
-    position: fixed;
-    z-index: 10002;
-    background: rgba(10, 14, 39, 0.95);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(91,155,245,0.3);
-    border-radius: 10px;
-    padding: 14px 18px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-    max-width: 280px;
-    display: none;
-    font-size: 0.85rem;
-}
-.calendar-tooltip.show {
-    display: block;
-}
-.calendar-tooltip-rocket {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: #ffffff;
-}
-.calendar-tooltip-meta {
-    color: #a0aec0;
-    font-size: 0.75rem;
-    margin-bottom: 4px;
-}
-.calendar-tooltip-desc {
-    color: #c0cae0;
-    font-size: 0.8rem;
-    margin-top: 6px;
-}
-
-
-
 /* ==================== 科幻UI全面增强 ==================== */
 
 /* --- 扫描线效果 --- */
@@ -2666,37 +2521,6 @@ a:hover {
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
 }
 
-/* --- 日历科幻样式 --- */
-.calendar-day {
-    background: rgba(8, 12, 22, 0.7) !important;
-    border: 1px solid rgba(0, 212, 255, 0.08) !important;
-    border-radius: 8px !important;
-    transition: all 0.3s !important;
-}
-.calendar-day:hover {
-    border-color: rgba(0, 212, 255, 0.3) !important;
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.1) !important;
-}
-.calendar-day.has-launch {
-    border-color: rgba(0, 212, 255, 0.2) !important;
-}
-.calendar-day.today {
-    border-color: var(--neon-blue) !important;
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.2) !important;
-}
-.calendar-tooltip {
-    background: rgba(4, 8, 18, 0.96) !important;
-    border: 1px solid rgba(0, 212, 255, 0.25) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 0 24px rgba(0, 212, 255, 0.15), 0 12px 40px rgba(0,0,0,0.6) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-}
-.calendar-tooltip-rocket {
-    color: var(--neon-cyan) !important;
-    text-shadow: 0 0 6px rgba(0, 212, 255, 0.3) !important;
-}
-
 /* --- 倒计时数字发光 --- */
 .countdown {
     font-family: 'Audiowide', sans-serif !important;
@@ -2842,14 +2666,12 @@ hr, .divider {
             <button class="launch-tab" data-launch-tab="launched">
                 <span>🏁 已发射</span>
             </button>
-            <button class="launch-tab" data-launch-tab="calendar">
-                <span>📅 日历</span>
-            </button>
+
             <div class="launch-controls-wrap" id="launchControlsWrap"></div>
         </div>
         <div class="launch-list" id="launchList"></div>
         <div class="launch-list" id="launchedList" style="display:none;"></div>
-        <div class="launch-list" id="calendarList" style="display:none;"><div class="calendar-container" id="calendarContainer"></div></div>
+        
     </div>
     <div class="container">
         <div class="top-bar">
@@ -2944,6 +2766,16 @@ hr, .divider {
         <div class="profile-modal">
             <button class="profile-close" onclick="closeProfileModal()">&times;</button>
             <div id="profileContent"></div>
+        </div>
+    </div>
+    <!-- 通知弹窗 -->
+    <div class="notification-modal-overlay" id="notifyModal">
+        <div class="notification-modal">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border-color);">
+                <span style="font-family:'Michroma',sans-serif;font-size:1rem;letter-spacing:1px;color:var(--neon-blue);text-shadow:0 0 8px rgba(0,212,255,0.3);">消息通知</span>
+                <button onclick="closeNotifyModal()" style="background:none;border:none;color:var(--text-muted);font-size:1.4rem;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all 0.2s;" onmouseover="this.style.color='var(--text-primary)';this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='none'">&times;</button>
+            </div>
+            <div id="notifyList"></div>
         </div>
     </div>
 
@@ -3737,11 +3569,8 @@ hr, .divider {
             });
             const list = document.getElementById('launchList');
             const launchedList = document.getElementById('launchedList');
-            const calendarList = document.getElementById('calendarList');
             if (list) list.style.display = currentLaunchTab === 'upcoming' ? '' : 'none';
             if (launchedList) launchedList.style.display = currentLaunchTab === 'launched' ? '' : 'none';
-            if (calendarList) calendarList.style.display = currentLaunchTab === 'calendar' ? '' : 'none';
-            if (currentLaunchTab === 'calendar') renderCalendar();
         }
         document.querySelectorAll('.launch-tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -4518,100 +4347,6 @@ function initWarpSpeed() {
     });
 }
 initWarpSpeed();
-
-// ==================== 日历视图 ====================
-var calendarCurrentMonth = new Date();
-calendarCurrentMonth.setDate(1);
-
-function renderCalendar() {
-    var container = document.getElementById('calendarContainer');
-    if (!container) return;
-    var year = calendarCurrentMonth.getFullYear();
-    var month = calendarCurrentMonth.getMonth();
-    var monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-    var dayHeaders = ['日','一','二','三','四','五','六'];
-    var firstDay = new Date(year, month, 1).getDay();
-    var daysInMonth = new Date(year, month + 1, 0).getDate();
-    var today = new Date();
-    var todayStr = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
-
-    var html = '<div class="calendar-header">';
-    html += '<button class="calendar-nav-btn" onclick="calendarPrevMonth()">‹</button>';
-    html += '<span class="calendar-month-label">' + year + '年 ' + monthNames[month] + '</span>';
-    html += '<button class="calendar-nav-btn" onclick="calendarNextMonth()">›</button>';
-    html += '</div>';
-    html += '<div class="calendar-grid">';
-    for (var d = 0; d < 7; d++) {
-        html += '<div class="calendar-day-header">' + dayHeaders[d] + '</div>';
-    }
-    for (var i = 0; i < firstDay; i++) {
-        html += '<div class="calendar-day empty"></div>';
-    }
-    for (var day = 1; day <= daysInMonth; day++) {
-        var cellDate = new Date(year, month, day);
-        var cellDateStr = year + '-' + month + '-' + day;
-        var isToday = cellDateStr === todayStr;
-        var dayLaunches = [];
-        launches.forEach(function(l) {
-            if (l.status === 'tbd') return;
-            if (!l.date) return;
-            var ld = new Date(l.date);
-            if (ld.getFullYear() === year && ld.getMonth() === month && ld.getDate() === day) {
-                dayLaunches.push(l);
-            }
-        });
-        var classes = 'calendar-day';
-        if (isToday) classes += ' today';
-        if (dayLaunches.length > 0) classes += ' has-launch';
-        html += '<div class="' + classes + '">';
-        html += '<div class="calendar-day-num">' + day + '</div>';
-        dayLaunches.forEach(function(l) {
-            var launchClass = 'calendar-launch-item';
-            var now = Date.now();
-            if (l.date < now) launchClass += ' launched';
-            if (l.status === 'tentative') launchClass += ' tbd';
-            var timeStr = new Date(l.date).toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
-            html += '<div class="' + launchClass + '" onclick="showCalendarTooltip(event, \'' + (l.id || '') + '\')">' + timeStr + ' ' + escapeHtml(l.rocket) + '</div>';
-        });
-        html += '</div>';
-    }
-    html += '</div>';
-    container.innerHTML = html;
-}
-
-function calendarPrevMonth() {
-    calendarCurrentMonth.setMonth(calendarCurrentMonth.getMonth() - 1);
-    renderCalendar();
-}
-function calendarNextMonth() {
-    calendarCurrentMonth.setMonth(calendarCurrentMonth.getMonth() + 1);
-    renderCalendar();
-}
-function showCalendarTooltip(e, launchId) {
-    e.stopPropagation();
-    var tooltip = document.getElementById('calendarTooltip');
-    if (!tooltip) return;
-    var launch = launches.find(function(l) { return String(l.id) === String(launchId); });
-    if (!launch) return;
-    var now = Date.now();
-    var statusText = launch.date < now ? '✅ 已发射' : '🚀 即将发射';
-    if (launch.status === 'tbd') statusText = '⏳ 日期待定';
-    var dateStr = new Date(launch.date).toLocaleString('zh-CN', {month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
-    var html = '<div class="calendar-tooltip-rocket">' + escapeHtml(launch.rocket) + '</div>';
-    html += '<div class="calendar-tooltip-meta">' + escapeHtml(launch.agency) + ' · ' + statusText + '</div>';
-    html += '<div class="calendar-tooltip-meta">📅 ' + dateStr + '</div>';
-    html += '<div class="calendar-tooltip-meta">📍 ' + escapeHtml(launch.location) + '</div>';
-    html += '<div class="calendar-tooltip-meta">🎯 ' + escapeHtml(launch.mission) + '</div>';
-    if (launch.description) html += '<div class="calendar-tooltip-desc">' + escapeHtml(launch.description) + '</div>';
-    tooltip.innerHTML = html;
-    tooltip.classList.add('show');
-    tooltip.style.left = Math.min(e.clientX + 10, window.innerWidth - 300) + 'px';
-    tooltip.style.top = Math.min(e.clientY + 10, window.innerHeight - 200) + 'px';
-}
-document.addEventListener('click', function() {
-    var tooltip = document.getElementById('calendarTooltip');
-    if (tooltip) tooltip.classList.remove('show');
-});
 
 // ==================== @提及功能 ====================
 function parseMentions(text) {
