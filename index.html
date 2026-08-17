@@ -3029,6 +3029,103 @@ hr, .divider {
     box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
 }
 
+
+/* === Space Data Modal === */
+.space-data-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.8); z-index: 9999;
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.space-data-overlay.show { display: flex; }
+.space-data-content {
+    background: rgba(10, 15, 30, 0.97);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 16px; width: 92%; max-width: 720px;
+    max-height: 88vh; overflow: hidden;
+    box-shadow: 0 8px 50px rgba(0, 212, 255, 0.2);
+    animation: sdSlideIn 0.3s ease;
+}
+@keyframes sdSlideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.space-data-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+}
+.space-data-header h2 { margin: 0; font-size: 1.1rem; color: #00d4ff; text-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+.space-data-header button { background: none; border: none; color: #666; font-size: 1.3rem; cursor: pointer; transition: color 0.2s; }
+.space-data-header button:hover { color: #ff4040; }
+.space-data-tabs { display: flex; gap: 4px; padding: 10px 16px; border-bottom: 1px solid rgba(0, 212, 255, 0.1); }
+.sd-tab {
+    padding: 8px 18px; border: none; border-radius: 8px;
+    background: transparent; color: #8899aa; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.2s; font-family: inherit;
+}
+.sd-tab:hover { background: rgba(0, 212, 255, 0.08); color: #00d4ff; }
+.sd-tab.active { background: rgba(0, 212, 255, 0.15); color: #00d4ff; box-shadow: 0 0 12px rgba(0, 212, 255, 0.15); }
+.space-data-body { padding: 16px; overflow-y: auto; max-height: calc(88vh - 130px); }
+.sd-panel { display: none; }
+.sd-panel.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ISS Map */
+.iss-map {
+    position: relative; width: 100%; aspect-ratio: 2/1;
+    background: #050810; border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 8px; overflow: hidden;
+    background-image:
+        linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+    background-size: 8.33% 10%;
+}
+.iss-map::before {
+    content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px;
+    background: rgba(0, 212, 255, 0.15);
+}
+.iss-map::after {
+    content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+    background: rgba(0, 212, 255, 0.15);
+}
+.iss-marker { position: absolute; transform: translate(-50%, -50%); z-index: 10; transition: left 2s linear, top 2s linear; }
+.iss-dot { width: 10px; height: 10px; background: #00d4ff; border-radius: 50%; box-shadow: 0 0 12px #00d4ff, 0 0 24px rgba(0, 212, 255, 0.4); }
+.iss-pulse {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 10px; height: 10px; background: #00d4ff; border-radius: 50%;
+    animation: issPulse 2s infinite;
+}
+@keyframes issPulse { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } 100% { transform: translate(-50%, -50%) scale(5); opacity: 0; } }
+.iss-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
+.iss-info-item { background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.1); border-radius: 8px; padding: 10px 14px; }
+.iss-info-label { font-size: 0.72rem; color: #667788; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+.iss-info-value { font-size: 1.05rem; font-weight: 700; color: #00d4ff; font-family: 'Exo 2', monospace; }
+
+/* Space Weather */
+.weather-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.weather-card { background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.1); border-radius: 10px; padding: 14px 16px; }
+.weather-label { font-size: 0.8rem; color: #667788; margin-bottom: 6px; }
+.weather-value { font-size: 1.35rem; font-weight: 700; color: #00d4ff; font-family: 'Exo 2', monospace; transition: color 0.3s; }
+.weather-desc { font-size: 0.7rem; color: #556677; margin-top: 6px; }
+.weather-update { text-align: center; font-size: 0.72rem; color: #556677; margin-top: 14px; }
+
+/* Planet Positions */
+.planet-diagram { text-align: center; }
+.planet-info-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+.planet-info-item { background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.1); border-radius: 6px; padding: 8px 10px; text-align: center; }
+.planet-info-name { font-size: 0.82rem; font-weight: 600; }
+.planet-info-dist { font-size: 0.7rem; color: #667788; margin-top: 2px; }
+
+/* Image Lightbox */
+.image-lightbox {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.92); z-index: 10000;
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); cursor: pointer;
+}
+.image-lightbox.show { display: flex; animation: fadeIn 0.2s ease; }
+.image-lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 50px rgba(0, 212, 255, 0.3); animation: zoomIn 0.25s ease; }
+@keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.post-image { cursor: zoom-in !important; transition: opacity 0.2s ease; }
+.post-image:hover { opacity: 0.85; }
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="/Space-Exploration-Post/favicon.png">
@@ -3092,6 +3189,7 @@ hr, .divider {
                 <button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
             </div>
                                     <button class="notify-btn" id="notifyBtn" onclick="openNotifyModal()" title="消息通知">🔔<span class="notify-badge" id="notifyBadge" style="display:none;">0</span></button>
+                                    <button class="notify-btn" onclick="openSpaceDataModal()" title="太空数据" style="margin-left:4px;">🛰️</button>
                         <div class="auth-area" id="authArea">
                 <button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>
             </div>
@@ -5051,5 +5149,209 @@ if (currentUser) {
 }
 loadOnlineUsers();
 setInterval(loadOnlineUsers, 30000);
+
+
+
+// ==================== 太空数据中心 ====================
+function openSpaceDataModal() {
+    document.getElementById('spaceDataModal').classList.add('show');
+    switchSDTab('iss', document.querySelector('.sd-tab'));
+}
+function closeSpaceDataModal() {
+    document.getElementById('spaceDataModal').classList.remove('show');
+    stopISSTracking();
+    stopWeatherTracking();
+}
+function switchSDTab(tab, btn) {
+    document.querySelectorAll('.sd-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.sd-panel').forEach(function(p) { p.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    var panel = document.getElementById('sdPanel-' + tab);
+    if (panel) panel.classList.add('active');
+    stopISSTracking();
+    stopWeatherTracking();
+    if (tab === 'iss') { startISSTracking(); }
+    else if (tab === 'weather') { startWeatherTracking(); }
+    else if (tab === 'planets') { renderSolarSystem(); }
+}
+
+// === ISS Tracking ===
+var issTimer = null;
+var issTrack = [];
+async function loadISSData() {
+    try {
+        var resp = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
+        var data = await resp.json();
+        var lat = data.latitude, lng = data.longitude, alt = data.altitude, vel = data.velocity;
+        var el = document.getElementById('issLat'); if (el) el.textContent = lat.toFixed(2) + ' deg';
+        el = document.getElementById('issLng'); if (el) el.textContent = lng.toFixed(2) + ' deg';
+        el = document.getElementById('issAlt'); if (el) el.textContent = alt.toFixed(1) + ' km';
+        el = document.getElementById('issVel'); if (el) el.textContent = (vel / 3600).toFixed(2) + ' km/s';
+        var x = ((lng + 180) / 360) * 100;
+        var y = ((90 - lat) / 180) * 100;
+        var marker = document.getElementById('issMarker');
+        if (marker) { marker.style.left = x + '%'; marker.style.top = y + '%'; }
+        issTrack.push({ x: x, y: y });
+        if (issTrack.length > 30) issTrack.shift();
+        renderISSTrack();
+    } catch(e) {
+        console.error('ISS data error:', e);
+        var el2 = document.getElementById('issLat'); if (el2) el2.textContent = '获取失败';
+    }
+}
+function renderISSTrack() {
+    var trackEl = document.getElementById('issTrack');
+    if (!trackEl) return;
+    var html = '';
+    for (var i = 0; i < issTrack.length; i++) {
+        var p = issTrack[i];
+        var op = (i / issTrack.length) * 0.4;
+        html += '<div style="position:absolute;left:' + p.x + '%;top:' + p.y + '%;width:3px;height:3px;background:rgba(0,212,255,' + op + ');border-radius:50%;transform:translate(-50%,-50%);"></div>';
+    }
+    trackEl.innerHTML = html;
+}
+function startISSTracking() { if (issTimer) return; loadISSData(); issTimer = setInterval(loadISSData, 5000); }
+function stopISSTracking() { if (issTimer) { clearInterval(issTimer); issTimer = null; } }
+
+// === Space Weather ===
+var weatherTimer = null;
+async function loadSpaceWeather() {
+    try {
+        var swResp = await fetch('https://services.swpc.noaa.gov/json/solar_wind/plasma_1m.json');
+        var swData = await swResp.json();
+        if (!swData || swData.length < 2) throw new Error('No plasma data');
+        var latestSW = swData[swData.length - 1];
+        var swSpeed = parseFloat(latestSW[1]) || 0;
+        var swDensity = parseFloat(latestSW[2]) || 0;
+
+        var kpResp = await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
+        var kpData = await kpResp.json();
+        if (!kpData || kpData.length < 2) throw new Error('No Kp data');
+        var latestKp = kpData[kpData.length - 1];
+        var kpValue = parseFloat(latestKp[1]) || 0;
+
+        var magResp = await fetch('https://services.swpc.noaa.gov/json/solar_wind/mag_1m.json');
+        var magData = await magResp.json();
+        if (!magData || magData.length < 2) throw new Error('No mag data');
+        var latestMag = magData[magData.length - 1];
+        var bz = parseFloat(latestMag[3]) || 0;
+
+        var speedEl = document.getElementById('swSpeed');
+        if (speedEl) { speedEl.textContent = swSpeed.toFixed(0) + ' km/s'; speedEl.style.color = swSpeed > 500 ? '#ff4040' : (swSpeed > 400 ? '#ffd040' : '#40ff40'); }
+        var densEl = document.getElementById('swDensity');
+        if (densEl) densEl.textContent = swDensity.toFixed(1) + ' p/cm3';
+        var bzEl = document.getElementById('swBz');
+        if (bzEl) { bzEl.textContent = bz.toFixed(1) + ' nT'; bzEl.style.color = bz < -10 ? '#ff4040' : (bz < -5 ? '#ffd040' : '#40ff40'); }
+        var kpEl = document.getElementById('swKp');
+        if (kpEl) kpEl.textContent = kpValue.toFixed(1);
+        var auroraEl = document.getElementById('swAurora');
+        if (auroraEl) {
+            if (kpValue >= 5) { auroraEl.textContent = '高'; auroraEl.style.color = '#ff4040'; }
+            else if (kpValue >= 4) { auroraEl.textContent = '中'; auroraEl.style.color = '#ffd040'; }
+            else { auroraEl.textContent = '低'; auroraEl.style.color = '#40ff40'; }
+        }
+        var updEl = document.getElementById('swUpdate');
+        if (updEl) updEl.textContent = '更新: ' + new Date().toLocaleTimeString('zh-CN') + ' | NOAA SWPC';
+    } catch(e) {
+        console.error('Space weather error:', e);
+        var el3 = document.getElementById('swSpeed'); if (el3) el3.textContent = '获取失败';
+    }
+}
+function startWeatherTracking() { if (weatherTimer) return; loadSpaceWeather(); weatherTimer = setInterval(loadSpaceWeather, 60000); }
+function stopWeatherTracking() { if (weatherTimer) { clearInterval(weatherTimer); weatherTimer = null; } }
+
+// === Planet Positions ===
+function calcPlanetPos(planet, date) {
+    var J2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
+    var d = (date.getTime() - J2000) / 86400000;
+    var elements = {
+        mercury: { a: 0.387098, e: 0.205635, L0: 252.251, w: 77.456, T: 87.969 },
+        venus:   { a: 0.723330, e: 0.006773, L0: 181.979, w: 131.533, T: 224.701 },
+        earth:   { a: 1.000001, e: 0.016709, L0: 100.464, w: 102.937, T: 365.256 },
+        mars:    { a: 1.523688, e: 0.093405, L0: 355.453, w: 336.040, T: 686.980 },
+        jupiter: { a: 5.202561, e: 0.048498, L0: 34.396,  w: 14.728,  T: 4332.589 },
+        saturn:  { a: 9.554747, e: 0.055546, L0: 49.954,  w: 92.598,  T: 10759.22 }
+    };
+    var el = elements[planet];
+    if (!el) return null;
+    var L = (el.L0 + (360.0 / el.T) * d) % 360;
+    if (L < 0) L += 360;
+    var M = (L - el.w) * Math.PI / 180;
+    var E = M;
+    for (var i = 0; i < 6; i++) { E = M + el.e * Math.sin(E); }
+    var v = 2 * Math.atan2(Math.sqrt(1 + el.e) * Math.sin(E / 2), Math.sqrt(1 - el.e) * Math.cos(E / 2));
+    var r = el.a * (1 - el.e * Math.cos(E));
+    var wRad = el.w * Math.PI / 180;
+    var x = r * Math.cos(v + wRad);
+    var y = r * Math.sin(v + wRad);
+    return { x: x, y: y, r: r, angle: Math.atan2(y, x) };
+}
+function renderSolarSystem() {
+    var planets = [
+        { key: 'mercury', name: '水星', color: '#8c8c8c', size: 3, au: 0.387 },
+        { key: 'venus',   name: '金星', color: '#e8c870', size: 4, au: 0.723 },
+        { key: 'earth',   name: '地球', color: '#4080ff', size: 4, au: 1.000 },
+        { key: 'mars',    name: '火星', color: '#ff4040', size: 3, au: 1.524 },
+        { key: 'jupiter', name: '木星', color: '#d0a060', size: 6, au: 5.203 },
+        { key: 'saturn',  name: '土星', color: '#e0c080', size: 5, au: 9.555 }
+    ];
+    var now = new Date();
+    var centerX = 200, centerY = 200, maxRadius = 170, maxAU = 9.555;
+    var scaleAU = function(au) { return Math.log(au + 1) / Math.log(maxAU + 1) * maxRadius; };
+    var html = '<svg viewBox="0 0 400 400" style="width:100%;max-width:420px;margin:0 auto;display:block;">';
+    html += '<defs><filter id="planetGlow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+    html += '<radialGradient id="sunGrad"><stop offset="0%" stop-color="#ffff00"/><stop offset="60%" stop-color="#ffd700"/><stop offset="100%" stop-color="#ff8c00"/></radialGradient></defs>';
+    for (var i = 0; i < planets.length; i++) {
+        var r = scaleAU(planets[i].au);
+        html += '<circle cx="' + centerX + '" cy="' + centerY + '" r="' + r.toFixed(1) + '" fill="none" stroke="rgba(0,212,255,0.1)" stroke-width="0.5" stroke-dasharray="2,2"/>';
+    }
+    html += '<circle cx="' + centerX + '" cy="' + centerY + '" r="8" fill="url(#sunGrad)" filter="url(#planetGlow)"/>';
+    html += '<text x="' + centerX + '" y="' + (centerY + 24) + '" fill="rgba(255,215,0,0.8)" font-size="10" text-anchor="middle" font-family="monospace">太阳</text>';
+    var infoHtml = '';
+    for (var j = 0; j < planets.length; j++) {
+        var p = planets[j];
+        var pos = calcPlanetPos(p.key, now);
+        var displayR = scaleAU(p.au);
+        var px = centerX + displayR * Math.cos(pos.angle);
+        var py = centerY + displayR * Math.sin(pos.angle);
+        html += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + p.size + '" fill="' + p.color + '" filter="url(#planetGlow)"/>';
+        html += '<text x="' + px.toFixed(1) + '" y="' + (py - p.size - 5).toFixed(1) + '" fill="' + p.color + '" font-size="9" text-anchor="middle" font-family="monospace" opacity="0.9">' + p.name + '</text>';
+        infoHtml += '<div class="planet-info-item"><div class="planet-info-name" style="color:' + p.color + '">' + p.name + '</div><div class="planet-info-dist">' + pos.r.toFixed(2) + ' AU</div></div>';
+    }
+    html += '</svg>';
+    html += '<div style="text-align:center;color:#556677;font-size:0.72rem;margin-top:8px;">计算时间: ' + now.toLocaleDateString('zh-CN') + ' ' + now.toLocaleTimeString('zh-CN') + '</div>';
+    var diagramEl = document.getElementById('planetDiagram');
+    if (diagramEl) diagramEl.innerHTML = html;
+    var infoEl = document.getElementById('planetInfoList');
+    if (infoEl) infoEl.innerHTML = infoHtml;
+}
+
+// === Image Lightbox ===
+function openImageLightbox(src) {
+    var lightbox = document.getElementById('imageLightbox');
+    var img = document.getElementById('lightboxImage');
+    if (img) img.src = src;
+    if (lightbox) lightbox.classList.add('show');
+}
+function closeImageLightbox() {
+    var lightbox = document.getElementById('imageLightbox');
+    if (lightbox) lightbox.classList.remove('show');
+}
+if (!window._spaceFeaturesInit) {
+    window._spaceFeaturesInit = true;
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.classList && e.target.classList.contains('post-image')) {
+            openImageLightbox(e.target.src);
+        }
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            var lb = document.getElementById('imageLightbox');
+            if (lb && lb.classList.contains('show')) closeImageLightbox();
+            var sdm = document.getElementById('spaceDataModal');
+            if (sdm && sdm.classList.contains('show')) closeSpaceDataModal();
+        }
+    });
+}
 
 </script>
