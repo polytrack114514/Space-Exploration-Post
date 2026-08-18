@@ -26,7 +26,7 @@
 
 ### 📖 项目简介
 
-**Space-Exploration-Post** 是一个以太空探索为主题的社区帖子平台，采用 Grok 风格暗色极简 UI，集帖子发布、评论互动、用户关注、消息通知、火箭发射时间表、发射日历于一体。全部代码整合在单个 `index.html` 文件中，部署简单。
+**Space-Exploration-Post** 是一个以太空探索为主题的社区帖子平台，集帖子发布、评论互动、用户关注、火箭发射追踪、ISS 实时定位、行星位置可视化、NASA 每日天文一图于一体。全部代码整合在单个 `index.html` 文件中，部署简单。
 
 ### 📁 项目结构
 
@@ -42,62 +42,73 @@ Space-Exploration-Post/
 | 功能 | 说明 |
 |------|------|
 | 📝 帖子系统 | 图文发布，热门/最新/关注三标签切换 |
-| ✏️ 编辑历史 | 帖子编辑后显示"已编辑"徽章，可查看完整编辑历史 |
-| 🔍 搜索帖子 | 按标题、内容、作者、来源 URL 实时搜索 |
-| 💬 评论互动 | 帖子下方可展开评论区，支持 @提及 |
-| @ 提及功能 | 帖子/评论中 @用户名 自动变为可点击链接，并通知对方 |
+| 🔍 搜索帖子 | 按标题、内容、作者实时搜索 |
+| 💬 评论互动 | 帖子下方可展开评论区 |
 | 📌 置顶帖子 | 管理员可置顶重要帖子 |
 | ❤️ 点赞 | 一键点赞，自动通知帖子作者 |
+| 🚩 帖子举报 | 用户可举报不当内容，管理员审核 |
 | 👤 用户系统 | 注册/登录（Supabase Auth），个性化头像 |
 | 👥 关注系统 | 关注/取消关注，用户主页显示关注数和粉丝数 |
-| 🔔 消息通知 | 点赞、评论、关注、@提及 实时通知 |
-| 🎬 视频嵌入 | 自动识别 YouTube 和 B站链接，嵌入视频播放器 |
+| 🔔 消息通知 | 点赞、评论、关注 实时通知 |
+| 🎬 视频嵌入 | 自动识别 YouTube 和 B站链接，嵌入视频播放器（autoplay 已禁用）|
 | 🚀 发射时间表 | 实时倒计时，精确到秒 |
-| 📅 发射日历 | 月历视图展示所有发射计划，支持月份切换 |
 | 🏁 已发射归档 | 自动归档，保留最近 15 条 |
-| 📊 发射结果 | 官方账号可标记发射结果（成功/部分成功/失败），含统计 |
+| 📊 发射结果 | 官方账号可标记发射结果（成功/部分成功/失败）|
 | 🏛️ 官方账号 | NASA/CNSA/SpaceX/其他火箭发射 专属徽标与权限 |
-| 🌗 主题切换 | 暗色/亮色主题一键切换 |
-| 🚀 加载动画 | 太空主题火箭起飞加载动画 |
+| 🛰️ ISS 实时追踪 | 国际空间站实时位置、速度、高度（wheretheiss.at API）|
+| 🪐 行星位置可视化 | 基于开普勒轨道力学计算太阳系行星实时位置（SVG 图）|
+| 🌌 NASA APOD | 每日天文一图，点击可放大查看 |
+| 🟢 在线用户 | 实时显示在线探索者数量 |
+| 🖼️ 图片放大 | 点击帖子图片弹出大图灯箱浏览 |
+| 🛡️ 管理员后台 | 用户管理（查看/禁言）、举报审核 |
+| 🚀 加载动画 | 太空主题曲速引擎加载动画 |
 
 ### 🛠️ 技术栈
 
 | 技术 | 用途 |
 |------|------|
 | HTML5 | 页面结构 |
-| CSS3 | 暗色/亮色主题样式 |
-| JavaScript | 前端逻辑、Supabase 交互、实时倒计时、日历等 |
+| CSS3 | 样式设计 |
+| JavaScript | 前端逻辑、Supabase 交互、实时倒计时、轨道计算 |
 | Supabase | 云端数据库（PostgreSQL）+ 用户认证 |
 | GitHub Pages | 静态网站托管 |
+| wheretheiss.at API | ISS 实时位置数据 |
+| NASA APOD API | 每日天文一图 |
 
 ### 📊 数据库结构
 
 | 表名 | 主要字段 |
 |------|---------|
-| posts | id, title, content, author, avatar, image, source_url, time, likes, comments, pinned, edit_history |
-| users | name, password, follows, source_url |
+| posts | id, title, content, author, avatar, image, source_url, time, likes, comments, pinned |
+| users | name, password, follows, source_url, last_active, banned |
 | launches | id, rocket, agency, date, location, mission, image, description, status, result |
 | notifications | id, target_user, from_user, type, post_id, content, is_read, created_at |
+| reports | id, post_id, reporter, reason, status, created_at |
 
 ### 📸 功能预览
 
 ```
-┌─────────────────────────────────────────┐
-│           🌌 探索宇宙帖子                │
-├─────────────────────────────────────────┤
-│  🚀 近期发射 │ 🏁 已发射 │ 📅 日历      │
-│  ┌─────────────────────────────────┐    │
-│  │ SpaceX · Starship               │    │
-│  │ 倒计时: 03天 14:22:08           │    │
-│  └─────────────────────────────────┘    │
-├─────────────────────────────────────────┤
-│  🔥 热门 │ 🆕 最新 │ 👥 关注  🔔  🌙   │
-│  ┌─────────────────────────────────┐    │
-│  │ 📌 [置顶] NASA 发现新行星  ✏️已编辑│   │
-│  │ @SpaceX 你怎么看这个发现？       │    │
-│  │ ❤️ 42  💬 8                      │    │
-│  └─────────────────────────────────┘    │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│           🌌 探索宇宙帖子                      │
+├──────────────────────────────────────────────┤
+│  🔥 热门  │  🆕 最新  │  👥 关注    🔔  🛰️  │
+│  ┌──────────────────────────────────────────┐ │
+│  │ 👤 NASA  🏛️  2小时前           ⋯       │ │
+│  │ NASA 发现新行星                            │ │
+│  │ [配图]                                    │ │
+│  │ ❤️ 42   💬 8   🚩                         │ │
+│  └──────────────────────────────────────────┘ │
+├──────────────────────────────────────────────┤
+│  🚀 近期发射  │  🏁 已发射                   │
+│  ┌──────────────────────────────────────────┐ │
+│  │ SpaceX · Starship                        │ │
+│  │ 倒计时: 03天 14:22:08                    │ │
+│  └──────────────────────────────────────────┘ │
+├──────────────────────────────────────────────┤
+│  🛰️ 太空数据中心                             │
+│  [ISS 追踪]  [行星位置]                      │
+│  🟢 在线: 12 人  🌌 NASA APOD               │
+└──────────────────────────────────────────────┘
 ```
 
 ### 📄 许可证
@@ -110,7 +121,7 @@ Space-Exploration-Post/
 
 ### 📖 About
 
-**Space-Exploration-Post** is a space-themed community platform with a Grok-style dark UI, integrating post publishing, comments, user following, message notifications, rocket launch schedules, and a launch calendar. All code is combined in a single `index.html` file for easy deployment.
+**Space-Exploration-Post** is a space-themed community platform integrating post publishing, comments, user following, rocket launch tracking, ISS real-time tracking, planet position visualization, and NASA Astronomy Picture of the Day. All code is combined in a single `index.html` file for easy deployment.
 
 ### 📁 Project Structure
 
@@ -126,62 +137,73 @@ Space-Exploration-Post/
 | Feature | Description |
 |---------|-------------|
 | 📝 Posts | Image/text posts with Hot/New/Following tabs |
-| ✏️ Edit History | Edited posts show "Edited" badge with full edit history |
-| 🔍 Search | Real-time search by title, content, author, source URL |
-| 💬 Comments | Expandable comment section with @mention support |
-| @ Mentions | @username auto-links to user profile & sends notification |
+| 🔍 Search | Real-time search by title, content, author |
+| 💬 Comments | Expandable comment section |
 | 📌 Pin | Admins can pin posts |
 | ❤️ Likes | One-click like with auto-notification to author |
+| 🚩 Report | Users can report inappropriate content for admin review |
 | 👤 Users | Register/login (Supabase Auth) with avatars |
 | 👥 Follow | Follow/unfollow users, profile shows following/follower counts |
-| 🔔 Notifications | Real-time notifications for likes, comments, follows, mentions |
-| 🎬 Video Embed | Auto-detects YouTube and Bilibili links, embeds video player |
+| 🔔 Notifications | Real-time notifications for likes, comments, follows |
+| 🎬 Video Embed | Auto-detects YouTube and Bilibili links (autoplay disabled) |
 | 🚀 Launch Schedule | Real-time countdown to the second |
-| 📅 Launch Calendar | Monthly calendar view of all launches with month navigation |
 | 🏁 Archive | Auto-archived, keeps latest 15 |
-| 📊 Launch Results | Official accounts can mark results (success/partial/failure) with stats |
+| 📊 Launch Results | Official accounts can mark results (success/partial/failure) |
 | 🏛️ Official Accounts | NASA/CNSA/SpaceX badges & permissions |
-| 🌗 Theme Toggle | Dark/light theme switch |
-| 🚀 Loading Animation | Space-themed rocket launch loading animation |
+| 🛰️ ISS Tracking | Real-time ISS position, velocity, altitude (wheretheiss.at API) |
+| 🪐 Planet Positions | Keplerian orbit calculation of solar system planets (SVG) |
+| 🌌 NASA APOD | Astronomy Picture of the Day with lightbox view |
+| 🟢 Online Users | Real-time online explorer count |
+| 🖼️ Image Lightbox | Click post images to enlarge in lightbox |
+| 🛡️ Admin Dashboard | User management (view/ban), report moderation |
+| 🚀 Loading Animation | Space-themed warp speed loading animation |
 
 ### 🛠️ Tech Stack
 
 | Tech | Purpose |
 |------|---------|
 | HTML5 | Page structure |
-| CSS3 | Dark/light theme styles |
-| JavaScript | Logic, Supabase interaction, countdown, calendar |
+| CSS3 | Styling |
+| JavaScript | Logic, Supabase interaction, countdown, orbital calculations |
 | Supabase | Cloud database (PostgreSQL) + Authentication |
 | GitHub Pages | Static hosting |
+| wheretheiss.at API | ISS real-time position data |
+| NASA APOD API | Astronomy Picture of the Day |
 
 ### 📊 Database Schema
 
 | Table | Key Fields |
 |-------|-----------|
-| posts | id, title, content, author, avatar, image, source_url, time, likes, comments, pinned, edit_history |
-| users | name, password, follows, source_url |
+| posts | id, title, content, author, avatar, image, source_url, time, likes, comments, pinned |
+| users | name, password, follows, source_url, last_active, banned |
 | launches | id, rocket, agency, date, location, mission, image, description, status, result |
 | notifications | id, target_user, from_user, type, post_id, content, is_read, created_at |
+| reports | id, post_id, reporter, reason, status, created_at |
 
 ### 📸 Preview
 
 ```
-┌─────────────────────────────────────────┐
-│        🌌 Space-Exploration-Post         │
-├─────────────────────────────────────────┤
-│  🚀 Upcoming │ 🏁 Launched │ 📅 Calendar │
-│  ┌─────────────────────────────────┐    │
-│  │ SpaceX · Starship               │    │
-│  │ Countdown: 03d 14:22:08         │    │
-│  └─────────────────────────────────┘    │
-├─────────────────────────────────────────┤
-│  🔥 Hot │ 🆕 New │ 👥 Following  🔔  🌙 │
-│  ┌─────────────────────────────────┐    │
-│  │ 📌 [Pinned] NASA Finds Planet ✏️│    │
-│  │ @SpaceX what do you think?      │    │
-│  │ ❤️ 42  💬 8                     │    │
-│  └─────────────────────────────────┘    │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│           🌌 Space-Exploration-Post           │
+├──────────────────────────────────────────────┤
+│  🔥 Hot  │  🆕 New  │  👥 Following   🔔  🛰️│
+│  ┌──────────────────────────────────────────┐ │
+│  │ 👤 NASA  🏛️  2h ago             ⋯     │ │
+│  │ NASA Discovers New Planet                  │ │
+│  │ [Image]                                    │ │
+│  │ ❤️ 42   💬 8   🚩                         │ │
+│  └──────────────────────────────────────────┘ │
+├──────────────────────────────────────────────┤
+│  🚀 Upcoming  │  🏁 Launched                │
+│  ┌──────────────────────────────────────────┐ │
+│  │ SpaceX · Starship                        │ │
+│  │ Countdown: 03d 14:22:08                   │ │
+│  └──────────────────────────────────────────┘ │
+├──────────────────────────────────────────────┤
+│  🛰️ Space Data Center                        │
+│  [ISS Tracking]  [Planet Positions]          │
+│  🟢 Online: 12  🌌 NASA APOD                 │
+└──────────────────────────────────────────────┘
 ```
 
 ### 📄 License
