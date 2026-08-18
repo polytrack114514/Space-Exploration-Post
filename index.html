@@ -3949,7 +3949,7 @@ header, .header, .navbar, nav {
             list.innerHTML = displayPosts.map(post => {
                 const isLiked = likedPosts[post.id] || false;
                 return `
-                    <div class="post-card" glass-card data-id="${post.id}">
+                    <div class="post-card glass-card" glass-card data-id="${post.id}">
                         <div class="post-header">
                             <div class="post-author">
                                 <div class="avatar" style="cursor:pointer;" onclick="showUserProfile('${escapeHtml(post.author)}')">${post.avatar.startsWith('http') ? `<img src="${post.avatar}" alt="avatar">` : post.avatar}</div>
@@ -3985,7 +3985,7 @@ header, .header, .navbar, nav {
                         <div class="comments-section" id="comments-${post.id}">
                             <div class="comments-list" id="comments-list-${post.id}">
                                 ${(post.comments && post.comments.length > 0) ? post.comments.map(c => `
-                                    <div class="comment-item">
+                                    <div class="comment-item glass-card">
                                         <div class="comment-avatar">🌟</div>
                                         <div class="comment-body">
                                             <div class="comment-author">${escapeHtml(c.author)}</div>
@@ -4736,7 +4736,7 @@ header, .header, .navbar, nav {
                 postsHtml = '<div class="profile-posts"><div class="profile-posts-title">TA的帖子 (' + userPosts.length + ')</div>';
                 userPosts.forEach(function(post) {
                     var isLiked = likedPosts[post.id] || false;
-                    postsHtml += '<div class="post-card" glass-card data-id="' + post.id + '">';
+                    postsHtml += '<div class="post-card glass-card" glass-card data-id="' + post.id + '">';
                     postsHtml += '<div class="post-header"><div class="post-author">';
                     postsHtml += '<div class="avatar">' + (post.avatar && post.avatar.startsWith('http') ? '<img src="' + post.avatar + '" alt="avatar">' : (post.avatar || '🌟')) + '</div>';
                     postsHtml += '<div class="author-info"><span class="author-name">' + escapeHtml(post.author) + '</span>';
@@ -4921,7 +4921,7 @@ function renderNotifications() {
         var timeStr = formatTime(n.created_at);
 
         var html = '';
-        html += '<div class="notification-item' + (n.is_read ? '' : ' unread') + '"';
+        html += '<div class="notification-item' + (n.is_read ? '' : ' unread') + ' glass-card"';
         html += ' onclick="handleNotificationClick(' + index + ')"';
         html += ' style="cursor:pointer;">';
         html +=   '<div class="notification-icon">' + icon + '</div>';
