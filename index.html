@@ -2569,7 +2569,6 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focu
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
-
 /* --- 发射状态标签发光 --- */
 .launch-status, .status-badge {
     text-shadow: 0 0 6px rgba(0, 212, 255, 0.3) !important;
@@ -2603,8 +2602,6 @@ hr, .divider {
         display: none;
     }
 }
-
-
 
 /* ==================== 在线用户显示 ==================== */
 .online-users-bar {
@@ -3029,7 +3026,6 @@ hr, .divider {
     box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
 }
 
-
 /* === Space Data Modal === */
 .space-data-overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -3085,12 +3081,7 @@ hr, .divider {
 .iss-info-item { background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.1); border-radius: 8px; padding: 10px 14px; }
 .iss-info-label { font-size: 0.72rem; color: #667788; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
 .iss-info-value { font-size: 1.05rem; font-weight: 700; color: #00d4ff; font-family: 'Exo 2', monospace; }
-.weather-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.weather-card { background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.1); border-radius: 10px; padding: 14px 16px; }
-.weather-label { font-size: 0.8rem; color: #667788; margin-bottom: 6px; }
-.weather-value { font-size: 1.35rem; font-weight: 700; color: #00d4ff; font-family: 'Exo 2', monospace; transition: color 0.3s; }
-.weather-desc { font-size: 0.7rem; color: #556677; margin-top: 6px; }
-.weather-update { text-align: center; font-size: 0.72rem; color: #556677; margin-top: 14px; }
+
 .planet-diagram { text-align: center; }
 .planet-info-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
 .planet-info-item { background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.1); border-radius: 6px; padding: 8px 10px; text-align: center; }
@@ -3319,7 +3310,6 @@ hr, .divider {
         </div>
     </div>
 
-
 <!-- Space Data Modal -->
 <div class="space-data-overlay" id="spaceDataModal" onclick="if(event.target===this)closeSpaceDataModal()">
     <div class="space-data-content">
@@ -3329,8 +3319,7 @@ hr, .divider {
         </div>
         <div class="space-data-tabs">
             <button class="sd-tab active" onclick="switchSDTab('iss', this)">ISS追踪</button>
-            <button class="sd-tab" onclick="switchSDTab('weather', this)">太空天气</button>
-            <button class="sd-tab" onclick="switchSDTab('planets', this)">行星位置</button>
+                        <button class="sd-tab" onclick="switchSDTab('planets', this)">行星位置</button>
         </div>
         <div class="space-data-body">
             <div class="sd-panel active" id="sdPanel-iss">
@@ -3348,23 +3337,7 @@ hr, .divider {
                     <div class="iss-info-item"><div class="iss-info-label">速度</div><div class="iss-info-value" id="issVel">加载中...</div></div>
                 </div>
             </div>
-            <div class="sd-panel" id="sdPanel-weather">
-                <div class="weather-grid">
-                    <div class="weather-card"><div class="weather-label">太阳风速</div><div class="weather-value" id="swSpeed">加载中...</div><div class="weather-desc">正常: 300-400 km/s</div></div>
-                    <div class="weather-card"><div class="weather-label">太阳风密度</div><div class="weather-value" id="swDensity">加载中...</div><div class="weather-desc">正常: 1-10 p/cm3</div></div>
-                    <div class="weather-card"><div class="weather-label">磁场 Bz</div><div class="weather-value" id="swBz">加载中...</div><div class="weather-desc">南向负值增强地磁活动</div></div>
-                    <div class="weather-card"><div class="weather-label">地磁 Kp 指数</div><div class="weather-value" id="swKp">加载中...</div><div class="weather-desc">极光风险: <span id="swAurora">--</span></div></div>
-                </div>
-                <div class="weather-update" id="swUpdate">数据来源: NOAA SWPC</div>
-            </div>
-            <div class="sd-panel" id="sdPanel-planets">
-                <div class="planet-diagram" id="planetDiagram">加载中...</div>
-                <div class="planet-info-list" id="planetInfoList"></div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Image Lightbox -->
+            <!-- Image Lightbox -->
 <div class="image-lightbox" id="imageLightbox" onclick="closeImageLightbox()">
     <img id="lightboxImage" src="" alt="图片预览">
 </div>
@@ -4363,9 +4336,6 @@ hr, .divider {
             document.getElementById('modalOverlay').classList.add('show');
         }
 
-
-
-
         // ==================== 用户关注系统 ====================
         function toggleFollow(username) {
             let followed = JSON.parse(localStorage.getItem('space_follows')) || [];
@@ -5036,7 +5006,6 @@ function extractMentions(text) {
     draw();
 })();
 
-
 // ==================== NASA 每日天文一图 ====================
 async function loadAPOD() {
     var container = document.getElementById('apodContainer');
@@ -5281,8 +5250,6 @@ if (currentUser) {
 loadOnlineUsers();
 setInterval(loadOnlineUsers, 30000);
 
-
-
 // ==================== 太空数据中心 ====================
 function openSpaceDataModal() {
     document.getElementById('spaceDataModal').classList.add('show');
@@ -5291,7 +5258,7 @@ function openSpaceDataModal() {
 function closeSpaceDataModal() {
     document.getElementById('spaceDataModal').classList.remove('show');
     stopISSTracking();
-    stopWeatherTracking();
+    
 }
 function switchSDTab(tab, btn) {
     document.querySelectorAll('.sd-tab').forEach(function(t) { t.classList.remove('active'); });
@@ -5302,7 +5269,7 @@ function switchSDTab(tab, btn) {
     stopISSTracking();
     stopWeatherTracking();
     if (tab === 'iss') { startISSTracking(); }
-    else if (tab === 'weather') { startWeatherTracking(); }
+    
     else if (tab === 'planets') { renderSolarSystem(); }
 }
 var issTimer = null;
@@ -5342,47 +5309,8 @@ function renderISSTrack() {
 function startISSTracking() { if (issTimer) return; loadISSData(); issTimer = setInterval(loadISSData, 5000); }
 function stopISSTracking() { if (issTimer) { clearInterval(issTimer); issTimer = null; } }
 var weatherTimer = null;
-async function loadSpaceWeather() {
-    try {
-        var swResp = await fetch('https://services.swpc.noaa.gov/json/solar_wind/plasma_1m.json');
-        var swData = await swResp.json();
-        if (!swData || swData.length < 2) throw new Error('No plasma data');
-        var latestSW = swData[swData.length - 1];
-        var swSpeed = parseFloat(latestSW[1]) || 0;
-        var swDensity = parseFloat(latestSW[2]) || 0;
-        var kpResp = await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
-        var kpData = await kpResp.json();
-        if (!kpData || kpData.length < 2) throw new Error('No Kp data');
-        var latestKp = kpData[kpData.length - 1];
-        var kpValue = parseFloat(latestKp[1]) || 0;
-        var magResp = await fetch('https://services.swpc.noaa.gov/json/solar_wind/mag_1m.json');
-        var magData = await magResp.json();
-        if (!magData || magData.length < 2) throw new Error('No mag data');
-        var latestMag = magData[magData.length - 1];
-        var bz = parseFloat(latestMag[3]) || 0;
-        var speedEl = document.getElementById('swSpeed');
-        if (speedEl) { speedEl.textContent = swSpeed.toFixed(0) + ' km/s'; speedEl.style.color = swSpeed > 500 ? '#ff4040' : (swSpeed > 400 ? '#ffd040' : '#40ff40'); }
-        var densEl = document.getElementById('swDensity');
-        if (densEl) densEl.textContent = swDensity.toFixed(1) + ' p/cm3';
-        var bzEl = document.getElementById('swBz');
-        if (bzEl) { bzEl.textContent = bz.toFixed(1) + ' nT'; bzEl.style.color = bz < -10 ? '#ff4040' : (bz < -5 ? '#ffd040' : '#40ff40'); }
-        var kpEl = document.getElementById('swKp');
-        if (kpEl) kpEl.textContent = kpValue.toFixed(1);
-        var auroraEl = document.getElementById('swAurora');
-        if (auroraEl) {
-            if (kpValue >= 5) { auroraEl.textContent = '高'; auroraEl.style.color = '#ff4040'; }
-            else if (kpValue >= 4) { auroraEl.textContent = '中'; auroraEl.style.color = '#ffd040'; }
-            else { auroraEl.textContent = '低'; auroraEl.style.color = '#40ff40'; }
-        }
-        var updEl = document.getElementById('swUpdate');
-        if (updEl) updEl.textContent = '更新: ' + new Date().toLocaleTimeString('zh-CN') + ' | NOAA SWPC';
-    } catch(e) {
-        console.error('Space weather error:', e);
-        var el3 = document.getElementById('swSpeed'); if (el3) el3.textContent = '获取失败';
-    }
-}
-function startWeatherTracking() { if (weatherTimer) return; loadSpaceWeather(); weatherTimer = setInterval(loadSpaceWeather, 60000); }
-function stopWeatherTracking() { if (weatherTimer) { clearInterval(weatherTimer); weatherTimer = null; } }
+
+ }
 function calcPlanetPos(planet, date) {
     var J2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
     var d = (date.getTime() - J2000) / 86400000;
