@@ -5306,7 +5306,6 @@ function renderISSTrack() {
 }
 function startISSTracking() { if (issTimer) return; loadISSData(); issTimer = setInterval(loadISSData, 5000); }
 function stopISSTracking() { if (issTimer) { clearInterval(issTimer); issTimer = null; } }
-}
 function calcPlanetPos(planet, date) {
     var J2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
     var d = (date.getTime() - J2000) / 86400000;
