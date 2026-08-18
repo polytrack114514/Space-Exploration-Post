@@ -3141,6 +3141,278 @@ hr, .divider {
     box-shadow: 0 0 16px rgba(0, 212, 255, 0.2) !important;
     text-shadow: 0 0 6px rgba(0, 212, 255, 0.4) !important;
 }
+
+/* ==================== PAGE LAYOUT OVERHAUL ==================== */
+
+/* --- Starfield Background --- */
+.starfield {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -2; pointer-events: none; overflow: hidden;
+}
+.starfield::before, .starfield::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 200%; height: 200%;
+    background-image:
+        radial-gradient(1px 1px at 20% 30%, #fff, transparent),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 50% 50%, #fff, transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 90% 60%, rgba(0,212,255,0.5), transparent),
+        radial-gradient(1px 1px at 33% 80%, rgba(180,100,255,0.4), transparent),
+        radial-gradient(1px 1px at 60% 20%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 15% 90%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1px 1px at 70% 40%, rgba(0,212,255,0.3), transparent),
+        radial-gradient(1px 1px at 85% 85%, rgba(180,100,255,0.3), transparent);
+    background-size: 300px 300px;
+    animation: twinkle 4s ease-in-out infinite alternate;
+}
+.starfield::after {
+    background-size: 250px 250px;
+    animation: twinkle 6s ease-in-out infinite alternate-reverse;
+    opacity: 0.6;
+}
+@keyframes twinkle {
+    0% { opacity: 0.3; transform: translateX(0); }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; transform: translateX(-20px); }
+}
+
+/* --- Gradient Glow Orbs --- */
+.glow-orb {
+    position: fixed; border-radius: 50%; filter: blur(80px);
+    z-index: -1; pointer-events: none; opacity: 0.15;
+}
+.glow-orb-1 { top: -100px; left: -100px; width: 400px; height: 400px; background: radial-gradient(circle, #00d4ff, transparent 70%); animation: orbFloat1 20s ease-in-out infinite; }
+.glow-orb-2 { bottom: -100px; right: -100px; width: 500px; height: 500px; background: radial-gradient(circle, #8b46ff, transparent 70%); animation: orbFloat2 25s ease-in-out infinite; }
+@keyframes orbFloat1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(100px, 50px); } }
+@keyframes orbFloat2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-80px, -40px); } }
+
+/* --- Two-Column Layout --- */
+.main-container {
+    max-width: 1200px; margin: 0 auto; padding: 16px;
+    display: grid; grid-template-columns: 1fr 340px;
+    gap: 20px; align-items: start;
+}
+@media (max-width: 900px) {
+    .main-container { grid-template-columns: 1fr; }
+    .sidebar { position: static !important; max-height: none !important; }
+}
+.post-stream { min-width: 0; }
+.sidebar {
+    position: sticky; top: 80px;
+    display: flex; flex-direction: column; gap: 16px;
+    max-height: calc(100vh - 100px); overflow-y: auto;
+    padding-right: 4px;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 2px; }
+
+/* --- Glassmorphism Cards --- */
+.glass-card {
+    background: rgba(15, 20, 35, 0.55) !important;
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+.glass-card:hover {
+    border-color: rgba(0, 212, 255, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 212, 255, 0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* --- Sidebar Widget Cards --- */
+.sidebar-widget {
+    background: rgba(15, 20, 35, 0.6);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.sidebar-widget:hover {
+    border-color: rgba(0, 212, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 16px rgba(0, 212, 255, 0.06);
+}
+.sidebar-widget-title {
+    font-size: 0.85rem; font-weight: 600; color: rgba(0, 212, 255, 0.9);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+    text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* --- Blue-Purple Gradient Accents --- */
+:root {
+    --gradient-accent: linear-gradient(135deg, #00d4ff 0%, #8b46ff 100%);
+    --gradient-accent-hover: linear-gradient(135deg, #00b8e6 0%, #7a3de6 100%);
+    --gradient-text: linear-gradient(135deg, #00d4ff 0%, #b464ff 100%);
+}
+.gradient-btn {
+    background: var(--gradient-accent) !important;
+    border: none !important; color: #fff !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 12px rgba(0, 212, 255, 0.2);
+}
+.gradient-btn:hover {
+    background: var(--gradient-accent-hover) !important;
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.35), 0 0 24px rgba(139, 70, 255, 0.25) !important;
+    transform: translateY(-1px);
+}
+.gradient-btn:active { transform: translateY(0); }
+.gradient-text {
+    background: var(--gradient-text);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+}
+
+/* --- Unified Border Radius --- */
+.post-card, .create-post-card, .notification-item, .comment-item {
+    border-radius: 16px !important;
+}
+button, .btn, .tab, .notify-btn, .action-btn, .submit-btn {
+    border-radius: 10px !important;
+}
+input, textarea, select {
+    border-radius: 10px !important;
+}
+
+/* --- Smooth Transitions --- */
+.post-card, .sidebar-widget, .notification-item, .comment-item,
+button, .btn, .tab, .notify-btn, .action-btn, input, textarea, select,
+.profile-follow-btn, .nav-link, .icon-btn {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.post-card {
+    transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
+}
+.post-card:hover {
+    transform: translateY(-2px);
+}
+
+/* --- Skeleton Screen Loading --- */
+.skeleton-card {
+    background: rgba(15, 20, 35, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px; margin-bottom: 16px;
+    overflow: hidden;
+}
+.skeleton-line {
+    background: linear-gradient(90deg,
+        rgba(255,255,255,0.04) 0%,
+        rgba(0,212,255,0.08) 50%,
+        rgba(255,255,255,0.04) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; }
+.skeleton-title { width: 60%; height: 14px; margin-bottom: 8px; }
+.skeleton-text { width: 100%; height: 12px; margin-bottom: 6px; }
+.skeleton-text-short { width: 80%; height: 12px; margin-bottom: 6px; }
+.skeleton-image { width: 100%; height: 200px; margin-top: 12px; border-radius: 8px; }
+
+/* --- Sidebar Countdown Widget --- */
+.sidebar-countdown {
+    text-align: center; padding: 8px 0;
+}
+.sidebar-countdown-timer {
+    font-size: 1.6rem; font-weight: 700; font-family: 'Exo 2', monospace;
+    background: var(--gradient-text);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 8px 0;
+}
+.sidebar-countdown-label {
+    font-size: 0.72rem; color: #667788; margin-top: 4px;
+}
+.sidebar-countdown-rocket {
+    font-size: 0.85rem; color: #aabbcc; margin-top: 8px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* --- Sidebar APOD Widget --- */
+.sidebar-apod-img {
+    width: 100%; border-radius: 10px; margin: 8px 0;
+    cursor: pointer; transition: transform 0.3s ease;
+}
+.sidebar-apod-img:hover { transform: scale(1.02); }
+.sidebar-apod-title {
+    font-size: 0.82rem; font-weight: 600; margin: 6px 0;
+}
+.sidebar-apod-desc {
+    font-size: 0.72rem; color: #778899; line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- Nav Bar Glass Effect --- */
+header, .header, .navbar, nav {
+    backdrop-filter: blur(16px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+    background: rgba(10, 15, 25, 0.7) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* --- Post Input Glass --- */
+.create-post-area, .post-input-area {
+    background: rgba(15, 20, 35, 0.5) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* --- Tab Bar Glass --- */
+.tab-bar {
+    background: rgba(15, 20, 35, 0.4) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-radius: 12px !important;
+    padding: 4px !important;
+}
+
+/* --- Scrollbar Styling --- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(0,212,255,0.3), rgba(139,70,255,0.3));
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(0,212,255,0.5), rgba(139,70,255,0.5));
+}
+
+/* --- Light Theme Adjustments --- */
+[data-theme="light"] .glass-card,
+[data-theme="light"] .sidebar-widget {
+    background: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+[data-theme="light"] .starfield { opacity: 0.3; }
+[data-theme="light"] .glow-orb { opacity: 0.08; }
+[data-theme="light"] .skeleton-card {
+    background: rgba(240, 240, 245, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+[data-theme="light"] .skeleton-line {
+    background: linear-gradient(90deg, rgba(0,0,0,0.04) 0%, rgba(0,100,200,0.08) 50%, rgba(0,0,0,0.04) 100%);
+    background-size: 200% 100%;
+}
+[data-theme="light"] header,
+[data-theme="light"] .header,
+[data-theme="light"] .navbar,
+[data-theme="light"] nav {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="/Space-Exploration-Post/favicon.png">
@@ -3149,6 +3421,11 @@ hr, .divider {
 <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@300;400;500;600;700;800&family=Michroma&display=swap" rel="stylesheet">
 </head>
 <body>
+<!-- Starfield Background -->
+<div class="starfield"></div>
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+
 <!-- 加载动画 -->
 <div class="space-loader-overlay" id="spaceLoader">
     <canvas class="warp-canvas" id="warpCanvas"></canvas>
@@ -3160,7 +3437,12 @@ hr, .divider {
     <header class="header">
         <h1>探索宇宙帖子</h1>
         <p>探索浩瀚宇宙，分享星辰大海，一起畅聊太空奥秘</p>
-    </header>
+    
+
+<!-- Two-Column Layout -->
+<div class="main-container">
+    <div class="post-stream">
+</header>
 
     <!-- 火箭发射时间表 -->
     <div class="launch-section">
@@ -3237,7 +3519,32 @@ hr, .divider {
     <div class="modal-overlay" id="launchModalOverlay">
         <div class="modal">
             <button class="modal-close" onclick="closeLaunchEditor()">×</button>
-            <div class="modal-title" id="launchModalTitle">添加火箭发射</div>
+    </div>
+    <aside class="sidebar" id="sidebarWidgets">
+        <!-- Launch Countdown Widget -->
+        <div class="sidebar-widget" id="sidebarCountdown">
+            <div class="sidebar-widget-title">🚀 下次发射倒计时</div>
+            <div class="sidebar-countdown">
+                <div class="sidebar-countdown-timer" id="sidebarCountdownTimer">--:--:--:--</div>
+                <div class="sidebar-countdown-label" id="sidebarCountdownLabel">加载中...</div>
+                <div class="sidebar-countdown-rocket" id="sidebarCountdownRocket"></div>
+            </div>
+        </div>
+        <!-- NASA APOD Widget -->
+        <div class="sidebar-widget" id="sidebarApod">
+            <div class="sidebar-widget-title">🌌 NASA 每日天文一图</div>
+            <div id="sidebarApodContent"><div class="skeleton-line" style="width:100%;height:180px;"></div></div>
+        </div>
+        <!-- Online Users Widget -->
+        <div class="sidebar-widget" id="sidebarOnline">
+            <div class="sidebar-widget-title">🟢 在线探索者</div>
+            <div id="sidebarOnlineCount" style="font-size:1.5rem;font-weight:700;color:#00d4ff;">0</div>
+            <div style="font-size:0.72rem;color:#667788;margin-top:4px;">人正在探索</div>
+        </div>
+    </aside>
+</div>
+
+<div class="modal-title" id="launchModalTitle">添加火箭发射</div>
             <input type="text" class="modal-input" id="launchRocket" placeholder="火箭名称（如：朱雀三号遥二）" maxlength="50">
             <input type="text" class="modal-input" id="launchAgency" placeholder="机构（如：蓝箭航天）" maxlength="50">
             <input type="datetime-local" class="modal-input" id="launchDate" style="color-scheme: dark;">
@@ -3301,7 +3608,7 @@ hr, .divider {
             <button class="admin-close-btn" onclick="closeReportModal()" style="position:absolute;top:12px;right:14px;">&times;</button>
             <div style="font-family:'Michroma',sans-serif;font-size:1rem;text-align:center;margin-bottom:16px;color:#ff4466;letter-spacing:1px;">举报帖子</div>
             <div id="reportReasons"></div>
-            <button class="report-submit-btn" id="reportSubmitBtn" onclick="submitReport()">提交举报</button>
+            <button class="report-submit-btn" gradient-btn id="reportSubmitBtn" onclick="submitReport()">提交举报</button>
         </div>
     </div>
     <!-- 管理员后台弹窗 -->
@@ -3642,7 +3949,7 @@ hr, .divider {
             list.innerHTML = displayPosts.map(post => {
                 const isLiked = likedPosts[post.id] || false;
                 return `
-                    <div class="post-card" data-id="${post.id}">
+                    <div class="post-card" glass-card data-id="${post.id}">
                         <div class="post-header">
                             <div class="post-author">
                                 <div class="avatar" style="cursor:pointer;" onclick="showUserProfile('${escapeHtml(post.author)}')">${post.avatar.startsWith('http') ? `<img src="${post.avatar}" alt="avatar">` : post.avatar}</div>
@@ -4429,7 +4736,7 @@ hr, .divider {
                 postsHtml = '<div class="profile-posts"><div class="profile-posts-title">TA的帖子 (' + userPosts.length + ')</div>';
                 userPosts.forEach(function(post) {
                     var isLiked = likedPosts[post.id] || false;
-                    postsHtml += '<div class="post-card" data-id="' + post.id + '">';
+                    postsHtml += '<div class="post-card" glass-card data-id="' + post.id + '">';
                     postsHtml += '<div class="post-header"><div class="post-author">';
                     postsHtml += '<div class="avatar">' + (post.avatar && post.avatar.startsWith('http') ? '<img src="' + post.avatar + '" alt="avatar">' : (post.avatar || '🌟')) + '</div>';
                     postsHtml += '<div class="author-info"><span class="author-name">' + escapeHtml(post.author) + '</span>';
@@ -5472,6 +5779,150 @@ if (!window._spaceFeaturesInit) {
             if (sdm && sdm.classList.contains('show')) closeSpaceDataModal();
         }
     });
+}
+
+
+
+// ==================== SIDEBAR WIDGETS ====================
+
+// --- Sidebar Launch Countdown ---
+var sidebarCountdownInterval = null;
+function updateSidebarCountdown() {
+    try {
+        if (typeof launches === 'undefined' || !launches || launches.length === 0) {
+            var el = document.getElementById('sidebarCountdownTimer');
+            if (el) el.textContent = '暂无发射';
+            var lbl = document.getElementById('sidebarCountdownLabel');
+            if (lbl) lbl.textContent = '等待安排';
+            return;
+        }
+        var upcoming = launches.filter(function(l) {
+            return new Date(l.date) > new Date() && (l.status === 'upcoming' || !l.status);
+        });
+        if (upcoming.length === 0) {
+            var el2 = document.getElementById('sidebarCountdownTimer');
+            if (el2) el2.textContent = '暂无发射';
+            return;
+        }
+        upcoming.sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
+        var next = upcoming[0];
+        var diff = new Date(next.date) - new Date();
+        if (diff <= 0) return;
+        var days = Math.floor(diff / 86400000);
+        var hours = Math.floor((diff % 86400000) / 3600000);
+        var mins = Math.floor((diff % 3600000) / 60000);
+        var secs = Math.floor((diff % 60000) / 1000);
+        var timerEl = document.getElementById('sidebarCountdownTimer');
+        if (timerEl) {
+            timerEl.textContent = days + 'd ' + String(hours).padStart(2,'0') + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+        }
+        var labelEl = document.getElementById('sidebarCountdownLabel');
+        if (labelEl) {
+            labelEl.textContent = next.date + ' | ' + (next.location || '');
+        }
+        var rocketEl = document.getElementById('sidebarCountdownRocket');
+        if (rocketEl) {
+            rocketEl.textContent = (next.rocket || '') + ' - ' + (next.agency || '');
+        }
+    } catch(e) {
+        console.error('Sidebar countdown error:', e);
+    }
+}
+function startSidebarCountdown() {
+    if (sidebarCountdownInterval) clearInterval(sidebarCountdownInterval);
+    updateSidebarCountdown();
+    sidebarCountdownInterval = setInterval(updateSidebarCountdown, 1000);
+}
+
+// --- Sidebar NASA APOD ---
+async function loadSidebarApod() {
+    try {
+        var apodEl = document.getElementById('sidebarApodContent');
+        if (!apodEl) return;
+        var resp = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&thumbs=true');
+        var data = await resp.json();
+        var html = '';
+        if (data.media_type === 'image' && data.url) {
+            html = '<img class="sidebar-apod-img" src="' + data.url + '" alt="' + (data.title||'') + '" onclick="openImageLightbox(\'' + data.url + '\')">';
+        } else if (data.thumbnail_url) {
+            html = '<img class="sidebar-apod-img" src="' + data.thumbnail_url + '" alt="' + (data.title||'') + '" onclick="openImageLightbox(\'' + data.thumbnail_url + '\')">';
+        }
+        html += '<div class="sidebar-apod-title">' + (data.title || 'NASA APOD') + '</div>';
+        if (data.explanation) {
+            var desc = data.explanation.substring(0, 150) + '...';
+            html += '<div class="sidebar-apod-desc">' + desc + '</div>';
+        }
+        apodEl.innerHTML = html;
+    } catch(e) {
+        console.error('Sidebar APOD error:', e);
+        var el = document.getElementById('sidebarApodContent');
+        if (el) el.innerHTML = '<div style="color:#667788;font-size:0.8rem;">APOD 加载失败</div>';
+    }
+}
+
+// --- Sidebar Online Users ---
+function updateSidebarOnline() {
+    try {
+        var count = 0;
+        if (typeof allUsers !== 'undefined' && allUsers) {
+            count = allUsers.filter(function(u) { return u.online; }).length;
+        }
+        if (typeof onlineCount !== 'undefined') count = onlineCount;
+        var el = document.getElementById('sidebarOnlineCount');
+        if (el) el.textContent = count;
+    } catch(e) {}
+}
+
+// --- Skeleton Screen ---
+function showSkeletonCards(count) {
+    count = count || 3;
+    var postList = document.getElementById('postList');
+    if (!postList) return;
+    var html = '';
+    for (var i = 0; i < count; i++) {
+        html += '<div class="skeleton-card">';
+        html += '<div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">';
+        html += '<div class="skeleton-line skeleton-avatar"></div>';
+        html += '<div style="flex:1;"><div class="skeleton-line skeleton-title"></div>';
+        html += '<div class="skeleton-line skeleton-text-short" style="height:10px;width:40%;"></div></div>';
+        html += '</div>';
+        html += '<div class="skeleton-line skeleton-text"></div>';
+        html += '<div class="skeleton-line skeleton-text"></div>';
+        html += '<div class="skeleton-line skeleton-text-short"></div>';
+        html += '<div class="skeleton-line skeleton-image"></div>';
+        html += '<div style="display:flex;gap:16px;margin-top:12px;">';
+        html += '<div class="skeleton-line" style="width:60px;height:24px;"></div>';
+        html += '<div class="skeleton-line" style="width:60px;height:24px;"></div>';
+        html += '<div class="skeleton-line" style="width:60px;height:24px;"></div>';
+        html += '</div></div>';
+    }
+    postList.innerHTML = html;
+}
+
+// --- Initialize sidebar on page load ---
+function initSidebarWidgets() {
+    startSidebarCountdown();
+    loadSidebarApod();
+    updateSidebarOnline();
+    // Update online count periodically
+    setInterval(updateSidebarOnline, 30000);
+    // Update countdown when launches change
+    if (typeof renderLaunches === 'function') {
+        var origRender = renderLaunches;
+        renderLaunches = function() {
+            origRender.apply(this, arguments);
+            updateSidebarCountdown();
+        };
+    }
+}
+
+// Auto-init after DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initSidebarWidgets, 500);
+    });
+} else {
+    setTimeout(initSidebarWidgets, 500);
 }
 
 </script>
