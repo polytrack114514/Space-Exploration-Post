@@ -4010,6 +4010,7 @@ hr, .divider {
             btn.textContent = '请稍候...';
             await loadUsers();
             if (authMode === 'signup') {
+                if (siteSettings.disableRegister) { showAuthErr('注册已关闭，请联系管理员'); btn.disabled = false; btn.textContent = '注册'; return; }
                 if (password !== confirm) { showAuthErr('两次密码不一致'); btn.disabled = false; btn.textContent = '注册'; return; }
                 const exists = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
                 if (exists) { showAuthErr('该用户名已被注册'); btn.disabled = false; btn.textContent = '注册'; return; }
