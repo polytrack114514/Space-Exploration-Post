@@ -3132,6 +3132,22 @@ hr, .divider {
     box-shadow: 0 0 16px rgba(0, 212, 255, 0.2) !important;
     text-shadow: 0 0 6px rgba(0, 212, 255, 0.4) !important;
 }
+
+/* 站点设置 */
+.settings-panel { padding: 16px; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,212,255,0.1); }
+.settings-row:last-child { border-bottom: none; }
+.settings-label { color: var(--text-primary); font-size: 0.9rem; }
+.settings-desc { color: var(--text-muted); font-size: 0.8rem; margin-top: 2px; }
+.toggle-switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,64,96,0.3); border: 1px solid rgba(255,64,96,0.4); border-radius: 24px; transition: 0.3s; }
+.toggle-slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 2px; bottom: 2px; background: #ff4060; border-radius: 50%; transition: 0.3s; }
+.toggle-switch input:checked + .toggle-slider { background: rgba(0,212,255,0.3); border-color: rgba(0,212,255,0.4); }
+.toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); background: #00d4ff; }
+.settings-status { font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; }
+.settings-status.on { background: rgba(0,212,255,0.15); color: #00d4ff; }
+.settings-status.off { background: rgba(255,64,96,0.15); color: #ff4060; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="/Space-Exploration-Post/favicon.png">
@@ -5169,6 +5185,7 @@ function openAdminModal() {
     document.getElementById('adminModal').classList.add('show');
     adminCurrentTab = 'users';
     renderAdminContent();
+    loadSiteSettings();
 }
 function closeAdminModal() {
     document.getElementById('adminModal').classList.remove('show');
@@ -5202,6 +5219,7 @@ async function renderAdminContent() {
             html += '</div>';
         });
         content.innerHTML = html || '<div style="text-align:center;color:var(--text-muted);padding:40px;">暂无用户</div>';
+    } else if (adminCurrentTab === 'settings') { renderSettingsPanel(); return; }
     } else if (adminCurrentTab === 'reports') {
         try {
             var { data, error } = await sb.from('reports').select('*').order('created_at', { ascending: false }).limit(100);
@@ -5255,9 +5273,72 @@ async function deleteReport(reportId) {
     }
 }
 
+
+// ==================== 站点设置 ====================
+var siteSettings = { disableRegister: false };
+async function loadSiteSettings() {
+    try {
+        var { data, error } = await sb.from('site_settings').select('*');
+        if (error) throw error;
+        siteSettings = { disableRegister: false };
+        if (data && data.length > 0) {
+            data.forEach(function(s) { siteSettings[s.key] = s.value; });
+        }
+        updateRegStatus();
+    } catch(e) {
+        console.warn('加载站点设置失败:', e.message);
+        siteSettings = { disableRegister: false };
+    }
+}
+async function saveSiteSetting(key, value) {
+    try {
+        var { error } = await sb.from('site_settings').upsert({ key: key, value: value }, { onConflict: 'key' });
+        if (error) throw error;
+        siteSettings[key] = value;
+        updateRegStatus();
+    } catch(e) {
+        alert('保存失败: ' + e.message);
+    }
+}
+function updateRegStatus() {
+    var el = document.getElementById('regStatusText');
+    var toggle = document.getElementById('disableRegToggle');
+    if (!el) return;
+    var disabled = siteSettings.disableRegister;
+    if (toggle) toggle.checked = disabled;
+    if (el) {
+        el.textContent = disabled ? '已禁止注册' : '允许注册';
+        el.className = 'settings-status ' + (disabled ? 'on' : 'off');
+    }
+}
+function renderSettingsPanel() {
+    var c = document.getElementById('adminContent');
+    if (!c) return;
+    c.innerHTML = '<div class=\'settings-panel\'>\n'
+        + '    <div class=\'settings-row\'>\n'
+        + '        <div>\n'
+        + '            <div class=\'settings-label\'>禁止注册</div>\n'
+        + '            <div class=\'settings-desc\'>开启后将阻止新用户注册，已注册用户不受影响</div>\n'
+        + '        </div>\n'
+        + '        <div style="text-align:right;margin-right:12px;">\n'
+        + '            <label class=\'toggle-switch\'>\n'
+        + '                <input type=\'checkbox\' id=\'disableRegToggle\' onchange=\'saveSiteSetting(\'disableRegister\', this.checked)\'>\n'
+        + '                <span class=\'toggle-slider\'></span>\n'
+        + '            </label>\n'
+        + '        </div>\n'
+        + '    </div>\n'
+        + '    <div class=\'settings-row\'>\n'
+        + '        <div><div class=\'settings-label\'>注册状态</div></div>\n'
+        + '        <span class=\'settings-status\' id=\'regStatusText\'>加载中...</span>\n'
+        + '    </div>\n'
+        + '</div>';
+    updateRegStatus();
+}
+
 // ==================== 初始化新功能 ====================
 // Load APOD on page load
 loadAPOD();
+loadSiteSettings();
 // Online users heartbeat
 if (currentUser) {
     updateLastActive();
