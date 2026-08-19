@@ -5219,8 +5219,7 @@ async function renderAdminContent() {
             html += '</div>';
         });
         content.innerHTML = html || '<div style="text-align:center;color:var(--text-muted);padding:40px;">暂无用户</div>';
-    } else if (adminCurrentTab === 'settings') { renderSettingsPanel(); return; }
-    } else if (adminCurrentTab === 'reports') {
+    } else if (adminCurrentTab === 'settings') { renderSettingsPanel(); return; } else if (adminCurrentTab === 'reports') {
         try {
             var { data, error } = await sb.from('reports').select('*').order('created_at', { ascending: false }).limit(100);
             if (error) throw error;
