@@ -5401,7 +5401,7 @@ function switchAdminTab(tab, btn) {
     if (btn) btn.classList.add('active');
     renderAdminContent();
 }
-async function renderAdminContent() {
+async async function renderAdminContent() {
     var content = document.getElementById('adminContent');
     if (!content) return;
     if (adminCurrentTab === 'users') {
