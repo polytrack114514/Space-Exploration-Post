@@ -5452,7 +5452,6 @@ async function renderAdminContent() {
         } catch(e) {
             content.innerHTML = '<div style="text-align:center;color:var(--danger);padding:40px;">加载失败: ' + e.message + '</div>';
         }
-    }
     } else if (adminCurrentTab === 'settings') {
         renderSettingsPanel();
         return;
