@@ -5370,7 +5370,7 @@ function renderSettingsPanel() {
             '<div><div class="settings-label">禁止注册</div>' +
             '<div class="settings-desc">开启后，新用户将无法注册账号</div></div>' +
             '<label class="toggle-switch">' +
-                '<input type="checkbox" id="disableRegToggle" onchange="saveSiteSetting('disableRegister', this.checked)">' +
+                '<input type="checkbox" id="disableRegToggle" onchange="saveSiteSetting(\'disableRegister\', this.checked)">' +
                 '<span class="toggle-slider"></span>' +
             '</label>' +
         '</div>' +
@@ -5401,7 +5401,7 @@ function switchAdminTab(tab, btn) {
     if (btn) btn.classList.add('active');
     renderAdminContent();
 }
-async async function renderAdminContent() {
+async function renderAdminContent() {
     var content = document.getElementById('adminContent');
     if (!content) return;
     if (adminCurrentTab === 'users') {
