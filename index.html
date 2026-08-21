@@ -3252,6 +3252,46 @@ hr, .divider {
     box-shadow: 0 0 16px rgba(0, 212, 255, 0.2) !important;
     text-shadow: 0 0 6px rgba(0, 212, 255, 0.4) !important;
 }
+
+/* ==================== 站点设置面板 ==================== */
+.settings-panel { padding: 16px; }
+.settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 12px; border-bottom: 1px solid rgba(0,212,255,0.1);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-label { font-size: 0.95rem; color: #c0c8d4; }
+.settings-desc { font-size: 0.78rem; color: #556677; margin-top: 4px; }
+.toggle-switch {
+    position: relative; width: 56px; height: 30px; flex-shrink: 0; cursor: pointer;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider {
+    position: absolute; inset: 0;
+    background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 30px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toggle-slider::before {
+    content: ""; position: absolute; width: 22px; height: 22px; left: 3px; top: 3px;
+    background: linear-gradient(135deg, #00d4ff, #0099cc); border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0,212,255,0.4);
+}
+.toggle-switch input:checked + .toggle-slider {
+    background: rgba(255,64,96,0.15); border-color: rgba(255,64,96,0.4);
+}
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(26px);
+    background: linear-gradient(135deg, #ff4060, #cc2030);
+    box-shadow: 0 2px 8px rgba(255,64,96,0.5);
+}
+.settings-status {
+    display: inline-block; padding: 4px 12px; border-radius: 12px;
+    font-size: 0.82rem; font-weight: 600; margin-left: 12px;
+}
+.settings-status.on { background: rgba(0,212,255,0.15); color: #00d4ff; }
+.settings-status.off { background: rgba(255,64,96,0.15); color: #ff4060; }
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="/Space-Exploration-Post/favicon.png">
@@ -3746,7 +3786,7 @@ hr, .divider {
                     <div class="post-card" data-id="${post.id}">
                         <div class="post-header">
                             <div class="post-author">
-                                <div class="avatar" style="cursor:pointer;" onclick="showUserProfile('${escapeHtml(post.author)}')">${post.avatar.startsWith('http') ? `<img src="${post.avatar}" alt="avatar">` : post.avatar}</div>
+                                <div class="avatar" style="cursor:pointer;" onclick="showUserProfile('${escapeHtml(post.author)}')">${post.avatar.startsWith('http') ? `<img src="${escapeHtml(post.avatar)}" alt="avatar">` : escapeHtml(post.avatar)}</div>
                                 <div class="author-info">
                                     <span class="author-name">
                                         ${escapeHtml(post.author)}
@@ -4536,7 +4576,7 @@ hr, .divider {
                     var isLiked = likedPosts[post.id] || false;
                     postsHtml += '<div class="post-card" data-id="' + post.id + '">';
                     postsHtml += '<div class="post-header"><div class="post-author">';
-                    postsHtml += '<div class="avatar">' + (post.avatar && post.avatar.startsWith('http') ? '<img src="' + post.avatar + '" alt="avatar">' : (post.avatar || '🌟')) + '</div>';
+                    postsHtml += '<div class="avatar">' + (post.avatar && post.avatar.startsWith('http') ? '<img src="' + escapeHtml(post.avatar) + '" alt="avatar">' : (escapeHtml(post.avatar || '🌟'))) + '</div>';
                     postsHtml += '<div class="author-info"><span class="author-name">' + escapeHtml(post.author) + '</span>';
                     postsHtml += '<span class="post-time">' + formatTime(post.time) + '</span></div></div></div>';
                     if (post.title) postsHtml += '<div class="post-title">' + escapeHtml(post.title) + '</div>';
@@ -5281,6 +5321,67 @@ async function submitReport() {
 }
 
 // ==================== 管理员后台 ====================
+
+var siteSettings = { disableRegister: false };
+
+async function loadSiteSettings() {
+    try {
+        var { data, error } = await sb.from('site_settings').select('*');
+        if (error) throw error;
+        siteSettings = { disableRegister: false };
+        if (data && data.length > 0) {
+            data.forEach(function(s) { siteSettings[s.key] = s.value; });
+        }
+        updateRegStatus();
+    } catch(e) {
+        console.warn('加载站点设置失败:', e.message);
+        siteSettings = { disableRegister: false };
+    }
+}
+
+async function saveSiteSetting(key, value) {
+    try {
+        var { error } = await sb.from('site_settings').upsert({ key: key, value: value }, { onConflict: 'key' });
+        if (error) throw error;
+        siteSettings[key] = value;
+        updateRegStatus();
+    } catch(e) {
+        alert('保存失败: ' + e.message);
+    }
+}
+
+function updateRegStatus() {
+    var el = document.getElementById('regStatusText');
+    var toggle = document.getElementById('disableRegToggle');
+    if (!el) return;
+    var disabled = siteSettings.disableRegister;
+    if (toggle) toggle.checked = disabled;
+    if (el) {
+        el.textContent = disabled ? '已禁止注册' : '允许注册';
+        el.className = 'settings-status ' + (disabled ? 'on' : 'off');
+    }
+}
+
+function renderSettingsPanel() {
+    var c = document.getElementById('adminContent');
+    if (!c) return;
+    c.innerHTML = '<div class="settings-panel">' +
+        '<div class="settings-row">' +
+            '<div><div class="settings-label">禁止注册</div>' +
+            '<div class="settings-desc">开启后，新用户将无法注册账号</div></div>' +
+            '<label class="toggle-switch">' +
+                '<input type="checkbox" id="disableRegToggle" onchange="saveSiteSetting('disableRegister', this.checked)">' +
+                '<span class="toggle-slider"></span>' +
+            '</label>' +
+        '</div>' +
+        '<div class="settings-row">' +
+            '<div class="settings-label">当前状态</div>' +
+            '<span class="settings-status off" id="regStatusText">允许注册</span>' +
+        '</div>' +
+        '</div>';
+    updateRegStatus();
+}
+
 var adminCurrentTab = 'users';
 function openAdminModal() {
     var pwd = prompt('请输入管理员密码：');
@@ -5288,6 +5389,7 @@ function openAdminModal() {
     if (pwd !== '1028') { alert('密码错误'); return; }
     document.getElementById('adminModal').classList.add('show');
     adminCurrentTab = 'users';
+    loadSiteSettings();
     renderAdminContent();
 }
 function closeAdminModal() {
@@ -5351,6 +5453,10 @@ async function renderAdminContent() {
             content.innerHTML = '<div style="text-align:center;color:var(--danger);padding:40px;">加载失败: ' + e.message + '</div>';
         }
     }
+    } else if (adminCurrentTab === 'settings') {
+        renderSettingsPanel();
+        return;
+    }
 }
 async function toggleBanUser(username) {
     try {
@@ -5411,6 +5517,7 @@ var issTrack = [];
 async function loadISSData() {
     try {
         var resp = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
+        if (!resp.ok) throw new Error('ISS API error: ' + resp.status);
         var data = await resp.json();
         var lat = data.latitude, lng = data.longitude, alt = data.altitude, vel = data.velocity;
         var el = document.getElementById('issLat'); if (el) el.textContent = lat.toFixed(2) + ' deg';
