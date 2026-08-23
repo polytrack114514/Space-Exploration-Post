@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🌌 Space-Exploration-Post
+# 🌌 SpaceHub 星枢
 
-### 探索宇宙帖子 · Explore the Universe Together
+### SpaceHub 星枢 · Explore the Universe Together
 
 [![GitHub Stars](https://img.shields.io/github/stars/polytrack114514/Space-Exploration-Post?style=flat-square&logo=github&color=yellow)](https://github.com/polytrack114514/Space-Exploration-Post/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/polytrack114514/Space-Exploration-Post?style=flat-square&logo=github&color=blue)](https://github.com/polytrack114514/Space-Exploration-Post/network/members)
@@ -26,7 +26,7 @@
 
 ### 📖 项目简介
 
-**Space-Exploration-Post** 是一个以太空探索为主题的社区帖子平台，集帖子发布、评论互动、用户关注、火箭发射追踪、🛰️ 太空数据中心（ISS 实时定位 / 行星位置 / 月相 / 近地小行星 / ISS 乘组 / 流星雨 / 日食月食）、NASA 每日天文一图、AI 太空助手于一体。采用深空配色与玻璃态设计，全面适配手机/平板/桌面。全部代码整合在单个 `index.html` 文件中，部署简单。
+**SpaceHub 星枢** 是一个以太空探索为主题的社区平台，集帖子发布、评论互动、用户关注、火箭发射追踪、🛰️ 太空数据中心（ISS 实时定位 / 行星位置 / 月相 / 近地小行星 / ISS 乘组 / 流星雨 / 日食月食）、NASA 每日天文一图、AI 太空助手于一体。采用深空配色与玻璃态设计，全面适配手机/平板/桌面。全部代码整合在单个 `index.html` 文件中，部署简单。
 
 ### 📁 项目结构
 
@@ -131,7 +131,7 @@ Space-Exploration-Post/
 
 ```
 ┌──────────────────────────────────────────────┐
-│           🌌 探索宇宙帖子                      │
+│         🌌 SpaceHub 星枢                    │
 │        (发光文字效果)                          │
 ├──────────────────────────────────────────────┤
 │  🔥 热门  🆕 最新  👥 关注  🚀 火箭发射       │
@@ -160,7 +160,7 @@ Space-Exploration-Post/
 
 ### 📖 About
 
-**Space-Exploration-Post** is a space-themed community platform integrating post publishing, comments, user following, rocket launch tracking, 🛰️ Space Data Center (ISS tracking / planet positions / moon phase / NEO asteroids / ISS crew / meteor showers / eclipses), NASA APOD, and an AI space assistant. Features a deep-space color palette with glassmorphism design, fully responsive for mobile/tablet/desktop. All code is combined in a single `index.html` file for easy deployment.
+**SpaceHub** is a space-themed community platform integrating post publishing, comments, user following, rocket launch tracking, 🛰️ Space Data Center (ISS tracking / planet positions / moon phase / NEO asteroids / ISS crew / meteor showers / eclipses), NASA APOD, and an AI space assistant. Features a deep-space color palette with glassmorphism design, fully responsive for mobile/tablet/desktop. All code is combined in a single `index.html` file for easy deployment.
 
 ### 📁 Project Structure
 
@@ -265,7 +265,7 @@ Space-Exploration-Post/
 
 ```
 ┌──────────────────────────────────────────────┐
-│           🌌 Space-Exploration-Post           │
+│           🌌 SpaceHub 星枢                   │
 │        (glowing text effect)                  │
 ├──────────────────────────────────────────────┤
 │  🔥 Hot  🆕 New  👥 Following  🚀 Launches   │
@@ -287,3 +287,4 @@ Space-Exploration-Post/
 ### 📄 License
 
 [MIT License](https://opensource.org/licenses/MIT)
+
