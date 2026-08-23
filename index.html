@@ -56,7 +56,7 @@
             scroll-behavior: smooth;
         }
         body {
-            font-family: 'Rajdhani', 'Exo 2', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Exo 2', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             color: var(--text-primary);
             min-height: 100vh;
@@ -3585,81 +3585,13 @@ hr, .divider {
             animation: badgePop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* --- Collapsible launch section --- */
-        .launch-section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 20px;
-            background: rgba(14, 18, 36, 0.6);
-            border: 1px solid rgba(91, 143, 255, 0.14);
-            border-radius: 14px 14px 0 0;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-        }
-        .launch-section-header:hover {
-            background: rgba(20, 28, 52, 0.7);
-            border-color: rgba(91, 143, 255, 0.3);
-        }
-        .launch-section-title {
-            font-family: 'Michroma', sans-serif;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            color: var(--text-primary);
-            text-shadow: 0 0 8px rgba(91, 143, 255, 0.2);
-        }
-        .launch-collapse-btn {
-            background: none;
-            border: 1px solid rgba(91, 143, 255, 0.2);
-            color: var(--accent);
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .launch-collapse-btn:hover {
-            background: rgba(91, 143, 255, 0.1);
-            border-color: rgba(91, 143, 255, 0.4);
-            box-shadow: 0 0 12px rgba(91, 143, 255, 0.15);
-        }
-        .launch-collapse-btn.collapsed {
-            transform: rotate(-90deg);
-        }
-        .launch-section-body {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
-        }
-        .launch-section-body.collapsed {
-            max-height: 0;
-            opacity: 0;
-            padding: 0;
-            margin: 0;
-        }
-        .launch-section-wrapper {
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
 
         /* --- Enhanced header glow --- */
         .header h1 {
-            background: linear-gradient(135deg, #dce8ff 0%, #5b8fff 40%, #b558ff 70%, #dce8ff 100%);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradShift 8s ease infinite;
-            text-shadow: none !important;
+            text-shadow: 0 0 10px rgba(91, 143, 255, 0.6), 0 0 20px rgba(91, 143, 255, 0.4), 0 0 40px rgba(91, 143, 255, 0.2) !important;
         }
         .header p {
-            color: var(--text-secondary) !important;
-            text-shadow: 0 0 12px rgba(91, 143, 255, 0.15) !important;
+            text-shadow: 0 0 8px rgba(91, 143, 255, 0.3) !important;
         }
 
         /* --- Post card enhanced border glow --- */
@@ -3686,7 +3618,7 @@ hr, .divider {
 
         /* --- Launch card countdown glow --- */
         .launch-card.launching-soon {
-            animation: glowPulse 2.5s ease-in-out infinite, cardEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards !important;
+            border-color: rgba(255, 170, 0, 0.3) !important;
         }
 
         /* --- AI chat enhancements --- */
@@ -3699,7 +3631,7 @@ hr, .divider {
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
         }
         .ai-chat-header h3 {
-            font-family: 'Rajdhani', sans-serif !important;
+            
         }
         .ai-send {
             background: linear-gradient(135deg, rgba(91, 143, 255, 0.9), rgba(181, 88, 255, 0.8)) !important;
@@ -3716,7 +3648,7 @@ hr, .divider {
             background: rgba(8, 12, 24, 0.92) !important;
         }
         .space-data-header h2 {
-            font-family: 'Orbitron', sans-serif !important;
+            
             letter-spacing: 2px;
             background: linear-gradient(135deg, #5b8fff, #b558ff);
             -webkit-background-clip: text;
@@ -3746,7 +3678,7 @@ hr, .divider {
 
         /* --- Search box enhanced --- */
         .search-box input {
-            font-family: 'Rajdhani', sans-serif !important;
+            
         }
         .search-box input:focus {
             border-color: var(--accent) !important;
@@ -3843,12 +3775,7 @@ hr, .divider {
             .ai-messages {
                 max-height: 300px !important;
             }
-            .launch-section-header {
-                padding: 12px 14px !important;
-            }
-            .launch-section-title {
-                font-size: 0.8rem !important;
-            }
+
         }
 
         @media (max-width: 480px) {
@@ -3898,6 +3825,14 @@ hr, .divider {
             .space-data-tab { font-size: 0.72rem !important; padding: 6px 10px !important; }
         }
 
+
+        /* --- Launch tab container --- */
+        .launch-tab-container {
+            margin-top: 12px;
+        }
+        .launch-tab-container .launch-section {
+            margin-bottom: 0;
+        }
         /* --- Scrollbar styling --- */
         ::-webkit-scrollbar {
             width: 8px;
@@ -3932,7 +3867,7 @@ hr, .divider {
 <link rel="icon" type="image/png" href="/Space-Exploration-Post/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@300;400;500;600;700;800&family=Michroma&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@300;400;500;600;700;800&family=Michroma&display=swap" rel="stylesheet">
 </head>
 <body>
 <!-- 加载动画 -->
@@ -3948,28 +3883,7 @@ hr, .divider {
         <p>探索浩瀚宇宙，分享星辰大海，一起畅聊太空奥秘</p>
     </header>
 
-    <!-- 火箭发射时间表 -->
-    <div class="launch-section-wrapper">
-        <div class="launch-section-header" onclick="toggleLaunchSection()">
-            <span class="launch-section-title">🚀 火箭发射时间表</span>
-            <button class="launch-collapse-btn" id="launchCollapseBtn" onclick="event.stopPropagation(); toggleLaunchSection();">▼</button>
-        </div>
-        <div class="launch-section-body" id="launchSectionBody">
-            <div class="launch-section">
-                <div class="launch-tabs">
-                    <button class="launch-tab active" data-launch-tab="upcoming">
-                        <span>🚀 近期发射</span>
-                    </button>
-                    <button class="launch-tab" data-launch-tab="launched">
-                        <span>🏁 已发射</span>
-                    </button>
-                    <div class="launch-controls-wrap" id="launchControlsWrap"></div>
-                </div>
-                <div class="launch-list" id="launchList"></div>
-                <div class="launch-list" id="launchedList" style="display:none;"></div>
-            </div>
-        </div>
-    </div>
+
         <!-- NASA 每日天文一图 -->
     <div class="container" style="margin-bottom:0;">
         <div id="apodContainer"></div>
@@ -3994,7 +3908,9 @@ hr, .divider {
                 <button class="tab" data-tab="ai">
                     <span class="icon">🤖</span>AI助手
                 </button>
-
+                <button class="tab" data-tab="launches">
+                    <span class="icon">🚀</span>火箭发射
+                </button>
             </div>
             <div class="search-box">
                 <span class="search-icon">🔍</span>
@@ -4021,6 +3937,21 @@ hr, .divider {
             <div class="ai-input-row">
                 <input type="text" class="ai-input" id="aiInput" placeholder="问我任何关于太空的问题..." onkeydown="if(event.key==='Enter')sendAIMessage()">
                 <button class="ai-send" id="aiSendBtn" onclick="sendAIMessage()">发送</button>
+            </div>
+        </div>
+        <div class="launch-tab-container" id="launchTabContainer" style="display:none;">
+            <div class="launch-section">
+                <div class="launch-tabs">
+                    <button class="launch-tab active" data-launch-tab="upcoming">
+                        <span>🚀 近期发射</span>
+                    </button>
+                    <button class="launch-tab" data-launch-tab="launched">
+                        <span>🏁 已发射</span>
+                    </button>
+                    <div class="launch-controls-wrap" id="launchControlsWrap"></div>
+                </div>
+                <div class="launch-list" id="launchList"></div>
+                <div class="launch-list" id="launchedList" style="display:none;"></div>
             </div>
         </div>
     </div>
@@ -4120,6 +4051,7 @@ hr, .divider {
             <div class="admin-tabs">
                 <button class="admin-tab active" onclick="switchAdminTab('users', this)">用户管理</button>
                 <button class="admin-tab" onclick="switchAdminTab('reports', this)">举报列表</button>
+                <button class="admin-tab" onclick="switchAdminTab('settings', this)">站点设置</button>
             </div>
             <div class="admin-content" id="adminContent"></div>
         </div>
@@ -4637,10 +4569,17 @@ hr, .divider {
                 if (currentTab === 'ai') {
                     document.getElementById('postsList').style.display = 'none';
                     document.getElementById('aiChatContainer').style.display = '';
+                    document.getElementById('launchTabContainer').style.display = 'none';
                     initAI();
+                } else if (currentTab === 'launches') {
+                    document.getElementById('postsList').style.display = 'none';
+                    document.getElementById('aiChatContainer').style.display = 'none';
+                    document.getElementById('launchTabContainer').style.display = '';
+                    renderLaunches();
                 } else {
                     document.getElementById('postsList').style.display = '';
                     document.getElementById('aiChatContainer').style.display = 'none';
+                    document.getElementById('launchTabContainer').style.display = 'none';
                     renderPosts();
                 }
             });
@@ -6420,19 +6359,4 @@ if (!window._spaceFeaturesInit) {
     });
 }
 
-
-function toggleLaunchSection() {
-    var body = document.getElementById('launchSectionBody');
-    var btn = document.getElementById('launchCollapseBtn');
-    if (!body || !btn) return;
-    if (body.classList.contains('collapsed')) {
-        body.classList.remove('collapsed');
-        btn.classList.remove('collapsed');
-        btn.textContent = '\u25BC';
-    } else {
-        body.classList.add('collapsed');
-        btn.classList.add('collapsed');
-        btn.textContent = '\u25BC';
-    }
-}
 </script>
