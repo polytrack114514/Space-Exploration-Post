@@ -1265,6 +1265,23 @@
             border-color: var(--border-focus);
             box-shadow: 0 0 0 2px rgba(91, 143, 255, 0.08);
         }
+        .comment-user-info {
+            font-size: 0.72rem;
+            color: #667788;
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            background: rgba(91, 143, 255, 0.05);
+            border-radius: 6px;
+        }
+        .comment-user-info strong {
+            color: #5b8fff;
+            font-weight: 600;
+        }
+        .comment-login-hint {
+            color: #8899aa;
+            background: rgba(255, 170, 0, 0.05);
+        }
+
         .comment-submit {
             padding: 8px 16px;
             background: var(--gold);
@@ -4623,11 +4640,9 @@ hr, .divider {
                                 `).join('') : '<div style="color: var(--text-muted); font-size: 0.85rem; padding: 8px 0;">暂无评论，来做第一个评论的人吧</div>'}
                             </div>
                             <div class="comment-input-area">
-                                <div class="comment-input-row">
-                                    <input type="text" class="comment-input" id="comment-name-${post.id}" placeholder="你的名字" maxlength="20">
-                                </div>
-                                <textarea class="comment-textarea" id="comment-text-${post.id}" placeholder="写下你的评论..." maxlength="300"></textarea>
-                                <button class="comment-submit" onclick="submitComment('${post.id}')">发送评论</button>
+                                ${currentUser ? `<div class="comment-user-info">评论身份：<strong>${escapeHtml(currentUser.name)}</strong></div>` : `<div class="comment-user-info comment-login-hint">请 <a href="javascript:void(0)" onclick="openAuthModal()" style="color:#5b8fff;text-decoration:none;">\u767b\u5f55</a> 后发表评论</div>`}
+                                <textarea class="comment-textarea" id="comment-text-${post.id}" placeholder="${currentUser ? '\u5199\u4e0b\u4f60\u7684\u8bc4\u8bba...' : '\u767b\u5f55\u540e\u5373\u53ef\u53d1\u8868\u8bc4\u8bba'}" maxlength="300" ${currentUser ? '' : 'disabled style="opacity:0.5;cursor:not-allowed;"'} onkeydown="if(event.key==='Enter'&&event.ctrlKey)submitComment('${post.id}')"></textarea>
+                                <button class="comment-submit" onclick="submitComment('${post.id}')" ${currentUser ? '' : 'disabled style="opacity:0.4;cursor:not-allowed;"'}>\u53d1\u9001\u8bc4\u8bba</button>
                             </div>
                         </div>
                     </div>
@@ -4667,18 +4682,18 @@ hr, .divider {
             }
         }
         async function submitComment(postId) {
-            const nameInput = document.getElementById('comment-name-' + postId);
-            const textInput = document.getElementById('comment-text-' + postId);
-            const name = nameInput.value.trim();
-            const content = textInput.value.trim();
-            if (!name) {
-                nameInput.focus();
+            if (!currentUser) {
+                alert('\u8bf7\u5148\u767b\u5f55\u540e\u518d\u53d1\u8868\u8bc4\u8bba');
+                openAuthModal();
                 return;
             }
+            const textInput = document.getElementById('comment-text-' + postId);
+            const content = textInput.value.trim();
             if (!content) {
                 textInput.focus();
                 return;
             }
+            const name = currentUser.name;
             const post = posts.find(p => String(p.id) === String(postId));
             if (!post) return;
             if (!post.comments) post.comments = [];
