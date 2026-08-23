@@ -4763,6 +4763,10 @@ hr, .divider {
             document.getElementById('authModal').classList.remove('show');
         }
         function toggleAuthMode() {
+            if (authMode === 'login' && siteSettings.disableRegister) {
+                showAuthErr('注册已关闭，请联系管理员');
+                return;
+            }
             authMode = authMode === 'login' ? 'signup' : 'login';
             updateAuthUI();
             document.getElementById('authError').classList.remove('show');
@@ -4798,6 +4802,12 @@ hr, .divider {
             btn.textContent = '请稍候...';
             await loadUsers();
             if (authMode === 'signup') {
+                if (siteSettings.disableRegister) {
+                    showAuthErr('注册已关闭，请联系管理员');
+                    btn.disabled = false;
+                    btn.textContent = '注册';
+                    return;
+                }
                 if (password !== confirm) { showAuthErr('两次密码不一致'); btn.disabled = false; btn.textContent = '注册'; return; }
                 const exists = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
                 if (exists) { showAuthErr('该用户名已被注册'); btn.disabled = false; btn.textContent = '注册'; return; }
@@ -6295,6 +6305,7 @@ async function deleteReport(reportId) {
 // ==================== 初始化新功能 ====================
 // Load APOD on page load
 loadAPOD();
+loadSiteSettings();
 // Online users heartbeat
 if (currentUser) {
     updateLastActive();
@@ -6507,7 +6518,7 @@ async function loadAsteroids() {
     try {
         var now = new Date();
         var endDate = now.toISOString().slice(0, 10);
-        var resp = await fetch('https://api.nasa.gov/neo/v1/feed?start_date=' + endDate + '&end_date=' + endDate + '&api_key=DEMO_KEY');
+        var resp = await fetch('https://api.nasa.gov/neo/rest/v1/feed?start_date=' + endDate + '&end_date=' + endDate + '&api_key=DEMO_KEY');
         if (!resp.ok) throw new Error('NASA NeoWS API error: ' + resp.status);
         var data = await resp.json();
         var neos = data.near_earth_objects[endDate] || [];
