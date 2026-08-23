@@ -6515,52 +6515,80 @@ async function loadAsteroids() {
     if (!panel) return;
     if (asteroidLoaded) return;
     panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">\ud83d\udc7e 加载近地小行星数据...</div>';
+    var today = new Date().toISOString().slice(0, 10);
+    var cacheKey = 'asteroid_cache_' + today;
+    var cached = null;
+    try { cached = JSON.parse(localStorage.getItem(cacheKey)); } catch(e) {}
+    if (cached && cached.neos) {
+        renderAsteroids(panel, cached.neos, cached.element_count);
+        asteroidLoaded = true;
+        return;
+    }
     try {
-        var now = new Date();
-        var endDate = now.toISOString().slice(0, 10);
-        var resp = await fetch('https://api.nasa.gov/neo/rest/v1/feed?start_date=' + endDate + '&end_date=' + endDate + '&api_key=DEMO_KEY');
-        if (!resp.ok) throw new Error('NASA NeoWS API error: ' + resp.status);
+        var resp = await fetch('https://api.nasa.gov/neo/rest/v1/feed?start_date=' + today + '&end_date=' + today + '&api_key=DEMO_KEY');
+        if (!resp.ok) {
+            if (resp.status === 429) throw new Error('NASA API 请求次数已达上限 (DEMO_KEY 限制每小时30次)，请稍后再试');
+            throw new Error('NASA NeoWS API error: ' + resp.status);
+        }
         var data = await resp.json();
-        var neos = data.near_earth_objects[endDate] || [];
-        var totalCount = data.element_count || neos.length;
-        var hazardousCount = neos.filter(function(n) { return n.is_potentially_hazardous_asteroid; }).length;
-        var html = '<div class="asteroid-header-info">\u2604\ufe0f 今日近地小行星: <strong style="color:#5b8fff;">' + neos.length + '</strong> 颗 | 潜在危险: <strong style="color:' + (hazardousCount > 0 ? '#ff4060' : '#40ff88') + ';">' + hazardousCount + '</strong> 颗</div>';
-        neos.sort(function(a, b) {
-            var da = parseFloat(a.close_approach_data[0].miss_distance.kilometers);
-            var db = parseFloat(b.close_approach_data[0].miss_distance.kilometers);
-            return da - db;
-        });
-        for (var i = 0; i < Math.min(neos.length, 12); i++) {
-            var n = neos[i];
-            var approach = n.close_approach_data[0];
-            var distKm = parseFloat(approach.miss_distance.kilometers);
-            var distLD = parseFloat(approach.miss_distance.lunar);
-            var vel = parseFloat(approach.relative_velocity.kilometers_per_hour);
-            var minD = parseFloat(n.estimated_diameter.meters.estimated_diameter_min);
-            var maxD = parseFloat(n.estimated_diameter.meters.estimated_diameter_max);
-            var avgD = (minD + maxD) / 2;
-            var isHazard = n.is_potentially_hazardous_asteroid;
-            var distStr = distKm > 1000000 ? (distKm / 1000000).toFixed(2) + ' M km' : Math.round(distKm).toLocaleString() + ' km';
-            html += '<div class="asteroid-card">';
-            html += '<div class="asteroid-name">' + escapeHtml(n.name);
-            html += '<span class="asteroid-danger ' + (isHazard ? 'hazardous' : 'safe') + '">' + (isHazard ? '潜在危险' : '安全') + '</span></div>';
-            html += '<div class="asteroid-grid">';
-            html += '<div class="asteroid-stat">距离: <strong>' + distStr + '</strong></div>';
-            html += '<div class="asteroid-stat">月球距离: <strong>' + distLD.toFixed(2) + ' LD</strong></div>';
-            html += '<div class="asteroid-stat">直径: <strong>' + minD.toFixed(0) + '-' + maxD.toFixed(0) + ' m</strong></div>';
-            html += '<div class="asteroid-stat">速度: <strong>' + (vel / 3600).toFixed(2) + ' km/s</strong></div>';
-            html += '</div></div>';
-        }
-        if (neos.length === 0) {
-            html += '<div style="text-align:center;padding:30px;color:#667788;">今日没有近地小行星接近数据</div>';
-        }
-        html += '<div style="text-align:center;margin-top:8px;font-size:0.68rem;color:#445566;">数据来源: NASA NeoWS API</div>';
-        panel.innerHTML = html;
+        var neos = data.near_earth_objects[today] || [];
+        try { localStorage.setItem(cacheKey, JSON.stringify({ neos: neos, element_count: data.element_count || neos.length })); } catch(e) {}
+        renderAsteroids(panel, neos, data.element_count || neos.length);
         asteroidLoaded = true;
     } catch(e) {
         console.error('Asteroid load error:', e);
-        panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">\u26a0\ufe0f 加载失败: ' + escapeHtml(e.message) + '<br><button onclick="asteroidLoaded=false;loadAsteroids()" style="margin-top:12px;padding:8px 20px;background:rgba(91,143,255,0.15);border:1px solid rgba(91,143,255,0.3);color:#5b8fff;border-radius:8px;cursor:pointer;">重试</button></div>';
+        var retryHtml = '<div style="text-align:center;padding:40px;color:#ff4060;">\u26a0\ufe0f ' + escapeHtml(e.message) + '<br><button onclick="asteroidLoaded=false;loadAsteroids()" style="margin-top:12px;padding:8px 20px;background:rgba(91,143,255,0.15);border:1px solid rgba(91,143,255,0.3);color:#5b8fff;border-radius:8px;cursor:pointer;">重试</button></div>';
+        var oldCache = null;
+        for (var i = 0; i < 7; i++) {
+            var d = new Date(); d.setDate(d.getDate() - i);
+            var key = 'asteroid_cache_' + d.toISOString().slice(0, 10);
+            try { oldCache = JSON.parse(localStorage.getItem(key)); } catch(e2) {}
+            if (oldCache && oldCache.neos && oldCache.neos.length > 0) break;
+        }
+        if (oldCache && oldCache.neos && oldCache.neos.length > 0) {
+            retryHtml = '<div style="text-align:center;padding:12px;font-size:0.72rem;color:#ffaa00;background:rgba(255,170,0,0.08);border-radius:8px;margin-bottom:8px;">\u26a0\ufe0f API 限流，显示缓存数据</div>';
+            renderAsteroids(panel, oldCache.neos, oldCache.element_count, retryHtml);
+            asteroidLoaded = true;
+        } else {
+            panel.innerHTML = retryHtml;
+        }
     }
+}
+
+function renderAsteroids(panel, neos, totalCount, prefixHtml) {
+    var hazardousCount = neos.filter(function(n) { return n.is_potentially_hazardous_asteroid; }).length;
+    var html = prefixHtml || '';
+    html += '<div class="asteroid-header-info">\u2604\ufe0f 今日近地小行星: <strong style="color:#5b8fff;">' + neos.length + '</strong> 颗 | 潜在危险: <strong style="color:' + (hazardousCount > 0 ? '#ff4060' : '#40ff88') + ';">' + hazardousCount + '</strong> 颗</div>';
+    neos.sort(function(a, b) {
+        var da = parseFloat(a.close_approach_data[0].miss_distance.kilometers);
+        var db = parseFloat(b.close_approach_data[0].miss_distance.kilometers);
+        return da - db;
+    });
+    for (var i = 0; i < Math.min(neos.length, 12); i++) {
+        var n = neos[i];
+        var approach = n.close_approach_data[0];
+        var distKm = parseFloat(approach.miss_distance.kilometers);
+        var distLD = parseFloat(approach.miss_distance.lunar);
+        var vel = parseFloat(approach.relative_velocity.kilometers_per_hour);
+        var minD = parseFloat(n.estimated_diameter.meters.estimated_diameter_min);
+        var maxD = parseFloat(n.estimated_diameter.meters.estimated_diameter_max);
+        var isHazard = n.is_potentially_hazardous_asteroid;
+        var distStr = distKm > 1000000 ? (distKm / 1000000).toFixed(2) + ' M km' : Math.round(distKm).toLocaleString() + ' km';
+        html += '<div class="asteroid-card">';
+        html += '<div class="asteroid-name">' + escapeHtml(n.name);
+        html += '<span class="asteroid-danger ' + (isHazard ? 'hazardous' : 'safe') + '">' + (isHazard ? '潜在危险' : '安全') + '</span></div>';
+        html += '<div class="asteroid-grid">';
+        html += '<div class="asteroid-stat">距离: <strong>' + distStr + '</strong></div>';
+        html += '<div class="asteroid-stat">月球距离: <strong>' + distLD.toFixed(2) + ' LD</strong></div>';
+        html += '<div class="asteroid-stat">直径: <strong>' + minD.toFixed(0) + '-' + maxD.toFixed(0) + ' m</strong></div>';
+        html += '<div class="asteroid-stat">速度: <strong>' + (vel / 3600).toFixed(2) + ' km/s</strong></div>';
+        html += '</div></div>';
+    }
+    if (neos.length === 0) {
+        html += '<div style="text-align:center;padding:30px;color:#667788;">今日没有近地小行星接近数据</div>';
+    }
+    html += '<div style="text-align:center;margin-top:8px;font-size:0.68rem;color:#445566;">数据来源: NASA NeoWS API</div>';
+    panel.innerHTML = html;
 }
 
 // ==================== ISS 当前乘组 ====================
