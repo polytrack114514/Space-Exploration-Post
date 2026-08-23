@@ -3202,11 +3202,12 @@ hr, .divider {
 .iss-info-value { font-size: 1.05rem; font-weight: 700; color: #00d4ff; font-family: 'Exo 2', monospace; }
 
 .planet-diagram { text-align: center; }
-.planet-info-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
-.planet-info-item { background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.1); border-radius: 6px; padding: 8px 10px; text-align: center; transition: all 0.25s ease; }
+.planet-info-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+.planet-info-item { background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.1); border-radius: 6px; padding: 6px 8px; text-align: center; transition: all 0.25s ease; }
 .planet-info-item:hover { background: rgba(0, 212, 255, 0.09); border-color: rgba(0, 212, 255, 0.25); box-shadow: 0 0 12px rgba(0, 212, 255, 0.1); }
-.planet-info-name { font-size: 0.82rem; font-weight: 600; }
-.planet-info-dist { font-size: 0.7rem; color: #667788; margin-top: 2px; }
+.planet-info-name { font-size: 0.78rem; font-weight: 600; }
+.planet-info-dist { font-size: 0.68rem; color: #667788; margin-top: 2px; }
+.planet-info-z { font-size: 0.6rem; color: #445566; margin-top: 1px; }
 .image-lightbox {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0, 0, 0, 0.92); z-index: 10000;
@@ -5768,12 +5769,14 @@ function calcPlanetPos(planet, date) {
     var J2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
     var d = (date.getTime() - J2000) / 86400000;
     var elements = {
-        mercury: { a: 0.387098, e: 0.205635, L0: 252.251, w: 77.456, T: 87.969 },
-        venus:   { a: 0.723330, e: 0.006773, L0: 181.979, w: 131.533, T: 224.701 },
-        earth:   { a: 1.000001, e: 0.016709, L0: 100.464, w: 102.937, T: 365.256 },
-        mars:    { a: 1.523688, e: 0.093405, L0: 355.453, w: 336.040, T: 686.980 },
-        jupiter: { a: 5.202561, e: 0.048498, L0: 34.396,  w: 14.728,  T: 4332.589 },
-        saturn:  { a: 9.554747, e: 0.055546, L0: 49.954,  w: 92.598,  T: 10759.22 }
+        mercury: { a: 0.387098, e: 0.205635, L0: 252.251, w: 77.456, T: 87.969, i: 7.005, Omega: 48.331 },
+        venus:   { a: 0.723330, e: 0.006773, L0: 181.979, w: 131.533, T: 224.701, i: 3.395, Omega: 76.680 },
+        earth:   { a: 1.000001, e: 0.016709, L0: 100.464, w: 102.937, T: 365.256, i: 0.000, Omega: 0.0 },
+        mars:    { a: 1.523688, e: 0.093405, L0: 355.453, w: 336.040, T: 686.980, i: 1.850, Omega: 49.559 },
+        jupiter: { a: 5.202561, e: 0.048498, L0: 34.396,  w: 14.728,  T: 4332.589, i: 1.303, Omega: 100.464 },
+        saturn:  { a: 9.554747, e: 0.055546, L0: 49.954,  w: 92.598,  T: 10759.22, i: 2.485, Omega: 113.665 },
+        uranus:  { a: 19.2184,  e: 0.047257, L0: 313.232, w: 173.008, T: 30688.5,  i: 0.773, Omega: 74.006 },
+        neptune: { a: 30.1100,  e: 0.008590, L0: 304.880, w: 48.123,  T: 60182.0,  i: 1.770, Omega: 131.784 }
     };
     var el = elements[planet];
     if (!el) return null;
@@ -5784,10 +5787,17 @@ function calcPlanetPos(planet, date) {
     for (var i = 0; i < 6; i++) { E = M + el.e * Math.sin(E); }
     var v = 2 * Math.atan2(Math.sqrt(1 + el.e) * Math.sin(E / 2), Math.sqrt(1 - el.e) * Math.cos(E / 2));
     var r = el.a * (1 - el.e * Math.cos(E));
-    var wRad = el.w * Math.PI / 180;
-    var x = r * Math.cos(v + wRad);
-    var y = r * Math.sin(v + wRad);
-    return { x: x, y: y, r: r, angle: Math.atan2(y, x) };
+    var argPeri = (el.w - el.Omega) * Math.PI / 180;
+    var OmegaRad = el.Omega * Math.PI / 180;
+    var iRad = el.i * Math.PI / 180;
+    var xp = r * Math.cos(v + argPeri);
+    var yp = r * Math.sin(v + argPeri);
+    var cosO = Math.cos(OmegaRad), sinO = Math.sin(OmegaRad);
+    var cosI = Math.cos(iRad), sinI = Math.sin(iRad);
+    var x = cosO * xp - sinO * cosI * yp;
+    var y = sinO * xp + cosO * cosI * yp;
+    var z = sinI * yp;
+    return { x: x, y: y, z: z, r: r, angle: Math.atan2(y, x) };
 }
 function renderSolarSystem() {
     var planets = [
@@ -5796,10 +5806,12 @@ function renderSolarSystem() {
         { key: 'earth',   name: '地球', color: '#4080ff', size: 4, au: 1.000 },
         { key: 'mars',    name: '火星', color: '#ff4040', size: 3, au: 1.524 },
         { key: 'jupiter', name: '木星', color: '#d0a060', size: 6, au: 5.203 },
-        { key: 'saturn',  name: '土星', color: '#e0c080', size: 5, au: 9.555 }
+        { key: 'saturn',  name: '土星', color: '#e0c080', size: 5, au: 9.555 },
+        { key: 'uranus',  name: '天王星', color: '#80d0ff', size: 4, au: 19.218 },
+        { key: 'neptune', name: '海王星', color: '#4060ff', size: 4, au: 30.110 }
     ];
     var now = new Date();
-    var centerX = 200, centerY = 200, maxRadius = 170, maxAU = 9.555;
+    var centerX = 200, centerY = 200, maxRadius = 175, maxAU = 30.110;
     var scaleAU = function(au) { return Math.log(au + 1) / Math.log(maxAU + 1) * maxRadius; };
     var html = '<svg viewBox="0 0 400 400" style="width:100%;max-width:420px;margin:0 auto;display:block;">';
     html += '<defs><filter id="planetGlow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
@@ -5814,12 +5826,14 @@ function renderSolarSystem() {
     for (var j = 0; j < planets.length; j++) {
         var p = planets[j];
         var pos = calcPlanetPos(p.key, now);
-        var displayR = scaleAU(p.au);
+        var r_xy = Math.sqrt(pos.x * pos.x + pos.y * pos.y);
+        var displayR = scaleAU(r_xy);
         var px = centerX + displayR * Math.cos(pos.angle);
         var py = centerY + displayR * Math.sin(pos.angle);
         html += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + p.size + '" fill="' + p.color + '" filter="url(#planetGlow)"/>';
         html += '<text x="' + px.toFixed(1) + '" y="' + (py - p.size - 5).toFixed(1) + '" fill="' + p.color + '" font-size="9" text-anchor="middle" font-family="monospace" opacity="0.9">' + p.name + '</text>';
-        infoHtml += '<div class="planet-info-item"><div class="planet-info-name" style="color:' + p.color + '">' + p.name + '</div><div class="planet-info-dist">' + pos.r.toFixed(2) + ' AU</div></div>';
+        var zStr = pos.z.toFixed(3);
+        infoHtml += '<div class="planet-info-item"><div class="planet-info-name" style="color:' + p.color + '">' + p.name + '</div><div class="planet-info-dist">' + pos.r.toFixed(2) + ' AU</div><div class="planet-info-z">z: ' + zStr + '</div></div>';
     }
     html += '</svg>';
     html += '<div style="text-align:center;color:#556677;font-size:0.72rem;margin-top:8px;">计算时间: ' + now.toLocaleDateString('zh-CN') + ' ' + now.toLocaleTimeString('zh-CN') + '</div>';
