@@ -5203,7 +5203,11 @@ async function sendAIMessage() {
     try {
         var response = await fetch(aiProxyUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': 'sb_publishable_vN8ZlhCHeWss312BeXFoIg_7bYC3L4y',
+                'Authorization': 'Bearer sb_publishable_vN8ZlhCHeWss312BeXFoIg_7bYC3L4y'
+            },
             body: JSON.stringify({ messages: aiMessages })
         });
 
