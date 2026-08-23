@@ -3923,6 +3923,96 @@ hr, .divider {
             .moon-visual { width: 120px; height: 120px; }
         }
 
+
+        /* --- Meteor shower panel --- */
+        .meteor-panel { padding: 4px; }
+        .meteor-header-info {
+            font-size: 0.78rem; color: #667788; margin-bottom: 12px;
+            text-align: center; padding: 8px;
+            background: rgba(91, 143, 255, 0.05); border-radius: 8px;
+        }
+        .meteor-card {
+            background: rgba(91, 143, 255, 0.04);
+            border: 1px solid rgba(91, 143, 255, 0.1);
+            border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+            transition: all 0.25s ease;
+        }
+        .meteor-card:hover {
+            background: rgba(91, 143, 255, 0.08);
+            border-color: rgba(91, 143, 255, 0.25);
+            box-shadow: 0 0 12px rgba(91, 143, 255, 0.08);
+        }
+        .meteor-card.next-active {
+            background: rgba(255, 170, 0, 0.06);
+            border-color: rgba(255, 170, 0, 0.25);
+        }
+        .meteor-card.next-active:hover {
+            background: rgba(255, 170, 0, 0.1);
+            border-color: rgba(255, 170, 0, 0.4);
+        }
+        .meteor-name {
+            font-size: 0.9rem; font-weight: 600; color: #dce8ff; margin-bottom: 4px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .meteor-badge {
+            font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 600;
+        }
+        .meteor-badge.peak { background: rgba(255,170,0,0.15); color: #ffaa00; border: 1px solid rgba(255,170,0,0.3); }
+        .meteor-badge.active { background: rgba(64,255,136,0.1); color: #40ff88; border: 1px solid rgba(64,255,136,0.2); }
+        .meteor-badge.upcoming { background: rgba(91,143,255,0.1); color: #5b8fff; border: 1px solid rgba(91,143,255,0.2); }
+        .meteor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .meteor-stat { font-size: 0.72rem; color: #667788; }
+        .meteor-stat strong { color: #5b8fff; font-weight: 600; }
+        .meteor-desc { font-size: 0.68rem; color: #556677; margin-top: 6px; }
+
+        /* --- Eclipse panel --- */
+        .eclipse-panel { padding: 4px; }
+        .eclipse-header-info {
+            font-size: 0.78rem; color: #667788; margin-bottom: 12px;
+            text-align: center; padding: 8px;
+            background: rgba(91, 143, 255, 0.05); border-radius: 8px;
+        }
+        .eclipse-card {
+            background: rgba(91, 143, 255, 0.04);
+            border: 1px solid rgba(91, 143, 255, 0.1);
+            border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+            transition: all 0.25s ease;
+        }
+        .eclipse-card:hover {
+            background: rgba(91, 143, 255, 0.08);
+            border-color: rgba(91, 143, 255, 0.25);
+            box-shadow: 0 0 12px rgba(91, 143, 255, 0.08);
+        }
+        .eclipse-card.next-up {
+            background: rgba(255, 170, 0, 0.06);
+            border-color: rgba(255, 170, 0, 0.25);
+        }
+        .eclipse-name {
+            font-size: 0.9rem; font-weight: 600; color: #dce8ff; margin-bottom: 4px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .eclipse-type-badge {
+            font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 600;
+        }
+        .eclipse-type-badge.solar { background: rgba(255,170,0,0.15); color: #ffaa00; border: 1px solid rgba(255,170,0,0.3); }
+        .eclipse-type-badge.lunar { background: rgba(181,88,255,0.12); color: #b558ff; border: 1px solid rgba(181,88,255,0.25); }
+        .eclipse-type-badge.total { background: rgba(255,64,96,0.12); color: #ff4060; border: 1px solid rgba(255,64,96,0.25); }
+        .eclipse-type-badge.annular { background: rgba(255,170,0,0.15); color: #ffaa00; border: 1px solid rgba(255,170,0,0.3); }
+        .eclipse-type-badge.partial { background: rgba(91,143,255,0.1); color: #5b8fff; border: 1px solid rgba(91,143,255,0.2); }
+        .eclipse-type-badge.penumbral { background: rgba(104,136,184,0.12); color: #6888b8; border: 1px solid rgba(104,136,184,0.25); }
+        .eclipse-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px; }
+        .eclipse-stat { font-size: 0.72rem; color: #667788; }
+        .eclipse-stat strong { color: #5b8fff; font-weight: 600; }
+        .eclipse-desc { font-size: 0.68rem; color: #556677; margin-top: 6px; }
+        .eclipse-countdown {
+            font-size: 0.75rem; color: #ffaa00; margin-top: 4px; font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            .meteor-grid { grid-template-columns: 1fr !important; }
+            .eclipse-grid { grid-template-columns: 1fr !important; }
+        }
+
         /* --- Scrollbar styling --- */
         ::-webkit-scrollbar {
             width: 8px;
@@ -4160,6 +4250,8 @@ hr, .divider {
             <button class="sd-tab" onclick="switchSDTab('moon', this)">月相</button>
             <button class="sd-tab" onclick="switchSDTab('asteroids', this)">近地小行星</button>
             <button class="sd-tab" onclick="switchSDTab('crew', this)">ISS乘组</button>
+            <button class="sd-tab" onclick="switchSDTab('meteors', this)">流星雨</button>
+            <button class="sd-tab" onclick="switchSDTab('eclipses', this)">日食月食</button>
         </div>
         <div class="space-data-body">
             <div class="sd-panel active" id="sdPanel-iss">
@@ -4193,6 +4285,14 @@ hr, .divider {
 
             <div class="sd-panel" id="sdPanel-crew">
                 <div class="crew-panel" id="crewPanel">点击加载ISS乘组信息...</div>
+            </div>
+
+            <div class="sd-panel" id="sdPanel-meteors">
+                <div class="meteor-panel" id="meteorPanel">点击查看流星雨日历...</div>
+            </div>
+
+            <div class="sd-panel" id="sdPanel-eclipses">
+                <div class="eclipse-panel" id="eclipsePanel">点击查看日食月食预报...</div>
             </div>
 
             <!-- Image Lightbox -->
@@ -6336,6 +6436,8 @@ function switchSDTab(tab, btn) {
     else if (tab === 'moon') { renderMoonPhase(); }
     else if (tab === 'asteroids') { loadAsteroids(); }
     else if (tab === 'crew') { loadISSCrew(); }
+    else if (tab === 'meteors') { renderMeteorShowers(); }
+    else if (tab === 'eclipses') { renderEclipses(); }
 }
 var issTimer = null;
 var issTrack = [];
@@ -6632,6 +6734,145 @@ async function loadISSCrew() {
         console.error('Crew load error:', e);
         panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">\u26a0\ufe0f 加载失败: ' + escapeHtml(e.message) + '<br><button onclick="crewLoaded=false;loadISSCrew()" style="margin-top:12px;padding:8px 20px;background:rgba(91,143,255,0.15);border:1px solid rgba(91,143,255,0.3);color:#5b8fff;border-radius:8px;cursor:pointer;">重试</button></div>';
     }
+}
+
+// ==================== 流星雨日历 ====================
+var meteorShowers = [
+    { name: '象限仪流星雨', en: 'Quadrantids', peak: '01-04', start: '12-28', end: '01-12', zhr: 110, radiant: '牧夫座', parent: '小行星2003 EH1', note: '新年第一场大流星雨，辐射点在牧夫座' },
+    { name: '天琴座流星雨', en: 'Lyrids', peak: '04-22', start: '04-15', end: '04-29', zhr: 18, radiant: '天琴座', parent: '撒切尔彗星 C/1861 G1', note: '四月流星雨，偶尔有火流星' },
+    { name: '宝瓶座 eta 流星雨', en: 'Eta Aquariids', peak: '05-06', start: '04-19', end: '05-28', zhr: 50, radiant: '宝瓶座', parent: '哈雷彗星 1P/Halley', note: '南半球更佳，哈雷彗星留下的尘埃' },
+    { name: '宝瓶座 delta 流星雨', en: 'Delta Aquariids', peak: '07-30', start: '07-12', end: '08-23', zhr: 25, radiant: '宝瓶座', parent: '未知彗星', note: '夏季中等流星雨，南半球更佳' },
+    { name: '英仙座流星雨', en: 'Perseids', peak: '08-13', start: '07-17', end: '08-24', zhr: 100, radiant: '英仙座', parent: '斯威夫特-塔特尔彗星 109P/Swift-Tuttle', note: '北半球夏季最壮观的流星雨' },
+    { name: '猎户座流星雨', en: 'Orionids', peak: '10-22', start: '10-02', end: '11-07', zhr: 20, radiant: '猎户座', parent: '哈雷彗星 1P/Halley', note: '哈雷彗星留下的另一束尘埃' },
+    { name: '金牛座流星雨', en: 'Taurids', peak: '11-06', start: '09-07', end: '11-19', zhr: 10, radiant: '金牛座', parent: '恩克彗星 2P/Encke', note: '流星较慢但常有火流星' },
+    { name: '狮子座流星雨', en: 'Leonids', peak: '11-18', start: '11-06', end: '11-30', zhr: 15, radiant: '狮子座', parent: '坦普尔-塔特尔彗星 55P/Tempel-Tuttle', note: '每隔33年有大爆发，下次约2032年' },
+    { name: '双子座流星雨', en: 'Geminids', peak: '12-14', start: '12-04', end: '12-20', zhr: 150, radiant: '双子座', parent: '小行星3200 Phaethon', note: '北半球冬季最壮观的流星雨' },
+    { name: '小熊座流星雨', en: 'Ursids', peak: '12-22', start: '12-17', end: '12-26', zhr: 10, radiant: '小熊座', parent: '塔特尔彗星 8P/Tuttle', note: '冬至前后的小型流星雨' }
+];
+
+function renderMeteorShowers() {
+    var panel = document.getElementById('meteorPanel');
+    if (!panel) return;
+    var now = new Date();
+    var nowMD = (now.getMonth() + 1) * 100 + now.getDate();
+    var html = '<div class="meteor-header-info">\u2604\ufe0f 全年主要流星雨日历 | 当前日期: ' + (now.getMonth() + 1) + '月' + now.getDate() + '日</div>';
+    var nextFound = false;
+    for (var i = 0; i < meteorShowers.length; i++) {
+        var m = meteorShowers[i];
+        var peakParts = m.peak.split('-');
+        var peakMD = parseInt(peakParts[0]) * 100 + parseInt(peakParts[1]);
+        var startParts = m.start.split('-');
+        var endParts = m.end.split('-');
+        var startMD = parseInt(startParts[0]) * 100 + parseInt(startParts[1]);
+        var endMD = parseInt(endParts[0]) * 100 + parseInt(endParts[1]);
+        var isActive = false;
+        if (startMD <= endMD) {
+            isActive = nowMD >= startMD && nowMD <= endMD;
+        } else {
+            isActive = nowMD >= startMD || nowMD <= endMD;
+        }
+        var isPeak = false;
+        if (peakMD === nowMD) isPeak = true;
+        var daysToPeak;
+        if (peakMD >= nowMD) {
+            daysToPeak = Math.round((new Date(now.getFullYear(), parseInt(peakParts[0]) - 1, parseInt(peakParts[1])) - now) / 86400000);
+        } else {
+            daysToPeak = Math.round((new Date(now.getFullYear() + 1, parseInt(peakParts[0]) - 1, parseInt(peakParts[1])) - now) / 86400000);
+        }
+        var badge = '';
+        var cardClass = '';
+        if (isPeak) { badge = '<span class="meteor-badge peak">\u2b50 今日峰值</span>'; cardClass = 'next-active'; }
+        else if (isActive) { badge = '<span class="meteor-badge active">\u2705 活跃中</span>'; cardClass = 'next-active'; }
+        else if (!nextFound && daysToPeak > 0) { badge = '<span class="meteor-badge upcoming">\u23f3 ' + daysToPeak + '天后峰值</span>'; nextFound = true; cardClass = 'next-active'; }
+        html += '<div class="meteor-card ' + cardClass + '">';
+        html += '<div class="meteor-name">' + escapeHtml(m.name) + ' (' + escapeHtml(m.en) + ')' + badge + '</div>';
+        html += '<div class="meteor-grid">';
+        html += '<div class="meteor-stat">峰值日期: <strong>' + m.peak.replace('-', '月') + '日</strong></div>';
+        html += '<div class="meteor-stat">ZHR: <strong>' + m.zhr + '/小时</strong></div>';
+        html += '<div class="meteor-stat">活跃期: <strong>' + m.start.replace('-', '月') + '日 - ' + m.end.replace('-', '月') + '日</strong></div>';
+        html += '<div class="meteor-stat">辐射点: <strong>' + escapeHtml(m.radiant) + '</strong></div>';
+        html += '</div>';
+        html += '<div class="meteor-desc">母天体: ' + escapeHtml(m.parent) + ' | ' + escapeHtml(m.note) + '</div>';
+        html += '</div>';
+    }
+    html += '<div style="text-align:center;margin-top:8px;font-size:0.68rem;color:#445566;">ZHR = 天顶每小时流量 (辐射点在天顶时的理想流星数)</div>';
+    panel.innerHTML = html;
+}
+
+// ==================== 日食/月食预报 ====================
+var eclipseData = [
+    { date: '2026-02-17', type: 'annular', kind: 'solar', name: '日环食', visibility: '南极洲', magnitude: 0.963, duration: '2分20秒', note: '南极洲可见，南美洲南端可见偏食' },
+    { date: '2026-03-03', type: 'total', kind: 'lunar', name: '月全食', visibility: '亚洲东部、大洋洲、太平洋', magnitude: 1.151, duration: '全食58分', note: '中国可见全过程' },
+    { date: '2026-08-12', type: 'total', kind: 'solar', name: '日全食', visibility: '北欧、格陵兰、冰岛、西班牙', magnitude: 1.039, duration: '2分18秒', note: '欧洲北部可见全食，北半球其他地区可见偏食' },
+    { date: '2026-08-28', type: 'partial', kind: 'lunar', name: '月偏食', visibility: '美洲、欧洲、非洲', magnitude: 0.930, duration: '偏食3h18m', note: '美洲地区可见' },
+    { date: '2027-02-06', type: 'annular', kind: 'solar', name: '日环食', visibility: '南美洲、太平洋、大西洋', magnitude: 0.928, duration: '7分51秒', note: '智利、阿根廷可见环食' },
+    { date: '2027-02-20', type: 'penumbral', kind: 'lunar', name: '半影月食', visibility: '美洲、欧洲、非洲', magnitude: 0.929, duration: '约4小时', note: '半影月食，亮度变化不明显' },
+    { date: '2027-03-29', type: 'partial', kind: 'solar', name: '日偏食', visibility: '北美洲、欧洲、非洲北部', magnitude: 0.938, duration: '-', note: '北大西洋和欧洲可见偏食' },
+    { date: '2027-07-07', type: 'penumbral', kind: 'lunar', name: '半影月食', visibility: '太平洋、澳洲、亚洲东部', magnitude: 0.390, duration: '约3小时', note: '半影月食，不易察觉' },
+    { date: '2027-08-02', type: 'total', kind: 'solar', name: '日全食', visibility: '北非、中东、西班牙', magnitude: 1.079, duration: '6分23秒', note: '本世纪最长日全食之一，埃及、沙特可见' },
+    { date: '2027-08-28', type: 'penumbral', kind: 'lunar', name: '半影月食', visibility: '美洲、欧洲、非洲', magnitude: 0.470, duration: '约3.5小时', note: '半影月食' },
+    { date: '2028-01-26', type: 'annular', kind: 'solar', name: '日环食', visibility: '南美洲、北大西洋、欧洲', magnitude: 0.921, duration: '10分27秒', note: '西班牙、葡萄牙可见环食' },
+    { date: '2028-02-12', type: 'total', kind: 'lunar', name: '月全食', visibility: '太平洋、美洲、亚洲东部', magnitude: 1.099, duration: '全食约80分', note: '中国东部可见' },
+    { date: '2028-07-22', type: 'total', kind: 'solar', name: '日全食', visibility: '澳大利亚、新西兰', magnitude: 1.056, duration: '5分10秒', note: '澳大利亚悉尼可见全食' },
+    { date: '2028-07-31', type: 'partial', kind: 'lunar', name: '月偏食', visibility: '非洲、亚洲、澳洲', magnitude: 0.187, duration: '偏食约2小时', note: '非洲和亚洲可见' },
+    { date: '2028-12-25', type: 'annular', kind: 'solar', name: '日环食', visibility: '南美洲、大西洋', magnitude: 0.950, duration: '2分35秒', note: '南美洲可见' }
+];
+
+function renderEclipses() {
+    var panel = document.getElementById('eclipsePanel');
+    if (!panel) return;
+    var now = new Date();
+    var nowTs = now.getTime();
+    var upcoming = [];
+    var past = [];
+    for (var i = 0; i < eclipseData.length; i++) {
+        var e = eclipseData[i];
+        var eTs = new Date(e.date + 'T00:00:00').getTime();
+        if (eTs >= nowTs - 86400000) {
+            upcoming.push({ data: e, ts: eTs });
+        } else {
+            past.push({ data: e, ts: eTs });
+        }
+    }
+    upcoming.sort(function(a, b) { return a.ts - b.ts; });
+    past.sort(function(a, b) { return b.ts - a.ts; });
+    var nextOne = upcoming.length > 0 ? upcoming[0] : null;
+    var html = '<div class="eclipse-header-info">\ud83c\udf19 未来日食/月食预报 | 共 ' + upcoming.length + ' 场即将发生</div>';
+    if (nextOne) {
+        var daysLeft = Math.ceil((nextOne.ts - nowTs) / 86400000);
+        if (daysLeft === 0) daysLeft = '今天';
+        else if (daysLeft === 1) daysLeft = '明天';
+        else daysLeft = daysLeft + ' 天后';
+        html = '<div class="eclipse-header-info">\ud83c\udf19 下一次: ' + escapeHtml(nextOne.data.name) + ' | 距今约 ' + daysLeft + ' | ' + nextOne.data.date + '</div>';
+    }
+    var list = upcoming.concat(past.slice(0, 3));
+    for (var j = 0; j < list.length; j++) {
+        var e = list[j].data;
+        var ts = list[j].ts;
+        var isNext = (nextOne && ts === nextOne.ts);
+        var daysDiff = Math.ceil((ts - nowTs) / 86400000);
+        var typeClass = e.type;
+        var kindEmoji = e.kind === 'solar' ? '\u2600\ufe0f' : '\ud83c\udf19';
+        var cardClass = isNext ? 'next-up' : '';
+        var countdownStr = '';
+        if (daysDiff > 0) countdownStr = '<div class="eclipse-countdown">\u23f3 ' + (daysDiff === 1 ? '明天' : daysDiff + ' 天后') + '</div>';
+        else if (daysDiff === 0) countdownStr = '<div class="eclipse-countdown" style="color:#40ff88;">\u2705 今天</div>';
+        else countdownStr = '<div class="eclipse-countdown" style="color:#556677;">\u2714 已发生 (' + Math.abs(daysDiff) + '天前)</div>';
+        html += '<div class="eclipse-card ' + cardClass + '">';
+        html += '<div class="eclipse-name">' + kindEmoji + ' ' + escapeHtml(e.name);
+        html += '<span class="eclipse-type-badge ' + typeClass + '">' + escapeHtml(e.name) + '</span></div>';
+        html += '<div class="eclipse-grid">';
+        html += '<div class="eclipse-stat">日期: <strong>' + e.date + '</strong></div>';
+        html += '<div class="eclipse-stat">食分: <strong>' + e.magnitude + '</strong></div>';
+        html += '<div class="eclipse-stat">可见区域: <strong>' + escapeHtml(e.visibility) + '</strong></div>';
+        html += '<div class="eclipse-stat">持续时间: <strong>' + escapeHtml(e.duration) + '</strong></div>';
+        html += '</div>';
+        html += '<div class="eclipse-desc">' + escapeHtml(e.note) + '</div>';
+        html += countdownStr;
+        html += '</div>';
+    }
+    html += '<div style="text-align:center;margin-top:8px;font-size:0.68rem;color:#445566;">数据来源: NASA Eclipse predictions</div>';
+    panel.innerHTML = html;
 }
 
 function openImageLightbox(src) {
