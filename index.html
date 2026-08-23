@@ -5127,9 +5127,7 @@ function getLaunchStatsHtml() {
 
 // ==================== AI 助手 ====================
 var aiMessages = [];
-var aiApiKey = 'sk-zdbP7UIuMq0L9LTBecKfjYuD7S6PsxbEmVBtHxyVp28W8wqv';
-var aiModel = 'agnes-2.5-flash';
-var aiSystemPrompt = '你是"星际助手"，一个专门讨论太空探索、航天、天文学和宇宙奥秘的AI助手。你的职责是回答关于太空、航天、天文、行星、火箭、空间站等问题。如果用户问的不是太空相关的问题，请礼貌地引导他们回到太空话题。回答要简洁有趣，用中文回答。';
+var aiProxyUrl = 'https://tktfrrvaqwbtdhiqwnna.supabase.co/functions/v1/ai-chat-proxy';
 var aiInitialized = false;
 
 function initAI() {
@@ -5203,24 +5201,16 @@ async function sendAIMessage() {
     showAITyping();
 
     try {
-        var messagesToSend = [{ role: 'system', content: aiSystemPrompt }].concat(aiMessages);
-        var response = await fetch('https://apihub.agnes-ai.com/v1/chat/completions', {
+        var response = await fetch(aiProxyUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + aiApiKey
-            },
-            body: JSON.stringify({
-                model: aiModel,
-                messages: messagesToSend,
-                temperature: 0.7,
-                max_tokens: 1024
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: aiMessages })
         });
 
         if (!response.ok) throw new Error('API ' + response.status);
         var data = await response.json();
-        var reply = data.choices[0].message.content;
+        if (data.error) throw new Error(data.error);
+        var reply = data.content;
 
         hideAITyping();
         aiMessages.push({ role: 'assistant', content: reply });
