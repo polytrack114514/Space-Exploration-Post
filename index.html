@@ -4635,12 +4635,7 @@ hr, .divider {
             }).join('');
         }
         async function togglePin(postId) {
-            const password = prompt('请输入管理员密码：');
-            if (password === null) return;
-            if (password !== '1028') {
-                alert('密码错误！');
-                return;
-            }
+            if (!(await requireAdminAuth('置顶帖子'))) return;
             const post = posts.find(p => String(p.id) === String(postId));
             if (post) {
                 post.pinned = !post.pinned;
@@ -4650,12 +4645,7 @@ hr, .divider {
             }
         }
         async function deletePost(postId) {
-            const password = prompt('请输入删除密码:');
-            if (password === null) return;
-            if (password !== '1028') {
-                alert('密码错误，无法删除！');
-                return;
-            }
+            if (!(await requireAdminAuth('删除帖子'))) return;
             if (!confirm('确定要删除这条帖子吗？')) return;
             try {
                 const { error } = await sb.from('posts').delete().eq('id', postId);
@@ -4723,11 +4713,7 @@ hr, .divider {
             });
         }
         async function deleteComment(postId, commentId) {
-            const pwd = prompt('请输入删除密码：');
-            if (pwd !== '1028') {
-                alert('密码错误');
-                return;
-            }
+            if (!(await requireAdminAuth('删除评论'))) return;
             const post = posts.find(p => String(p.id) === String(postId));
             if (!post || !post.comments) return;
             const firstIdx = post.comments.findIndex(c => String(c.id) === String(commentId));
@@ -6305,10 +6291,66 @@ function renderSettingsPanel() {
 }
 
 var adminCurrentTab = 'users';
-function openAdminModal() {
-    var pwd = prompt('请输入管理员密码：');
-    if (pwd === null) return;
-    if (pwd !== '1028') { alert('密码错误'); return; }
+var adminToken = null;
+var adminTokenExpiry = 0;
+
+async function verifyAdminPassword(pwd) {
+    try {
+        var resp = await fetch('https://tktfrrvaqwbtdhiqwnna.supabase.co/functions/v1/admin-verify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': 'sb_publishable_vN8ZlhCHeWss312BeXFoIg_7bYC3L4y',
+                'Authorization': 'Bearer sb_publishable_vN8ZlhCHeWss312BeXFoIg_7bYC3L4y'
+            },
+            body: JSON.stringify({ password: pwd })
+        });
+        if (!resp.ok) throw new Error('\u9a8c\u8bc1\u670d\u52a1\u9519\u8bef: ' + resp.status);
+        var data = await resp.json();
+        if (data.valid && data.token) {
+            adminToken = data.token;
+            adminTokenExpiry = Date.now() + 3600000;
+            return true;
+        }
+        return false;
+    } catch(e) {
+        console.error('Admin verify error:', e);
+        throw e;
+    }
+}
+
+function isAdminVerified() {
+    if (adminToken && Date.now() < adminTokenExpiry) return true;
+    adminToken = null;
+    return false;
+}
+
+async function requireAdminAuth(actionName) {
+    if (isAdminVerified()) return true;
+    var pwd = prompt('\u8bf7\u8f93\u5165\u7ba1\u7406\u5458\u5bc6\u7801\uff08' + (actionName || '\u7ba1\u7406\u64cd\u4f5c') + '\uff09\uff1a');
+    if (pwd === null) return false;
+    try {
+        var valid = await verifyAdminPassword(pwd);
+        if (!valid) { alert('\u5bc6\u7801\u9519\u8bef'); return false; }
+        return true;
+    } catch(e) {
+        alert('\u9a8c\u8bc1\u670d\u52a1\u6682\u4e0d\u53ef\u7528: ' + e.message);
+        return false;
+    }
+}
+
+async function openAdminModal() {
+    if (!isAdminVerified()) {
+        var pwd = prompt('\u8bf7\u8f93\u5165\u7ba1\u7406\u5458\u5bc6\u7801\uff1a');
+        if (pwd === null) return;
+        try {
+            var valid = await verifyAdminPassword(pwd);
+            if (!valid) { alert('\u5bc6\u7801\u9519\u8bef'); return; }
+        } catch(e) {
+            alert('\u9a8c\u8bc1\u670d\u52a1\u6682\u4e0d\u53ef\u7528: ' + e.message);
+            return;
+        }
+    }
     document.getElementById('adminModal').classList.add('show');
     adminCurrentTab = 'users';
     loadSiteSettings();
