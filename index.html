@@ -2843,6 +2843,84 @@ hr, .divider {
     object-fit: cover;
 }
 
+
+        /* ==================== 火星天气 ==================== */
+        .mars-panel { padding: 16px; }
+        .mars-sol-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px; margin-top: 12px;
+        }
+        .mars-sol-card {
+            background: rgba(255,80,40,0.08); border: 1px solid rgba(255,80,40,0.2);
+            border-radius: 12px; padding: 12px; color: var(--text-primary);
+        }
+        .mars-sol-card .sol-id { font-size: 1.1rem; font-weight: 700; color: #ff6b35; margin-bottom: 6px; }
+        .mars-stat-row { display: flex; justify-content: space-between; margin: 4px 0; font-size: 0.8rem; }
+        .mars-stat-label { color: var(--text-muted); }
+        .mars-stat-value { font-weight: 600; }
+        .mars-stat-value.temp { color: #ff9f43; }
+        .mars-stat-value.wind { color: #54a0ff; }
+        .mars-stat-value.pressure { color: #5f27cd; }
+
+        /* ==================== ISS 过境预报 ==================== */
+        .isspass-panel { padding: 16px; }
+        .isspass-panel .panel-desc { color: var(--text-muted); margin-bottom: 14px; font-size: 0.85rem; }
+        .isspass-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .isspass-input-row input {
+            flex: 1; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 10px; color: var(--text-primary); font-size: 0.9rem; outline: none;
+        }
+        .isspass-input-row input:focus { border-color: var(--neon-blue, #5b8fff); }
+        .isspass-search-btn, .isspass-locate-btn {
+            padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
+        }
+        .isspass-search-btn { background: var(--neon-blue, #5b8fff); color: #fff; }
+        .isspass-search-btn:hover { background: #3a7bd5; }
+        .isspass-locate-btn { background: rgba(84,160,255,0.15); color: var(--neon-blue, #5b8fff); margin-bottom: 12px; }
+        .isspass-locate-btn:hover { background: rgba(84,160,255,0.25); }
+        .isspass-results { margin-top: 8px; }
+        .isspass-pass-card {
+            background: rgba(84,160,255,0.08); border: 1px solid rgba(84,160,255,0.2);
+            border-radius: 12px; padding: 14px; margin-bottom: 10px;
+        }
+        .isspass-pass-card.visible { border-color: rgba(46,213,115,0.4); background: rgba(46,213,115,0.06); }
+        .isspass-pass-time { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+        .isspass-pass-card.visible .isspass-pass-time { color: #2ed573; }
+        .isspass-pass-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap; }
+        .isspass-pass-meta span { display: flex; align-items: center; gap: 4px; }
+
+        /* ==================== 太空日报 ==================== */
+        .briefing-panel { padding: 16px; }
+        .briefing-section { margin-bottom: 20px; }
+        .briefing-section-title { font-size: 1rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .briefing-item {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px;
+            padding: 12px; margin-bottom: 8px;
+        }
+        .briefing-item-title { font-weight: 600; color: var(--text-primary); margin-bottom: 4px; font-size: 0.9rem; }
+        .briefing-item-desc { color: var(--text-secondary); font-size: 0.82rem; line-height: 1.5; }
+        .briefing-item-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
+
+        /* ==================== 收藏 ==================== */
+        .bookmarks-panel { padding: 16px; }
+        .bookmark-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .bookmark-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+        .bookmark-post-item {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .bookmark-post-item:hover { border-color: rgba(255,215,0,0.3); background: rgba(255,215,0,0.04); }
+        .bookmark-post-title { font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .bookmark-post-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; gap: 10px; }
+        .bookmark-remove-btn {
+            float: right; background: transparent; border: none; color: var(--text-muted);
+            cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .bookmark-remove-btn:hover { color: #ff4757; background: rgba(255,71,87,0.1); }
+
 /* ==================== NASA APOD ==================== */
 .apod-container {
     background: rgba(14, 18, 36, 0.88);
@@ -4323,6 +4401,10 @@ hr, .divider {
             <button class="sd-tab" onclick="switchSDTab('crew', this)">ISS乘组</button>
             <button class="sd-tab" onclick="switchSDTab('meteors', this)">流星雨</button>
             <button class="sd-tab" onclick="switchSDTab('eclipses', this)">日食月食</button>
+            <button class="sd-tab" onclick="switchSDTab('mars', this)">🔴 火星天气</button>
+            <button class="sd-tab" onclick="switchSDTab('isspass', this)">📡 ISS过境</button>
+            <button class="sd-tab" onclick="switchSDTab('briefing', this)">📰 太空日报</button>
+            <button class="sd-tab" onclick="switchSDTab('bookmarks', this)">⭐ 收藏</button>
         </div>
         <div class="space-data-body">
             <div class="sd-panel active" id="sdPanel-iss">
@@ -4364,6 +4446,26 @@ hr, .divider {
 
             <div class="sd-panel" id="sdPanel-eclipses">
                 <div class="eclipse-panel" id="eclipsePanel">点击查看日食月食预报...</div>
+            </div>
+            <div class="sd-panel" id="sdPanel-mars">
+                <div class="mars-panel" id="marsPanel">🔴 火星天气加载中...</div>
+            </div>
+            <div class="sd-panel" id="sdPanel-isspass">
+                <div class="isspass-panel" id="isspassPanel">
+                    <div class="panel-desc">📡 ISS过境预报 — 预测国际空间站何时飞越你的头顶</div>
+                    <div class="isspass-input-row">
+                        <input type="text" id="isspassCityInput" placeholder="输入城市名，如：北京、Tokyo、New York..." />
+                        <button class="isspass-search-btn" onclick="fetchISSPasses()">查询</button>
+                    </div>
+                    <button class="isspass-locate-btn" onclick="getLocationForISS()">📍 使用我的位置</button>
+                    <div id="isspassResults" class="isspass-results">请输入城市或允许定位来查询</div>
+                </div>
+            </div>
+            <div class="sd-panel" id="sdPanel-briefing">
+                <div class="briefing-panel" id="briefingPanel">📰 太空日报生成中...</div>
+            </div>
+            <div class="sd-panel" id="sdPanel-bookmarks">
+                <div class="bookmarks-panel" id="bookmarksPanel">⭐ 加载收藏列表...</div>
             </div>
 
             <!-- Image Lightbox -->
@@ -6465,6 +6567,340 @@ async function deleteReport(reportId) {
     }
 }
 
+
+// ==================== 火星天气 ====================
+var marsWeatherData = null;
+async function loadMarsWeather() {
+    var panel = document.getElementById('marsPanel');
+    if (!panel) return;
+    if (marsWeatherData) { renderMarsWeather(); return; }
+    var cacheKey = 'mars_weather';
+    var cached = localStorage.getItem(cacheKey);
+    if (cached) {
+        try { marsWeatherData = JSON.parse(cached); renderMarsWeather(); return; } catch(e) {}
+    }
+    panel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">📡 正在获取火星天气数据...</div>';
+    try {
+        var resp = await fetch('https://api.nasa.gov/insight_weather/?api_key=DEMO_KEY&feedtype=json&ver=1.0');
+        if (!resp.ok) throw new Error('API error: ' + resp.status);
+        var data = await resp.json();
+        marsWeatherData = data;
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        renderMarsWeather();
+    } catch(e) {
+        console.error('Mars weather error:', e);
+        // Try cached data
+        if (cached) {
+            try { marsWeatherData = JSON.parse(cached); renderMarsWeather(); }
+            catch(e2) { panel.innerHTML = '<div style="padding:20px;text-align:center;">⚠️ 火星天气数据加载失败<br><small>' + escapeHtml(e.message) + '</small></div>'; }
+        } else {
+            panel.innerHTML = '<div style="padding:20px;text-align:center;">⚠️ 火星天气数据暂时无法获取<br><small>InSight 任务已于2022年12月结束，数据为最后记录</small></div>';
+        }
+    }
+}
+function renderMarsWeather() {
+    var panel = document.getElementById('marsPanel');
+    if (!panel || !marsWeatherData) return;
+    var solKeys = marsWeatherData.sol_keys || [];
+    if (solKeys.length === 0) { panel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">暂无火星天气数据</div>'; return; }
+    var html = '<div style="margin-bottom:10px;font-size:0.82rem;color:var(--text-muted);">最近 ' + solKeys.length + ' 个火星日数据 · Elysium Planitia (4.5°N, 13.4°E)</div><div class="mars-sol-grid">';
+    solKeys.forEach(function(solId) {
+        var sol = marsWeatherData[solId] || {};
+        var temp = sol.AT ? sol.AT.av.toFixed(1) + '°C' : '—';
+        var tempMin = sol.AT ? sol.AT.mn.toFixed(1) + '°C' : '—';
+        var tempMax = sol.AT ? sol.AT.mx.toFixed(1) + '°C' : '—';
+        var wind = sol.HWS ? sol.HWS.av.toFixed(1) + ' m/s' : '—';
+        var windMax = sol.HWS ? sol.HWS.mx.toFixed(1) + ' m/s' : '—';
+        var pressure = sol.PRE ? sol.PRE.av.toFixed(0) + ' Pa' : '—';
+        var wd = sol.WD && sol.WD.most_common ? sol.WD.most_common.compass_point : '—';
+        var season = sol.Season || '';
+        html += '<div class="mars-sol-card"><div class="sol-id">Sol ' + solId + '</div>';
+        html += '<div class="mars-stat-row"><span class="mars-stat-label">季节</span><span class="mars-stat-value">' + season + '</span></div>';
+        html += '<div class="mars-stat-row"><span class="mars-stat-label">温度均/最低/最高</span></div>';
+        html += '<div class="mars-stat-row"><span class="mars-stat-value temp">' + temp + '</span><span class="mars-stat-value temp" style="color:#ff6b6b;">' + tempMin + '</span><span class="mars-stat-value temp" style="color:#ffa502;">' + tempMax + '</span></div>';
+        html += '<div class="mars-stat-row"><span class="mars-stat-label">风速均/最高</span></div>';
+        html += '<div class="mars-stat-row"><span class="mars-stat-value wind">' + wind + '</span><span class="mars-stat-value wind" style="color:#7bed9f;">' + windMax + '</span></div>';
+        html += '<div class="mars-stat-row"><span class="mars-stat-label">气压</span><span class="mars-stat-value pressure">' + pressure + '</span></div>';
+        html += '<div class="mars-stat-row"><span class="mars-stat-label">风向</span><span class="mars-stat-value">' + wd + '</span></div>';
+        html += '</div>';
+    });
+    html += '</div>';
+    panel.innerHTML = html;
+}
+
+// ==================== ISS 过境预报 ====================
+var issGeo = null;
+async function fetchISSPasses(lat, lon) {
+    var resultsDiv = document.getElementById('isspassResults');
+    if (!resultsDiv) return;
+    var city = document.getElementById('isspassCityInput');
+    var displayLat, displayLon;
+    if (lat && lon) {
+        displayLat = lat; displayLon = lon;
+    } else if (issGeo) {
+        displayLat = issGeo.coords.latitude; displayLon = issGeo.coords.longitude;
+    } else {
+        resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">请输入城市名或允许定位</div>';
+        return;
+    }
+    resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">📡 正在查询 ISS 过境...</div>';
+    try {
+        var url = 'https://iss-api.polluxlabs.io/iss-pass?lat=' + displayLat + '&lon=' + displayLon + '&visible_only=true&n=5&days_ahead=3';
+        var resp = await fetch(url);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        var data = await resp.json();
+        var passes = data.passes || [];
+        if (passes.length === 0) {
+            resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">未来3天没有可见的 ISS 过境<br><small>位置: ' + displayLat.toFixed(2) + ', ' + displayLon.toFixed(2) + '</small></div>';
+            return;
+        }
+        var html = '<div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">📍 位置: ' + displayLat.toFixed(2) + '°, ' + displayLon.toFixed(2) + '° · 可见过境预测</div>';
+        passes.forEach(function(pass, i) {
+            var riseTime = new Date(pass.rise.time);
+            var setCtime = new Date(pass.set.time);
+            var durMin = Math.floor(pass.visible_duration_sec / 60);
+            var hours = riseTime.getHours().toString().padStart(2,'0');
+            var mins = riseTime.getMinutes().toString().padStart(2,'0');
+            var riseStr = hours + ':' + mins + ' UTC';
+            var setH = setCtime.getHours().toString().padStart(2,'0');
+            var setM = setCtime.getMinutes().toString().padStart(2,'0');
+            var setStr = setH + ':' + setM + ' UTC';
+            var isToday = riseTime.toDateString() === new Date().toDateString();
+            var label = isToday ? '🌟 今晚' : '📅 ' + riseTime.getDate() + '/' + (riseTime.getMonth()+1);
+            var visBadge = pass.visible ? '<span style="color:#2ed573;">✓ 可见</span>' : '<span style="color:#ff9f43;">△ 过境</span>';
+            html += '<div class="isspass-pass-card' + (pass.visible ? ' visible' : '') + '">'
+                + '<div class="isspass-pass-time">' + label + ' ' + riseStr + ' → ' + setStr + ' (' + durMin + 'min)</div>'
+                + '<div class="isspass-pass-meta">'
+                + '<span>' + visBadge + '</span>'
+                + '<span>最高仰角: ' + pass.culmination.elevation_deg.toFixed(1) + '°</span>'
+                + '<span>方位: ' + pass.rise.compass + ' → ' + pass.set.compass + '</span>'
+                + '</div></div>';
+        });
+        resultsDiv.innerHTML = html;
+    } catch(e) {
+        console.error('ISS pass error:', e);
+        resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:#ff6b6b;">⚠️ 查询失败: ' + escapeHtml(e.message) + '<br><small>请稍后重试</small></div>';
+    }
+}
+function getLocationForISS() {
+    if (!navigator.geolocation) {
+        document.getElementById('isspassResults').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">您的浏览器不支持地理定位</div>';
+        return;
+    }
+    var resultsDiv = document.getElementById('isspassResults');
+    resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">📍 获取位置中...</div>';
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        issGeo = pos;
+        fetchISSPasses(pos.coords.latitude, pos.coords.longitude);
+    }, function(err) {
+        resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:#ff6b6b;">⚠️ 无法获取位置: ' + err.message + '</div>';
+    }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+// ==================== 太空日报 ====================
+var briefingData = null;
+async function loadSpaceBriefing() {
+    var panel = document.getElementById('briefingPanel');
+    if (!panel) return;
+    if (briefingData) { renderBriefing(); return; }
+    var cacheKey = 'space_briefing';
+    var today = new Date().toISOString().split('T')[0];
+    var cached = localStorage.getItem(cacheKey);
+    if (cached) {
+        try {
+            var cd = JSON.parse(cached);
+            if (cd.date === today) { briefingData = cd; renderBriefing(); return; }
+        } catch(e) {}
+    }
+    panel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">📡 正在生成今日太空日报...</div>';
+    try {
+        var data = await generateSpaceBriefing(today);
+        briefingData = data;
+        localStorage.setItem(cacheKey, JSON.stringify({ date: today, ...data }));
+        renderBriefing();
+    } catch(e) {
+        console.error('Briefing error:', e);
+        panel.innerHTML = '<div style="padding:20px;text-align:center;color:#ff6b6b;">⚠️ 太空日报生成失败，请稍后重试</div>';
+    }
+}
+async function generateSpaceBriefing(dateStr) {
+    var date = new Date(dateStr);
+    var today = dateStr;
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var html = { launches: [], events: [], apod_preview: null, facts: [] };
+    // Fetch launches from REST API
+    try {
+        var resp = await fetch('https://api.spacexdata.com/v4/launches/past');
+        if (resp.ok) {
+            var launches = await resp.json();
+            var todayStart = new Date(dateStr + 'T00:00:00Z').getTime();
+            var todayEnd = new Date(dateStr + 'T23:59:59Z').getTime();
+            var todayLaunches = launches.filter(function(l) { return l.date_utc && new Date(l.date_utc).getTime() >= todayStart && new Date(l.date_utc).getTime() <= todayEnd; });
+            if (todayLaunches.length === 0) {
+                // Find next upcoming launches
+                var upcoming = launches.filter(function(l) { return l.date_utc && new Date(l.date_utc).getTime() > todayEnd; }).sort(function(a,b) { return new Date(a.date_utc) - new Date(b.date_utc); });
+                html.launches = upcoming.slice(0, 3).map(function(l) {
+                    var ld = new Date(l.date_utc);
+                    return { name: l.name || 'Unnamed', time: ld.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }), rocket: l.rocket ? '🚀 ' + (typeof l.rocket === 'string' ? l.rocket : 'Rocket') : '', success: l.success };
+                });
+            } else {
+                html.launches = todayLaunches.map(function(l) {
+                    return { name: l.name || 'Unnamed', time: new Date(l.date_utc).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }), success: l.success };
+                });
+            }
+        }
+    } catch(e) { console.error('Launches error:', e); }
+    // Fetch APOD for today
+    try {
+        var apodResp = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=' + dateStr);
+        if (apodResp.ok) {
+            var apod = await apodResp.json();
+            html.apod_preview = { title: apod.title, desc: (apod.explanation||'').substring(0, 150) + '...' };
+        }
+    } catch(e) { console.error('APOD error:', e); }
+    // Current astronaut count
+    try {
+        var crewResp = await fetch('https://api.spacexdata.com/v4/launches/upcoming');
+        // Just use static fact for now
+    } catch(e) {}
+    // Daily space facts
+    var facts = [
+        '今天 ISS 绕地球约 16 圈，每 90 分钟绕一圈',
+        '火星目前正处于北半球秋季，气温约 -60°C',
+        '太阳风以每小时约 400 公里的速度吹向太阳系各处',
+        '月球正在以每年约 3.8 厘米的速度远离地球',
+        '木星的大红斑风暴已持续超过 300 年',
+        '银河系中心有一个超大质量黑洞，名为人马座 A*',
+        '人类至今已向太阳系外发送了 4 艘旅行者探测器',
+        '火星上最高的火山奥林匹斯山是太阳系最高的火山，高约 21.9 公里'
+    ];
+    var seed = (year * 397 + month * 31 + day) % facts.length;
+    html.facts = [facts[(seed) % facts.length], facts[(seed + 3) % facts.length], facts[(seed + 6) % facts.length]];
+    // Known events on this date
+    var events = [];
+    if (month === 3 && day === 8) events.push({ name: '世界气象日', desc: '纪念世界气象组织成立' });
+    if (month === 4 && day === 12) events.push({ name: '世界航天日', desc: '纪念人类首次进入太空（加加林，1961）' });
+    if (month === 7 && day === 20) events.push({ name: '阿波罗11号登月纪念', desc: '1969年7月20日，人类首次登月' });
+    if (month === 10 && day === 5) events.push({ name: '世界教师日', desc: '联合国设立的世界教师日' });
+    html.events = events;
+    return html;
+}
+function renderBriefing() {
+    var panel = document.getElementById('briefingPanel');
+    if (!panel || !briefingData) return;
+    var date = new Date();
+    var dateStr = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    var html = '<div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);">';
+    html += '<span style="font-size:1.1rem;font-weight:700;">📰 太空日报</span>';
+    html += '<span style="font-size:0.8rem;color:var(--text-muted);margin-left:10px;">' + dateStr + '</span>';
+    html += '</div>';
+    // Launches section
+    if (briefingData.launches && briefingData.launches.length > 0) {
+        html += '<div class="briefing-section"><div class="briefing-section-title">🚀 发射信息</div>';
+        briefingData.launches.forEach(function(l) {
+            html += '<div class="briefing-item"><div class="briefing-item-title">' + escapeHtml(l.name) + '</div>';
+            html += '<div class="briefing-item-meta">' + escapeHtml(l.time) + '</div>';
+            if (l.success !== undefined) html += '<div class="briefing-item-meta">' + (l.success ? '✅ 成功' : '⏳ 待确认') + '</div>';
+            html += '</div>';
+        });
+        html += '</div>';
+    }
+    // APOD preview
+    if (briefingData.apod_preview) {
+        html += '<div class="briefing-section"><div class="briefing-section-title">🌌 今日天文一图 (APOD)</div>';
+        html += '<div class="briefing-item"><div class="briefing-item-title">' + escapeHtml(briefingData.apod_preview.title) + '</div>';
+        html += '<div class="briefing-item-desc">' + escapeHtml(briefingData.apod_preview.desc) + '</div></div>';
+        html += '</div>';
+    }
+    // Space facts
+    html += '<div class="briefing-section"><div class="briefing-section-title">💫 今日太空冷知识</div>';
+    briefingData.facts.forEach(function(f) {
+        html += '<div class="briefing-item"><div class="briefing-item-desc">✦ ' + escapeHtml(f) + '</div></div>';
+    });
+    html += '</div>';
+    // Events
+    if (briefingData.events && briefingData.events.length > 0) {
+        html += '<div class="briefing-section"><div class="briefing-section-title">📅 今日纪念日</div>';
+        briefingData.events.forEach(function(e) {
+            html += '<div class="briefing-item"><div class="briefing-item-title">' + escapeHtml(e.name) + '</div>';
+            html += '<div class="briefing-item-desc">' + escapeHtml(e.desc) + '</div></div>';
+        });
+        html += '</div>';
+    }
+    panel.innerHTML = html;
+}
+
+// ==================== 收藏系统 ====================
+function getBookmarks() {
+    try { return JSON.parse(localStorage.getItem('space_bookmarks')) || []; } catch(e) { return []; }
+}
+function saveBookmarks(bm) {
+    localStorage.setItem('space_bookmarks', JSON.stringify(bm));
+}
+function toggleBookmark(postId, postAuthor) {
+    if (!currentUser) { alert('请先登录后再收藏！'); openAuthModal(); return; }
+    var bookmarks = getBookmarks();
+    var idx = bookmarks.findIndex(function(b) { return b.postId === postId; });
+    if (idx >= 0) {
+        bookmarks.splice(idx, 1);
+        // Update button if visible
+        var btn = document.querySelector('.bookmark-btn[data-post-id="' + postId + '"]');
+        if (btn) { btn.textContent = '☆ 收藏'; btn.classList.remove('bookmarked'); }
+    } else {
+        bookmarks.push({ postId: postId, postAuthor: postAuthor, time: Date.now() });
+        var btn = document.querySelector('.bookmark-btn[data-post-id="' + postId + '"]');
+        if (btn) { btn.textContent = '⭐ 已收藏'; btn.classList.add('bookmarked'); }
+    }
+    saveBookmarks(bookmarks);
+    // If viewing bookmarks panel, refresh
+    if (document.getElementById('sdPanel-bookmarks') && document.getElementById('sdPanel-bookmarks').classList.contains('active')) {
+        loadBookmarks();
+    }
+}
+
+function loadBookmarks() {
+    var panel = document.getElementById('bookmarksPanel');
+    if (!panel) return;
+    if (!currentUser) {
+        panel.innerHTML = '<div class="bookmark-empty"><div class="bookmark-empty-icon">🔒</div><div>请先登录后查看收藏</div></div>';
+        return;
+    }
+    var bookmarks = getBookmarks();
+    if (bookmarks.length === 0) {
+        panel.innerHTML = '<div class="bookmark-empty"><div class="bookmark-empty-icon">⭐</div><div>还没有收藏任何帖子<br><small style="color:var(--text-muted);">点击帖子中的「☆ 收藏」按钮即可收藏</small></div></div>';
+        return;
+    }
+    var html = '<div style="margin-bottom:12px;font-size:0.85rem;color:var(--text-muted);">共 ' + bookmarks.length + ' 个收藏</div>';
+    bookmarks.forEach(function(bm, i) {
+        var post = posts.find(function(p) { return p.id === bm.postId; });
+        if (!post) return;
+        html += '<div class="bookmark-post-item" onclick="scrollToPost(\'' + bm.postId + '\')">';
+        html += '<button class="bookmark-remove-btn" onclick="event.stopPropagation();removeBookmark(' + i + ')">✕</button>';
+        if (post.title) html += '<div class="bookmark-post-title">' + escapeHtml(post.title) + '</div>';
+        else html += '<div class="bookmark-post-title">无标题帖子</div>';
+        html += '<div class="bookmark-post-meta">';
+        html += '<span>👤 ' + escapeHtml(post.author) + '</span>';
+        html += '<span>❤️ ' + (post.likes || 0) + '</span>';
+        html += '<span>🕐 ' + formatTime(post.time) + '</span>';
+        html += '</div></div>';
+    });
+    panel.innerHTML = html;
+}
+function removeBookmark(index) {
+    var bookmarks = getBookmarks();
+    bookmarks.splice(index, 1);
+    saveBookmarks(bookmarks);
+    loadBookmarks();
+}
+function scrollToPost(postId) {
+    closeSpaceDataModal();
+    setTimeout(function() {
+        var el = document.querySelector('[data-id="' + postId + '"]');
+        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.style.transition = 'box-shadow 0.5s'; el.style.boxShadow = '0 0 20px rgba(91,143,255,0.5)'; setTimeout(function() { el.style.boxShadow = ''; }, 2000); }
+    }, 300);
+}
 // ==================== 初始化新功能 ====================
 // Load APOD on page load
 loadAPOD();
@@ -6501,6 +6937,10 @@ function switchSDTab(tab, btn) {
     else if (tab === 'crew') { loadISSCrew(); }
     else if (tab === 'meteors') { renderMeteorShowers(); }
     else if (tab === 'eclipses') { renderEclipses(); }
+    else if (tab === 'mars') { loadMarsWeather(); }
+    else if (tab === 'isspass') { /* init panel */ }
+    else if (tab === 'briefing') { loadSpaceBriefing(); }
+    else if (tab === 'bookmarks') { loadBookmarks(); }
 }
 var issTimer = null;
 var issTrack = [];
