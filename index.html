@@ -447,6 +447,10 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 4px;
+            transition: color 0.2s;
+        }
+        .author-name:hover {
+            color: var(--neon-blue, #5b8fff);
         }
         .post-time {
             font-size: 0.78rem;
@@ -548,6 +552,10 @@
         .auth-name {
             font-weight: 500; max-width: 120px;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            transition: color 0.2s;
+        }
+        .auth-name:hover {
+            color: var(--neon-blue, #5b8fff);
         }
         .btn-logout {
             padding: 4px 10px; background: transparent; border: none;
@@ -727,6 +735,10 @@
         .auth-name {
             font-weight: 500; max-width: 120px;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            transition: color 0.2s;
+        }
+        .auth-name:hover {
+            color: var(--neon-blue, #5b8fff);
         }
         .btn-logout {
             padding: 4px 10px; background: transparent; border: none;
@@ -905,6 +917,10 @@
         .auth-name {
             font-weight: 500; max-width: 120px;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            transition: color 0.2s;
+        }
+        .auth-name:hover {
+            color: var(--neon-blue, #5b8fff);
         }
         .btn-logout {
             padding: 4px 10px; background: transparent; border: none;
@@ -1359,6 +1375,10 @@
         .auth-name {
             font-weight: 500; max-width: 120px;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            transition: color 0.2s;
+        }
+        .auth-name:hover {
+            color: var(--neon-blue, #5b8fff);
         }
         .btn-logout {
             padding: 4px 10px; background: transparent; border: none;
@@ -4750,9 +4770,9 @@ hr, .divider {
                 area.innerHTML = `
                     <div class="auth-user">
                         <div class="auth-avatar-small">${avHtml}</div>
-                        <span class="auth-name">${escapeHtml(currentUser.name)}</span>
+                        <span class="auth-name" style="cursor:pointer;" onclick="showUserProfile('${escapeHtml(currentUser.name)}')">${escapeHtml(currentUser.name)}</span>
                         ${badge}
-                        <button class="btn-logout" onclick="handleLogout()">退出</button>
+                        <button class="btn-logout" onclick="showUserProfile(currentUser.name)" style="margin-right:6px;">👤 我的主页</button><button class="btn-logout" onclick="handleLogout()">退出</button>
                     </div>
                 `;
                 renderLaunchControls();
