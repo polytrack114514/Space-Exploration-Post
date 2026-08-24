@@ -2824,43 +2824,55 @@ hr, .divider {
 }
 
 .announcement-banner {
-    background: linear-gradient(135deg, rgba(255, 170, 0, 0.1), rgba(91, 143, 255, 0.08));
-    border: 1px solid rgba(255, 170, 0, 0.25);
-    border-radius: 16px;
-    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.12), rgba(255, 100, 50, 0.06));
+    border-left: 4px solid #ffaa00;
+    border-top: 1px solid rgba(255, 170, 0, 0.15);
+    border-right: 1px solid rgba(255, 170, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 170, 0, 0.1);
+    border-radius: 4px 12px 12px 4px;
+    padding: 16px 20px 16px 18px;
     margin-bottom: 16px;
     position: relative;
-    animation: bannerPulse 3s ease-in-out infinite;
 }
-@keyframes bannerPulse {
-    0%, 100% { box-shadow: 0 0 0 rgba(255, 170, 0, 0); }
-    50% { box-shadow: 0 0 20px rgba(255, 170, 0, 0.1); }
+.announcement-banner .banner-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ffaa00;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
 }
 .announcement-banner .banner-icon {
-    font-size: 1.1rem;
-    margin-right: 8px;
+    font-size: 1rem;
 }
 .announcement-banner .banner-content {
-    display: inline;
-    color: #dce8ff;
-    font-size: 0.82rem;
-    line-height: 1.5;
+    display: block;
+    color: #e8eeff;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 .announcement-banner .banner-edit-btn {
     position: absolute;
-    top: 10px;
-    right: 12px;
-    font-size: 0.7rem;
-    padding: 4px 10px;
-    background: rgba(255, 170, 0, 0.15);
-    border: 1px solid rgba(255, 170, 0, 0.3);
+    top: 12px;
+    right: 14px;
+    font-size: 0.68rem;
+    padding: 3px 10px;
+    background: rgba(255, 170, 0, 0.12);
+    border: 1px solid rgba(255, 170, 0, 0.25);
     color: #ffaa00;
     border-radius: 6px;
     cursor: pointer;
     font-family: inherit;
+    transition: all 0.2s;
 }
 .announcement-banner .banner-edit-btn:hover {
-    background: rgba(255, 170, 0, 0.25);
+    background: rgba(255, 170, 0, 0.2);
+    border-color: rgba(255, 170, 0, 0.4);
 }
 
 /* ==================== NASA APOD ==================== */
@@ -6274,6 +6286,7 @@ async function submitReport() {
     if (!reportReason) { alert('请选择举报原因'); return; }
     if (!currentUser) { openAuthModal(); return; }
     var btn = document.getElementById('reportSubmitBtn');
+    if (!btn) return;
     btn.disabled = true;
     btn.textContent = '提交中...';
     try {
@@ -6282,14 +6295,25 @@ async function submitReport() {
             reporter: currentUser.name,
             reason: reportReason
         });
-        if (error) throw error;
-        closeReportModal();
-        alert('举报已提交，管理员会尽快处理');
+        if (error) {
+            console.error('Report insert error:', error);
+            if (error.code === '42501') {
+                alert('举报提交失败：数据库权限不足。请联系管理员配置reports表的RLS策略。');
+            } else {
+                throw error;
+            }
+        } else {
+            closeReportModal();
+            alert('举报已提交，管理员会尽快处理');
+        }
     } catch(e) {
-        alert('举报失败: ' + e.message);
+        console.error('Report submission failed:', e);
+        alert('举报失败: ' + (e.message || e.toString()));
     }
-    btn.disabled = false;
-    btn.textContent = '提交举报';
+    if (btn) {
+        btn.disabled = false;
+        btn.textContent = '提交举报';
+    }
 }
 
 // ==================== 管理员后台 ====================
@@ -6322,7 +6346,7 @@ function renderAnnouncement() {
     }
     var isAdmin = isAdminVerified();
     var editBtn = isAdmin ? '<button class="banner-edit-btn" onclick="openAnnouncementEditor()">✏️ 编辑</button>' : '';
-    banner.innerHTML = '<span class="banner-icon">📢</span><span class="banner-content">' + escapeHtml(text).replace(/\n/g, '<br>') + '</span>' + editBtn;
+    banner.innerHTML = '<div class="banner-header"><span class="banner-icon">📢</span>站点公告</div><div class="banner-content">' + escapeHtml(text) + '</div>' + editBtn;
     banner.className = 'announcement-banner';
     banner.style.display = 'block';
 }
@@ -6343,7 +6367,7 @@ async function openAnnouncementEditor() {
     var newText = prompt('编辑公告内容（支持换行）：', current);
     if (newText === null) return;
     try {
-        var { error } = await sb.from('site_settings').upsert({ key: 'announcement', value: newText });
+        var { error } = await sb.from('site_settings').upsert({ key: 'announcement', value: newText }, { onConflict: 'key' });
         if (error) throw error;
         siteSettings.announcement = newText;
         renderAnnouncement();
