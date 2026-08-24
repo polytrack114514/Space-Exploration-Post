@@ -2916,92 +2916,6 @@ hr, .divider {
     .apod-image-wrap img { max-height: 200px; }
 }
 
-/* ==================== 举报弹窗 ==================== */
-.report-modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(2, 4, 14, 0.75);
-    z-index: 200;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-.report-modal-overlay.show { display: flex; }
-.report-modal {
-    background: rgba(10, 14, 28, 0.95);
-    border: 1px solid rgba(91, 143, 255, 0.2);
-    border-radius: 20px;
-    padding: 32px 28px 28px;
-    width: 90%;
-    max-width: 420px;
-    box-shadow: 0 0 40px rgba(91, 143, 255, 0.1), 0 20px 60px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(20px);
-    position: relative;
-}
-.report-modal::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 20%; right: 20%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 100, 100, 0.6), transparent);
-}
-.report-reason-btn {
-    display: block;
-    width: 100%;
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    background: rgba(4, 8, 20, 0.6);
-    border: 1px solid rgba(91, 143, 255, 0.12);
-    border-radius: 10px;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: left;
-    font-family: inherit;
-}
-.report-reason-btn:hover {
-    border-color: rgba(255, 100, 100, 0.4);
-    background: rgba(255, 100, 100, 0.05);
-}
-.report-reason-btn.selected {
-    border-color: rgba(255, 100, 100, 0.5);
-    background: rgba(255, 100, 100, 0.1);
-}
-.report-submit-btn {
-    width: 100%;
-    padding: 12px;
-    margin-top: 12px;
-    background: linear-gradient(135deg, rgba(255, 68, 102, 0.9), rgba(200, 50, 80, 0.9));
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-family: inherit;
-}
-.report-submit-btn:hover {
-    box-shadow: 0 0 20px rgba(255, 68, 102, 0.4);
-}
-.report-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 0.8rem;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: all 0.2s;
-    font-family: inherit;
-}
-.report-btn:hover {
-    color: rgba(255, 100, 100, 0.8);
-    background: rgba(255, 100, 100, 0.08);
-}
-
 /* ==================== 管理员后台 ==================== */
 .admin-modal-overlay {
     position: fixed;
@@ -4231,15 +4145,7 @@ hr, .divider {
             <div id="notifyList"></div>
         </div>
     </div>
-    <!-- 举报弹窗 -->
-    <div class="report-modal-overlay" id="reportModal">
-        <div class="report-modal">
-            <button class="admin-close-btn" onclick="closeReportModal()" style="position:absolute;top:12px;right:14px;">&times;</button>
-            <div style="font-family:'Michroma',sans-serif;font-size:1rem;text-align:center;margin-bottom:16px;color:#ff4060;letter-spacing:1px;">举报帖子</div>
-            <div id="reportReasons"></div>
-            <button class="report-submit-btn" id="reportSubmitBtn" onclick="submitReport()">提交举报</button>
-        </div>
-    </div>
+    
     <!-- 管理员后台弹窗 -->
     <div class="admin-modal-overlay" id="adminModal">
         <div class="admin-modal">
@@ -4249,7 +4155,7 @@ hr, .divider {
             </div>
             <div class="admin-tabs">
                 <button class="admin-tab active" onclick="switchAdminTab('users', this)">用户管理</button>
-                <button class="admin-tab" onclick="switchAdminTab('reports', this)">举报列表</button>
+                
                 <button class="admin-tab" onclick="switchAdminTab('settings', this)">站点设置</button>
             </div>
             <div class="admin-content" id="adminContent"></div>
@@ -4630,7 +4536,7 @@ hr, .divider {
                                 <span>💬</span>
                                 <span>${(post.comments && post.comments.length) || 0}</span>
                             </button>
-                            ${currentUser && post.author !== currentUser.name ? `<button class="report-btn" onclick="openReportModal('${post.id}')">🚩 举报</button>` : ''}
+                            
                             </div>
                         <div class="comments-section" id="comments-${post.id}">
                             <div class="comments-list" id="comments-list-${post.id}">
@@ -6202,66 +6108,6 @@ function renderOnlineUsers(users) {
     }
 }
 
-// ==================== 帖子举报系统 ====================
-var reportPostId = null;
-var reportReason = '';
-var reportReasons = ['垃圾广告', '不当内容', '恶意攻击', '虚假信息', '侵犯隐私', '其他'];
-function openReportModal(postId) {
-    reportPostId = postId;
-    reportReason = '';
-    var container = document.getElementById('reportReasons');
-    if (container) {
-        container.innerHTML = reportReasons.map(function(r, i) {
-            return '<button class="report-reason-btn" onclick="selectReportReason(' + i + ')" id="reportReasonBtn_' + i + '">' + r + '</button>';
-        }).join('');
-    }
-    document.getElementById('reportModal').classList.add('show');
-}
-function closeReportModal() {
-    document.getElementById('reportModal').classList.remove('show');
-    reportPostId = null;
-}
-function selectReportReason(idx) {
-    reportReason = reportReasons[idx];
-    for (var i = 0; i < reportReasons.length; i++) {
-        var btn = document.getElementById('reportReasonBtn_' + i);
-        if (btn) btn.classList.toggle('selected', i === idx);
-    }
-}
-async function submitReport() {
-    if (!reportReason) { alert('请选择举报原因'); return; }
-    if (!currentUser) { openAuthModal(); return; }
-    var btn = document.getElementById('reportSubmitBtn');
-    if (!btn) return;
-    btn.disabled = true;
-    btn.textContent = '提交中...';
-    try {
-        var { error } = await sb.from('reports').insert({
-            post_id: String(reportPostId),
-            reporter: currentUser.name,
-            reason: reportReason
-        });
-        if (error) {
-            console.error('Report insert error:', error);
-            if (error.code === '42501') {
-                alert('举报提交失败：数据库权限不足。请联系管理员配置reports表的RLS策略。');
-            } else {
-                throw error;
-            }
-        } else {
-            closeReportModal();
-            alert('举报已提交，管理员会尽快处理');
-        }
-    } catch(e) {
-        console.error('Report submission failed:', e);
-        alert('举报失败: ' + (e.message || e.toString()));
-    }
-    if (btn) {
-        btn.disabled = false;
-        btn.textContent = '提交举报';
-    }
-}
-
 // ==================== 管理员后台 ====================
 
 var siteSettings = { disableRegister: false };
@@ -6423,35 +6269,7 @@ async function renderAdminContent() {
             html += '</div>';
         });
         content.innerHTML = html || '<div style="text-align:center;color:var(--text-muted);padding:40px;">暂无用户</div>';
-    } else if (adminCurrentTab === 'reports') {
-        try {
-            var { data, error } = await sb.from('reports').select('*').order('created_at', { ascending: false }).limit(100);
-            if (error) throw error;
-            if (!data || data.length === 0) {
-                content.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px;">暂无举报</div>';
-                return;
-            }
-            var html = '';
-            data.forEach(function(r) {
-                var post = posts.find(function(p) { return String(p.id) === String(r.post_id); });
-                var postTitle = post ? (post.title || post.content || '').substring(0, 40) : '[已删除]';
-                html += '<div class="admin-report-row">';
-                html += '<div class="admin-report-meta">举报人: ' + escapeHtml(r.reporter||'') + ' | 时间: ' + formatTime(r.created_at) + '</div>';
-                html += '<div class="admin-report-reason">原因: ' + escapeHtml(r.reason||'') + '</div>';
-                html += '<div class="admin-report-meta">帖子: ' + escapeHtml(postTitle) + '</div>';
-                if (post) {
-                    html += '<button class="admin-ban-btn" style="margin-top:6px;" onclick="deletePost(\'' + r.post_id + '\');deleteReport(' + r.id + ')">删除帖子</button> ';
-                    html += '<button class="admin-ban-btn unban" style="margin-top:6px;" onclick="deleteReport(' + r.id + ')">忽略</button>';
-                } else {
-                    html += '<button class="admin-ban-btn unban" style="margin-top:6px;" onclick="deleteReport(' + r.id + ')">删除记录</button>';
-                }
-                html += '</div>';
-            });
-            content.innerHTML = html;
-        } catch(e) {
-            content.innerHTML = '<div style="text-align:center;color:var(--danger);padding:40px;">加载失败: ' + e.message + '</div>';
-        }
-    } else if (adminCurrentTab === 'settings') {
+    }  else if (adminCurrentTab === 'settings') {
         renderSettingsPanel();
         return;
     }
