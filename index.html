@@ -4769,6 +4769,7 @@ hr, .divider {
                                 <button class="pin-btn" onclick="togglePin('${post.id}')" title="置顶/取消置顶">${post.pinned ? '📌 取消置顶' : '📌 置顶'}</button>
                                 ${currentUser && post.author === currentUser.name ? `<button class="edit-btn" onclick="editPost('${post.id}')" title="编辑帖子">✏️ 编辑</button>` : ''}
                                 <button class="delete-btn" onclick="deletePost('${post.id}')" title="删除帖子">🗑 删除</button>
+                                <button class="bookmark-btn" data-post-id="${post.id}" onclick="toggleBookmark('${post.id}', '${post.author}')" title="收藏/取消收藏">☆ 收藏</button>
                             </div>
                         </div>
                         ${post.title ? `<div class="post-title">${post.pinned ? '📌 ' : ''}${escapeHtml(post.title)}</div>` : ''}
