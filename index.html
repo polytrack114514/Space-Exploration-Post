@@ -2882,6 +2882,47 @@ hr, .divider {
         }
         .bookmark-remove-btn:hover { color: #ff4757; background: rgba(255,71,87,0.1); }
 
+
+/* ==================== 3D太阳系 ==================== */
+.solar3d-panel { position: relative; height: 600px; overflow: hidden; border-radius: 16px; background: #000; }
+#solar3dCanvas { width: 100%; height: 100%; }
+.solar3d-controls {
+    position: absolute; top: 10px; left: 10px; z-index: 10;
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    background: rgba(6,8,20,0.6); padding: 6px 10px; border-radius: 8px;
+}
+.solar3d-controls label { color: rgba(255,255,255,0.9); font-size: 0.8rem; }
+.solar3d-controls input[type="range"] { width: 80px; vertical-align: middle; }
+.solar3d-btn {
+    background: rgba(91,143,255,0.25); border: 1px solid rgba(91,143,255,0.4);
+    color: #fff; padding: 4px 10px; border-radius: 6px;
+    font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+}
+.solar3d-btn:hover { background: rgba(91,143,255,0.45); }
+.solar3d-info {
+    position: absolute; bottom: 10px; left: 10px; right: 10px; z-index: 10;
+    background: rgba(6,8,20,0.85); border: 1px solid rgba(91,143,255,0.3);
+    border-radius: 10px; padding: 10px 14px;
+    color: #fff; font-size: 0.85rem; max-height: 140px; overflow-y: auto;
+    display: none;
+}
+.solar3d-info h4 { color: #5b8fff; margin-bottom: 4px; font-size: 0.95rem; }
+.solar3d-info p { color: rgba(255,255,255,0.75); line-height: 1.5; }
+.solar3d-loading {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    color: #5b8fff; font-size: 1rem; z-index: 5;
+}
+.solar3d-hint {
+    position: absolute; top: 10px; right: 10px; z-index: 10;
+    color: rgba(255,255,255,0.4); font-size: 0.75rem;
+}
+@media (max-width: 768px) {
+    .solar3d-panel { height: 400px; }
+    .solar3d-controls { gap: 4px; padding: 4px 6px; }
+    .solar3d-controls input[type="range"] { width: 50px; }
+    .solar3d-hint { display: none; }
+}
+
 /* ==================== NASA APOD ==================== */
 .apod-container {
     background: rgba(14, 18, 36, 0.88);
@@ -4346,6 +4387,7 @@ hr, .divider {
             <button class="sd-tab" onclick="switchSDTab('meteors', this)">流星雨</button>
             <button class="sd-tab" onclick="switchSDTab('eclipses', this)">日食月食</button>
             <button class="sd-tab" onclick="switchSDTab('bookmarks', this)">⭐ 收藏</button>
+            <button class="sd-tab" onclick="switchSDTab('solar3d', this)">🌍 3D太阳系</button>
         </div>
         <div class="space-data-body">
             <div class="sd-panel active" id="sdPanel-iss">
@@ -4390,6 +4432,18 @@ hr, .divider {
             </div>
             <div class="sd-panel" id="sdPanel-bookmarks">
                 <div class="bookmarks-panel" id="bookmarksPanel">⭐ 加载收藏列表...</div>
+            <div class="sd-panel" id="sdPanel-solar3d">
+                <div class="solar3d-panel">
+                    <div id="solar3dCanvas"></div>
+                    <div class="solar3d-controls">
+                        <label>速度: <input type="range" min="0" max="5" step="0.1" value="1" oninput="window.setSolar3DSpeed&amp;&amp;window.setSolar3DSpeed(this.value)"></label>
+                        <button class="solar3d-btn" onclick="window.toggleSolar3DOrbits&amp;&amp;window.toggleSolar3DOrbits()">轨道线</button>
+                        <button class="solar3d-btn" onclick="window.resetSolar3DView&amp;&amp;window.resetSolar3DView()">重置视角</button>
+                    </div>
+                    <div class="solar3d-hint">拖动旋转 · 滚轮缩放 · 点击行星查看信息</div>
+                    <div class="solar3d-info" id="solar3dInfo"></div>
+                    <div class="solar3d-loading" id="solar3dLoading">🌍 3D太阳系加载中...</div>
+                </div>
             </div>
 
             <!-- Image Lightbox -->
@@ -6617,11 +6671,13 @@ function openSpaceDataModal() {
     switchSDTab('iss', document.querySelector('.sd-tab'));
 }
 function closeSpaceDataModal() {
+    if (window.destroySolar3D) { window.destroySolar3D(); }
     document.getElementById('spaceDataModal').classList.remove('show');
     stopISSTracking();
     
 }
 function switchSDTab(tab, btn) {
+    if (tab !== 'solar3d' && window.destroySolar3D) { window.destroySolar3D(); }
     document.querySelectorAll('.sd-tab').forEach(function(t) { t.classList.remove('active'); });
     document.querySelectorAll('.sd-panel').forEach(function(p) { p.classList.remove('active'); });
     if (btn) btn.classList.add('active');
@@ -6636,6 +6692,16 @@ function switchSDTab(tab, btn) {
     else if (tab === 'meteors') { renderMeteorShowers(); }
     else if (tab === 'eclipses') { renderEclipses(); }
     else if (tab === 'bookmarks') { loadBookmarks(); }
+    else if (tab === 'solar3d') {
+        if (window.initSolar3D) {
+            var loading = document.getElementById('solar3dLoading');
+            if (loading) loading.style.display = 'none';
+            window.initSolar3D();
+        } else {
+            var loading = document.getElementById('solar3dLoading');
+            if (loading) loading.textContent = '⚠️ 3D模块加载失败，请刷新重试';
+        }
+    }
 }
 var issTimer = null;
 var issTrack = [];
@@ -7100,4 +7166,249 @@ if (!window._spaceFeaturesInit) {
     });
 }
 
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+var solar3DScene = null;
+var solar3DRenderer = null;
+var solar3DCamera = null;
+var solar3DControls = null;
+var solar3DAnimId = null;
+var solar3DPlanets = [];
+var solar3DOrbitLines = [];
+var solar3DSpeed = 1;
+var solar3DInitDone = false;
+
+var PLANET_DATA = [
+    { name: '太阳', nameEn: 'Sun', size: 5, distance: 0, speed: 0, color: 0xffaa00,
+      info: '太阳是太阳系的中心恒星，直径约139万公里，表面温度约5500°C，占太阳系总质量的99.86%' },
+    { name: '水星', nameEn: 'Mercury', size: 0.5, distance: 8, speed: 4.15, color: 0x8c8c8c,
+      info: '水星是离太阳最近的行星，公转周期88天，没有大气层，昼夜温差超600°C' },
+    { name: '金星', nameEn: 'Venus', size: 0.9, distance: 12, speed: 1.62, color: 0xe8b366,
+      info: '金星表面温度高达462°C，是太阳系中最热的行星，大气层主要由二氧化碳组成' },
+    { name: '地球', nameEn: 'Earth', size: 1.0, distance: 16, speed: 1.0, color: 0x4a90d9,
+      info: '地球是唯一已知有生命存在的行星，公转周期365.25天，拥有唯一的天然卫星——月球' },
+    { name: '火星', nameEn: 'Mars', size: 0.7, distance: 21, speed: 0.53, color: 0xcc5533,
+      info: '火星又称红色星球，有奥林帕斯山——太阳系最高山峰，高约21公里' },
+    { name: '木星', nameEn: 'Jupiter', size: 3.0, distance: 30, speed: 0.084, color: 0xd4a373,
+      info: '木星是太阳系最大行星，有著名的大红斑风暴，直径比地球大11倍' },
+    { name: '土星', nameEn: 'Saturn', size: 2.5, distance: 40, speed: 0.034, color: 0xc9b070, hasRing: true,
+      info: '土星以其美丽的环系而闻名，环主要由冰和岩石碎片组成，宽度约28万公里' },
+    { name: '天王星', nameEn: 'Uranus', size: 1.5, distance: 48, speed: 0.012, color: 0x66cccc,
+      info: '天王星自转轴几乎平行于公转轨道面，被称为“躺着旋转的行星”，呈蓝绿色' },
+    { name: '海王星', nameEn: 'Neptune', size: 1.4, distance: 56, speed: 0.006, color: 0x3366cc,
+      info: '海王星是太阳系最外层行星，风速可达2100公里/小时，是太阳系中风速最快的' }
+];
+
+window.initSolar3D = function() {
+    var container = document.getElementById('solar3dCanvas');
+    if (!container) return;
+    if (solar3DInitDone) return;
+    
+    solar3DScene = new THREE.Scene();
+    var w = container.clientWidth;
+    var h = container.clientHeight;
+    
+    solar3DCamera = new THREE.PerspectiveCamera(60, w / h, 0.1, 2000);
+    solar3DCamera.position.set(0, 40, 80);
+    
+    solar3DRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    solar3DRenderer.setSize(w, h);
+    solar3DRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(solar3DRenderer.domElement);
+    
+    solar3DControls = new OrbitControls(solar3DCamera, solar3DRenderer.domElement);
+    solar3DControls.enableDamping = true;
+    solar3DControls.dampingFactor = 0.05;
+    solar3DControls.minDistance = 15;
+    solar3DControls.maxDistance = 300;
+    
+    // Star field
+    var starGeo = new THREE.BufferGeometry();
+    var starCount = 5000;
+    var starPos = new Float32Array(starCount * 3);
+    var starColors = new Float32Array(starCount * 3);
+    for (var i = 0; i < starCount; i++) {
+        var r = 300 + Math.random() * 700;
+        var theta = Math.random() * Math.PI * 2;
+        var phi = Math.acos(2 * Math.random() - 1);
+        starPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
+        starPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+        starPos[i*3+2] = r * Math.cos(phi);
+        var brightness = 0.5 + Math.random() * 0.5;
+        starColors[i*3] = brightness;
+        starColors[i*3+1] = brightness;
+        starColors[i*3+2] = brightness * (0.8 + Math.random() * 0.2);
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+    solar3DScene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 1.5, vertexColors: true, transparent: true, opacity: 0.9 })));
+    
+    // Sun
+    var sunData = PLANET_DATA[0];
+    var sun = new THREE.Mesh(
+        new THREE.SphereGeometry(sunData.size, 32, 32),
+        new THREE.MeshBasicMaterial({ color: sunData.color })
+    );
+    sun.userData = sunData;
+    solar3DScene.add(sun);
+    
+    // Sun glow
+    solar3DScene.add(new THREE.Mesh(
+        new THREE.SphereGeometry(sunData.size * 1.3, 32, 32),
+        new THREE.MeshBasicMaterial({ color: 0xff9900, transparent: true, opacity: 0.2 })
+    ));
+    solar3DScene.add(new THREE.Mesh(
+        new THREE.SphereGeometry(sunData.size * 1.6, 32, 32),
+        new THREE.MeshBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.1 })
+    ));
+    
+    // Lights
+    solar3DScene.add(new THREE.PointLight(0xffffff, 2.5, 500));
+    solar3DScene.add(new THREE.AmbientLight(0x444466));
+    
+    // Planets
+    var clickables = [sun];
+    for (var i = 1; i < PLANET_DATA.length; i++) {
+        var p = PLANET_DATA[i];
+        var mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(p.size, 32, 32),
+            new THREE.MeshPhongMaterial({ color: p.color, shininess: 5 })
+        );
+        mesh.userData = p;
+        mesh.position.x = p.distance;
+        
+        // Earth atmosphere
+        if (p.nameEn === 'Earth') {
+            mesh.add(new THREE.Mesh(
+                new THREE.SphereGeometry(p.size * 1.08, 32, 32),
+                new THREE.MeshBasicMaterial({ color: 0x4a90d9, transparent: true, opacity: 0.15 })
+            ));
+        }
+        
+        // Saturn ring
+        if (p.hasRing) {
+            var ring = new THREE.Mesh(
+                new THREE.RingGeometry(p.size * 1.4, p.size * 2.5, 64),
+                new THREE.MeshBasicMaterial({ color: 0xc9b070, side: THREE.DoubleSide, transparent: true, opacity: 0.5 })
+            );
+            ring.rotation.x = Math.PI / 2 - 0.4;
+            mesh.add(ring);
+        }
+        
+        solar3DScene.add(mesh);
+        clickables.push(mesh);
+        
+        // Orbit line
+        var orbitPoints = [];
+        for (var j = 0; j <= 128; j++) {
+            var angle = (j / 128) * Math.PI * 2;
+            orbitPoints.push(new THREE.Vector3(Math.cos(angle) * p.distance, 0, Math.sin(angle) * p.distance));
+        }
+        var orbitLine = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(orbitPoints),
+            new THREE.LineBasicMaterial({ color: 0x5b8fff, transparent: true, opacity: 0.25 })
+        );
+        solar3DScene.add(orbitLine);
+        solar3DOrbitLines.push(orbitLine);
+        
+        solar3DPlanets.push({ mesh: mesh, data: p, angle: Math.random() * Math.PI * 2 });
+    }
+    
+    // Click handler
+    var raycaster = new THREE.Raycaster();
+    var mouse = new THREE.Vector2();
+    solar3DRenderer.domElement.addEventListener('click', function(e) {
+        var rect = solar3DRenderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(mouse, solar3DCamera);
+        var intersects = raycaster.intersectObjects(clickables, true);
+        if (intersects.length > 0) {
+            var obj = intersects[0].object;
+            while (!obj.userData.name && obj.parent) obj = obj.parent;
+            if (obj.userData.name) {
+                var info = document.getElementById('solar3dInfo');
+                if (info) {
+                    info.innerHTML = '<h4>' + obj.userData.name + ' (' + obj.userData.nameEn + ')</h4><p>' + obj.userData.info + '</p>';
+                    info.style.display = 'block';
+                }
+            }
+        }
+    });
+    
+    // Animation loop
+    var lastTime = 0;
+    function animate(time) {
+        solar3DAnimId = requestAnimationFrame(animate);
+        var dt = (time - lastTime) / 1000;
+        lastTime = time;
+        sun.rotation.y += dt * 0.1 * solar3DSpeed;
+        for (var i = 0; i < solar3DPlanets.length; i++) {
+            var p = solar3DPlanets[i];
+            p.angle += dt * p.data.speed * 0.3 * solar3DSpeed;
+            p.mesh.position.x = Math.cos(p.angle) * p.data.distance;
+            p.mesh.position.z = Math.sin(p.angle) * p.data.distance;
+            p.mesh.rotation.y += dt * 0.5 * solar3DSpeed;
+        }
+        solar3DControls.update();
+        solar3DRenderer.render(solar3DScene, solar3DCamera);
+    }
+    animate(0);
+    
+    // Resize handler
+    window._solar3DResize = function() {
+        if (!solar3DRenderer || !container) return;
+        var w2 = container.clientWidth;
+        var h2 = container.clientHeight;
+        solar3DCamera.aspect = w2 / h2;
+        solar3DCamera.updateProjectionMatrix();
+        solar3DRenderer.setSize(w2, h2);
+    };
+    window.addEventListener('resize', window._solar3DResize);
+    
+    solar3DInitDone = true;
+};
+
+window.destroySolar3D = function() {
+    if (solar3DAnimId) { cancelAnimationFrame(solar3DAnimId); solar3DAnimId = null; }
+    if (solar3DRenderer) {
+        solar3DRenderer.dispose();
+        var container = document.getElementById('solar3dCanvas');
+        if (container && solar3DRenderer.domElement.parentNode) {
+            container.removeChild(solar3DRenderer.domElement);
+        }
+        solar3DRenderer = null;
+    }
+    if (window._solar3DResize) { window.removeEventListener('resize', window._solar3DResize); }
+    solar3DScene = null;
+    solar3DCamera = null;
+    solar3DControls = null;
+    solar3DPlanets = [];
+    solar3DOrbitLines = [];
+    solar3DInitDone = false;
+};
+
+window.setSolar3DSpeed = function(v) { solar3DSpeed = parseFloat(v); };
+window.toggleSolar3DOrbits = function() {
+    for (var i = 0; i < solar3DOrbitLines.length; i++) { solar3DOrbitLines[i].visible = !solar3DOrbitLines[i].visible; }
+};
+window.resetSolar3DView = function() {
+    if (solar3DCamera && solar3DControls) {
+        solar3DCamera.position.set(0, 40, 80);
+        solar3DControls.target.set(0, 0, 0);
+        solar3DControls.update();
+    }
+};
 </script>
