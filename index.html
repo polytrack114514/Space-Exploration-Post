@@ -3102,24 +3102,7 @@ hr, .divider {
 .admin-ban-btn.unban:hover {
     background: rgba(0, 255, 136, 0.2);
     box-shadow: 0 0 8px rgba(0, 255, 136, 0.2);
-}
-.admin-report-row {
-    padding: 12px;
-    border: 1px solid rgba(91, 143, 255, 0.08);
-    border-radius: 10px;
-    margin-bottom: 6px;
-    background: rgba(4, 8, 20, 0.4);
-}
-.admin-report-meta {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-}
-.admin-report-reason {
-    font-size: 0.85rem;
-    color: var(--text-primary);
-}
-.admin-close-btn {
+}.admin-close-btn {
     background: none;
     border: none;
     color: var(--text-muted);
@@ -3462,7 +3445,7 @@ hr, .divider {
 
         /* --- Enhanced glassmorphism --- */
         .modal, .auth-modal, .admin-modal, .profile-modal,
-        .notification-modal, .report-modal, .space-data-content {
+        .notification-modal, .space-data-content {
             background: rgba(10, 14, 28, 0.88) !important;
             backdrop-filter: blur(28px) saturate(1.4) !important;
             -webkit-backdrop-filter: blur(28px) saturate(1.4) !important;
@@ -4710,7 +4693,7 @@ hr, .divider {
                                 <button class="pin-btn" onclick="togglePin('${post.id}')" title="置顶/取消置顶">${post.pinned ? '📌 取消置顶' : '📌 置顶'}</button>
                                 ${currentUser && post.author === currentUser.name ? `<button class="edit-btn" onclick="editPost('${post.id}')" title="编辑帖子">✏️ 编辑</button>` : ''}
                                 <button class="delete-btn" onclick="deletePost('${post.id}')" title="删除帖子">🗑 删除</button>
-                                <button class="bookmark-btn${isBookmarked('${post.id}') ? ' bookmarked' : ''}" data-post-id="${post.id}" onclick="toggleBookmark('${post.id}', '${post.author}')" title="收藏/取消收藏">${isBookmarked('${post.id}') ? '⭐ 已收藏' : '☆ 收藏'}</button>
+                                <button class="bookmark-btn${isBookmarked('${post.id}') ? ' bookmarked' : ''}" data-post-id="${post.id}" onclick="toggleBookmark('${post.id}', '${escapeHtml(post.author)}')" title="收藏/取消收藏">${isBookmarked('${post.id}') ? '⭐ 已收藏' : '☆ 收藏'}</button>
                             </div>
                         </div>
                         ${post.title ? `<div class="post-title">${post.pinned ? '📌 ' : ''}${escapeHtml(post.title)}</div>` : ''}
@@ -6524,17 +6507,6 @@ async function toggleBanUser(username) {
         alert('操作失败: ' + e.message);
     }
 }
-async function deleteReport(reportId) {
-    try {
-        var { error } = await sb.from('reports').delete().eq('id', reportId);
-        if (error) throw error;
-        renderAdminContent();
-    } catch(e) {
-        alert('删除失败: ' + e.message);
-    }
-}
-
-
 // ==================== 收藏系统 ====================
 function getBookmarks() {
     try { return JSON.parse(localStorage.getItem('space_bookmarks')) || []; } catch(e) { return []; }
