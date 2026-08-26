@@ -5506,7 +5506,7 @@ hr, .divider {
                     postsHtml += '<div class="post-card" data-id="' + post.id + '">';
                     postsHtml += '<div class="post-header"><div class="post-author">';
                     postsHtml += '<div class="avatar">' + (post.avatar && post.avatar.startsWith('http') ? '<img src="' + escapeHtml(post.avatar) + '" alt="avatar">' : (escapeHtml(post.avatar || '🌟'))) + '</div>';
-                    postsHtml += '<div class="author-info"><span class="author-name" style="cursor:pointer;" onclick="showUserProfile(\'' + post.author + '\')">' + escapeHtml(post.author) + '</span>';
+                    postsHtml += '<div class="author-info"><span class="author-name" style="cursor:pointer;" onclick="showUserProfile(\'' + escapeHtml(post.author) + '\')">' + escapeHtml(post.author) + '</span>';
                     postsHtml += '<span class="post-time">' + formatTime(post.time) + '</span></div></div></div>';
                     if (post.title) postsHtml += '<div class="post-title">' + escapeHtml(post.title) + '</div>';
                     if (post.image) postsHtml += "<div class='post-images'><img src='" + escapeHtml(post.image) + "' class='post-image' alt='图片'></div>";
