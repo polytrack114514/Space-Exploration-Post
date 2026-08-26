@@ -26,28 +26,28 @@
 
 ### 📖 项目简介
 
-**SpaceHub 星枢** 是一个以太空探索为主题的社区平台，集帖子发布、评论互动、用户关注、火箭发射追踪、🛰️ 太空数据中心（ISS 实时定位 / 行星位置 / 月相 / 近地小行星 / ISS 乘组 / 流星雨 / 日食月食）、NASA 每日天文一图、AI 太空助手于一体。采用深空配色与玻璃态设计，全面适配手机/平板/桌面。全部代码整合在单个 `index.html` 文件中，部署简单。
+**SpaceHub 星枢** 是一个以太空探索为主题的社区平台，集帖子发布、评论互动、用户关注、火箭发射追踪、🛰️ 太空数据中心（ISS 实时定位 / 行星位置 / 月相 / 近地小行星 / ISS 乘组 / 流星雨 / 日食月食 / 帖子收藏）、NASA 每日天文一图、AI 太空助手于一体。采用深空配色与玻璃态设计，全面适配手机/平板/桌面。全部代码整合在单个 `index.html` 文件中，部署简单。
 
 ### 📁 项目结构
 
 ```
-Space-Exploration-Post/
+SpaceHub/
 ├── index.html          # 全部代码（HTML + CSS + JavaScript 单文件）
 ├── supabase_setup.sql  # Supabase 数据库初始化脚本
 └── README.md           # 项目说明文档
 ```
 
-### ✨ 核心功能
+### ✨ 核心功能（15 大功能）
 
 | 功能 | 说明 |
 |------|------|
-| 📝 帖子系统 | 图文发布，热门/最新/关注/火箭发射 四标签切换 |
+| 📝 帖子系统 | 图文发布/编辑/删除/置顶，热门/最新/关注/火箭发射 四标签切换 |
 | 🔍 搜索帖子 | 按标题、内容、作者实时搜索 |
 | 💬 评论互动 | 需登录后发表，支持 @提及通知 |
 | 📌 置顶帖子 | 管理员可置顶重要帖子（Edge Function 验证密码）|
-| ❤️ 点赞 | 一键点赞，自动通知帖子作者 |
-| 🚩 帖子举报 | 用户可举报不当内容，管理员审核 |
-| 👤 用户系统 | 注册/登录（Supabase Auth），个性化头像 |
+| ❤️ 点赞 | 一键点赞（需登录），自动通知帖子作者 |
+| ⭐ 帖子收藏 | 收藏帖子方便日后查看，个人主页展示收藏列表 |
+| 👤 个人主页 | 展示用户头像/帖子/关注/粉丝/获赞/收藏，点击作者名可跳转 |
 | 👥 关注系统 | 关注/取消关注，用户主页显示关注数和粉丝数 |
 | 🔔 消息通知 | 点赞、评论、关注、@提及 实时通知 |
 | 🎬 视频嵌入 | 自动识别 YouTube 和 B站链接，嵌入视频播放器（autoplay 已禁用）|
@@ -55,18 +55,17 @@ Space-Exploration-Post/
 | 🏁 已发射归档 | 自动归档，保留最近 15 条 |
 | 📊 发射结果 | 官方账号可标记发射结果（成功/部分成功/失败）|
 | 🏛️ 官方账号 | NASA/CNSA/SpaceX/其他火箭发射 专属徽标与权限 |
-| 🛰️ 太空数据中心 | 7 合 1 多功能航天数据面板 |
+| 🛰️ 太空数据中心 | 8 合 1 多功能航天数据面板（详见下方）|
 | 🤖 AI 太空助手 | agnes-2.5-flash 模型，通过 Supabase Edge Function 代理，专注太空/航天话题 |
-| 🌌 NASA APOD | 每日天文一图，点击可放大查看 |
+| 🌌 NASA APOD | 每日天文一图，点击可放大查看（含缓存回退）|
 | 🟢 在线用户 | 实时显示在线探索者数量 |
 | 🖼️ 图片放大 | 点击帖子图片弹出大图灯箱浏览 |
-| 🛡️ 管理员后台 | 用户管理（查看/禁言）、举报审核、站点设置（注册开关）|
-| 🚀 加载动画 | 太空主题曲速引擎加载动画 |
+| 🛡️ 管理员后台 | 用户管理（查看/禁言）、站点设置（注册开关）|
 | 📱 响应式布局 | 适配手机（480px）、平板（768px/1024px）、桌面 |
 | ✨ 视觉设计 | 深空配色（电蓝+紫罗兰）、玻璃态/霓虹效果 |
 | 🎬 动画增强 | 卡片进场动画、hover 微交互、骨架屏加载、扫描线效果 |
 
-### 🛰️ 太空数据中心
+### 🛰️ 太空数据中心（8 个标签页）
 
 | 面板 | 功能 | 数据来源 |
 |------|------|---------|
@@ -77,6 +76,7 @@ Space-Exploration-Post/
 | ISS 乘组 | 当前在站宇航员名单及所属飞船 | 静态数据 |
 | 流星雨日历 | 全年 10 大流星雨，峰值日期、ZHR、活跃期、辐射点 | 静态数据集 |
 | 日食月食 | 2026-2028 年日食月食预报，食分、可见区域、倒计时 | 静态数据集 |
+| ⭐ 收藏 | 个人收藏帖子列表，点击跳转原帖，个人主页同步展示 | localStorage 本地存储 |
 
 ### 🛠️ 技术栈
 
@@ -102,7 +102,6 @@ Space-Exploration-Post/
 | users | name, password, follows, source_url, last_active, banned |
 | launches | id, rocket, agency, date, location, mission, image, description, status, result |
 | notifications | id, target_user, from_user, type, post_id, content, is_read, created_at |
-| reports | id, post_id, reporter, reason, status, created_at |
 | site_settings | id, key, value |
 
 ### 🔒 安全特性
@@ -134,18 +133,17 @@ Space-Exploration-Post/
 │         🌌 SpaceHub 星枢                    │
 │        (发光文字效果)                          │
 ├──────────────────────────────────────────────┤
-│  🔥 热门  🆕 最新  👥 关注  🚀 火箭发射       │
+│  🔥 热门  🆕 最新  👥 关注  🤖 AI助手         │
 │  ┌──────────────────────────────────────────┐ │
-│  │ 👤 NASA  🏛️  2小时前           ⋯       │ │
+│  │ 👤 NASA  🏛️  2小时前     ☆收藏  ⋯     │ │
 │  │ NASA 发现新行星                            │ │
 │  │ [配图]                                    │ │
-│  │ ❤️ 42   💬 8   🚩                         │ │
+│  │ ❤️ 42   💬 8                              │ │
 │  └──────────────────────────────────────────┘ │
 ├──────────────────────────────────────────────┤
 │  🛰️ 太空数据中心 (扫描线动效)                  │
-│  [ISS追踪][行星位置][月相][小行星][乘组]       │
-│  [流星雨][日食月食]                           │
-│  🤖 AI助手 (agnes-2.5-flash)                  │
+│  [ISS追踪][行星位置][月相][近地小行星]         │
+│  [ISS乘组][流星雨][日食月食][⭐收藏]          │
 │  🟢 在线: 12 人  🌌 NASA APOD               │
 └──────────────────────────────────────────────┘
 ```
@@ -160,28 +158,28 @@ Space-Exploration-Post/
 
 ### 📖 About
 
-**SpaceHub** is a space-themed community platform integrating post publishing, comments, user following, rocket launch tracking, 🛰️ Space Data Center (ISS tracking / planet positions / moon phase / NEO asteroids / ISS crew / meteor showers / eclipses), NASA APOD, and an AI space assistant. Features a deep-space color palette with glassmorphism design, fully responsive for mobile/tablet/desktop. All code is combined in a single `index.html` file for easy deployment.
+**SpaceHub** is a space-themed community platform integrating post publishing, comments, user following, rocket launch tracking, 🛰️ Space Data Center (ISS tracking / planet positions / moon phase / NEO asteroids / ISS crew / meteor showers / eclipses / bookmarks), NASA APOD, and an AI space assistant. Features a deep-space color palette with glassmorphism design, fully responsive for mobile/tablet/desktop. All code is combined in a single `index.html` file for easy deployment.
 
 ### 📁 Project Structure
 
 ```
-Space-Exploration-Post/
+SpaceHub/
 ├── index.html          # All code (HTML + CSS + JavaScript in one file)
 ├── supabase_setup.sql  # Supabase database initialization script
 └── README.md           # Project documentation
 ```
 
-### ✨ Key Features
+### ✨ Key Features (15 Major Features)
 
 | Feature | Description |
 |---------|-------------|
-| 📝 Posts | Image/text posts with Hot/New/Following/Launches tabs |
+| 📝 Posts | Image/text post publish/edit/delete/pin, Hot/New/Following/Launches tabs |
 | 🔍 Search | Real-time search by title, content, author |
 | 💬 Comments | Login required, @mention notifications |
 | 📌 Pin | Admins can pin posts (Edge Function password verification) |
-| ❤️ Likes | One-click like with auto-notification to author |
-| 🚩 Report | Users can report inappropriate content for admin review |
-| 👤 Users | Register/login (Supabase Auth) with avatars |
+| ❤️ Likes | One-click like (login required), auto-notification to author |
+| ⭐ Bookmarks | Bookmark posts for later, shown in profile page |
+| 👤 Profile | User avatar/posts/following/followers/likes/bookmarks, click author to view |
 | 👥 Follow | Follow/unfollow users, profile shows following/follower counts |
 | 🔔 Notifications | Real-time notifications for likes, comments, follows, mentions |
 | 🎬 Video Embed | Auto-detects YouTube and Bilibili links (autoplay disabled) |
@@ -189,18 +187,17 @@ Space-Exploration-Post/
 | 🏁 Archive | Auto-archived, keeps latest 15 |
 | 📊 Launch Results | Official accounts can mark results (success/partial/failure) |
 | 🏛️ Official Accounts | NASA/CNSA/SpaceX badges & permissions |
-| 🛰️ Space Data Center | 7-in-1 multifunction space data panel |
+| 🛰️ Space Data Center | 8-in-1 multifunction space data panel (see below) |
 | 🤖 AI Assistant | agnes-2.5-flash model via Supabase Edge Function proxy, space/astronautics topics |
-| 🌌 NASA APOD | Astronomy Picture of the Day with lightbox view |
+| 🌌 NASA APOD | Astronomy Picture of the Day with lightbox view (cached fallback) |
 | 🟢 Online Users | Real-time online explorer count |
 | 🖼️ Image Lightbox | Click post images to enlarge in lightbox |
-| 🛡️ Admin Dashboard | User management (view/ban), report moderation, site settings (registration toggle) |
-| 🚀 Loading Animation | Space-themed warp speed loading animation |
+| 🛡️ Admin Dashboard | User management (view/ban), site settings (registration toggle) |
 | 📱 Responsive | Mobile (480px) / Tablet (768px/1024px) / Desktop |
 | ✨ Visual Design | Deep-space palette (electric blue + violet), glassmorphism/neon effects |
 | 🎬 Animations | Card entrance, hover micro-interactions, skeleton loading, scanline effects |
 
-### 🛰️ Space Data Center
+### 🛰️ Space Data Center (8 Tabs)
 
 | Panel | Feature | Data Source |
 |-------|---------|-------------|
@@ -211,6 +208,7 @@ Space-Exploration-Post/
 | ISS Crew | Current in-station astronauts and spacecraft | Static data |
 | Meteor Showers | Annual 10 major meteor showers, peak date, ZHR, radiant, period | Static dataset |
 | Eclipses | 2026-2028 solar/lunar eclipse predictions, magnitude, visibility, countdown | Static dataset |
+| ⭐ Bookmarks | Personal bookmarked posts list, click to jump, synced with profile | localStorage |
 
 ### 🛠️ Tech Stack
 
@@ -236,7 +234,6 @@ Space-Exploration-Post/
 | users | name, password, follows, source_url, last_active, banned |
 | launches | id, rocket, agency, date, location, mission, image, description, status, result |
 | notifications | id, target_user, from_user, type, post_id, content, is_read, created_at |
-| reports | id, post_id, reporter, reason, status, created_at |
 | site_settings | id, key, value |
 
 ### 🔒 Security Features
@@ -268,18 +265,17 @@ Space-Exploration-Post/
 │           🌌 SpaceHub 星枢                   │
 │        (glowing text effect)                  │
 ├──────────────────────────────────────────────┤
-│  🔥 Hot  🆕 New  👥 Following  🚀 Launches   │
+│  🔥 Hot  🆕 New  👥 Following  🤖 AI         │
 │  ┌──────────────────────────────────────────┐ │
-│  │ 👤 NASA  🏛️  2h ago             ⋯     │ │
+│  │ 👤 NASA  🏛️  2h ago     ☆Bookmark  ⋯  │ │
 │  │ NASA Discovers New Planet                  │ │
 │  │ [Image]                                    │ │
-│  │ ❤️ 42   💬 8   🚩                         │ │
+│  │ ❤️ 42   💬 8                              │ │
 │  └──────────────────────────────────────────┘ │
 ├──────────────────────────────────────────────┤
 │  🛰️ Space Data Center (scanline effect)       │
-│  [ISS][Planets][Moon][Asteroids][Crew]        │
-│  [Meteors][Eclipses]                          │
-│  🤖 AI Assistant (agnes-2.5-flash)            │
+│  [ISS][Planets][Moon][Asteroids]              │
+│  [Crew][Meteors][Eclipses][⭐Bookmarks]      │
 │  🟢 Online: 12  🌌 NASA APOD                 │
 └──────────────────────────────────────────────┘
 ```
@@ -287,4 +283,3 @@ Space-Exploration-Post/
 ### 📄 License
 
 [MIT License](https://opensource.org/licenses/MIT)
-
