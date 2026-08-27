@@ -6807,7 +6807,7 @@ function renderAsteroids(panel, neos, totalCount, prefixHtml) {
 
 // ==================== ISS 当前乘组 ====================
 var crewLoaded = false;
-async async function loadISSCrew() {
+async function loadISSCrew() {
     var panel = document.getElementById('crewPanel');
     if (!panel) return;
     if (crewLoaded) return;
