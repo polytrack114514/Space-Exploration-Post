@@ -2900,6 +2900,39 @@ hr, .divider {
     .nasa-eyes-panel { height: 400px; }
 }
 
+
+/* ==================== 发射提醒 ==================== */
+.launch-notify-btn {
+    background: rgba(91,143,255,0.15); border: 1px solid rgba(91,143,255,0.3);
+    color: #5b8fff; padding: 6px 14px; border-radius: 6px;
+    font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+}
+.launch-notify-btn:hover { background: rgba(91,143,255,0.3); }
+.launch-notify-btn.active { background: rgba(255,180,0,0.2); border-color: rgba(255,180,0,0.4); color: #ffb400; }
+
+/* ==================== 每日太空问答 ==================== */
+.quiz-panel { padding: 16px; }
+.quiz-header { text-align: center; margin-bottom: 16px; }
+.quiz-date { font-size: 0.8rem; color: #667788; }
+.quiz-score-box { display: inline-flex; gap: 12px; margin-top: 8px; }
+.quiz-score-item { background: rgba(91,143,255,0.1); border: 1px solid rgba(91,143,255,0.2); border-radius: 8px; padding: 6px 14px; }
+.quiz-score-num { font-size: 1.4rem; font-weight: 700; color: #5b8fff; }
+.quiz-score-label { font-size: 0.7rem; color: #8899aa; }
+.quiz-question { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+.quiz-q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; line-height: 1.5; }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option {
+    background: rgba(255,255,255,0.04); border: 2px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; cursor: pointer; transition: all 0.2s;
+    font-size: 0.95rem; color: var(--text);
+}
+.quiz-option:hover { border-color: rgba(91,143,255,0.4); background: rgba(91,143,255,0.08); }
+.quiz-option.correct { border-color: #00d97e; background: rgba(0,217,126,0.12); color: #00d97e; }
+.quiz-option.wrong { border-color: #ff4757; background: rgba(255,71,87,0.12); color: #ff4757; }
+.quiz-option.disabled { cursor: default; opacity: 0.7; }
+.quiz-result { text-align: center; padding: 20px; font-size: 1rem; }
+.quiz-badge { display: inline-block; background: rgba(255,180,0,0.15); border: 1px solid rgba(255,180,0,0.3); border-radius: 6px; padding: 2px 8px; font-size: 0.75rem; color: #ffb400; margin: 2px; }
+
 /* ==================== NASA APOD ==================== */
 .apod-container {
     background: rgba(14, 18, 36, 0.88);
@@ -4330,6 +4363,7 @@ hr, .divider {
             <button class="sd-tab" onclick="switchSDTab('eclipses', this)">日食月食</button>
             <button class="sd-tab" onclick="switchSDTab('bookmarks', this)">⭐ 收藏</button>
             <button class="sd-tab" onclick="switchSDTab('nasaeys', this)">🌍 3D太阳系</button>
+            <button class="sd-tab" onclick="switchSDTab('quiz', this)">⭐ 每日问答</button>
                     </div>
         <div class="space-data-body">
             <div class="sd-panel active" id="sdPanel-iss">
@@ -4376,6 +4410,10 @@ hr, .divider {
                     <div class="nasa-eyes-tip">数据来源：NASA Eyes</div>
                     <iframe id="nasaEyesFrame" src="about:blank" allow="fullscreen" loading="lazy" onload="var l=document.getElementById('nasaEyesLoading');if(l)l.style.display='none';"></iframe>
                 </div>
+            </div>
+
+            <div class="sd-panel" id="sdPanel-quiz">
+                <div class="quiz-panel" id="quizPanel">⭐ 加载每日问答...</div>
             </div>
 
             <!-- Image Lightbox -->
@@ -5100,6 +5138,7 @@ hr, .divider {
                     month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
                 let countdownHtml;
+                let launchTime = isTBD ? 0 : new Date(l.date).getTime();
                 if (isTBD) {
                     countdownHtml = `<div class="launch-countdown"><div class="launch-tbd-message">⏳ 发射日期待确定</div></div>`;
                 } else {
@@ -5147,6 +5186,7 @@ hr, .divider {
                         <div class="launch-desc">${escapeHtml(l.description)}</div>
                         ${currentUser && isOfficialUser(currentUser.name) ? `
                         <div class="launch-card-actions">
+                            <button class="launch-notify-btn" id="notify-btn-${i}" onclick="toggleLaunchNotify(${i}, '{l.id}', '{escapeHtml(l.rocket)}', ${launchTime})">������ 提醒</button>
                             <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
                             <button class="launch-delete-btn" onclick="deleteLaunch(${i})">🗑 删除</button>
                         </div>
@@ -5427,6 +5467,8 @@ hr, .divider {
 
         // ==================== 用户资料 ====================
         function showUserProfile(username) {
+    var _qd = getQuizData();
+    setTimeout(function() { var pe = document.getElementById('profileQuizScore'); if (pe) pe.textContent = _qd.totalCorrect || 0; }, 200);
             const modal = document.getElementById('profileModal');
             const contentDiv = document.getElementById('profileContent');
             if (!modal || !contentDiv) return;
@@ -5504,7 +5546,7 @@ hr, .divider {
             } else {
                 postsHtml = '<div class="profile-posts"><div class="profile-posts-title">暂无帖子</div></div>';
             }
-            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + followingCount + '</span><span>关注</span></div><div class="profile-stat"><span class="profile-stat-num">' + followersCount + '</span><span>粉丝</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div>' + '</div></div>' + followBtnHtml + '</div>' + postsHtml + bookmarksHtml;
+            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + followingCount + '</span><span>关注</span></div><div class="profile-stat"><span class="profile-stat-num">' + followersCount + '</span><span>粉丝</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div>' + '<div class="profile-stat"><span class="profile-stat-num" id="profileQuizScore">-</span><span>问答</span></div>' + '</div></div>' + followBtnHtml + '</div>' + postsHtml + bookmarksHtml;
             modal.classList.add('show');
         }
 
@@ -6585,6 +6627,223 @@ function scrollToPost(postId) {
         }
     }, 300);
 }
+
+// ==================== 发射提醒 ====================
+function getLaunchReminders() {
+    try { return JSON.parse(localStorage.getItem('launch_reminders') || '[]'); } catch(e) { return []; }
+}
+function saveLaunchReminders(list) {
+    localStorage.setItem('launch_reminders', JSON.stringify(list));
+}
+function toggleLaunchNotify(i, launchId, rocketName, launchTime) {
+    if (!launchTime || launchTime === 0) {
+        alert('\u8be5\u53d1\u5c04\u65e5\u671f\u672a\u786e\u5b9a\uff0c\u65e0\u6cd5\u8bbe\u7f6e\u63d0\u9192');
+        return;
+    }
+    var reminders = getLaunchReminders();
+    var idx = reminders.findIndex(function(r) { return r.launchId === launchId; });
+    var btn = document.getElementById('notify-btn-' + i);
+    if (idx >= 0) {
+        reminders.splice(idx, 1);
+        saveLaunchReminders(reminders);
+        if (btn) { btn.classList.remove('active'); btn.innerHTML = '\ud83d\udd14 \u63d0\u9192'; }
+    } else {
+        if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+        reminders.push({ launchId: launchId, rocket: rocketName, launchTime: launchTime, notified1h: false, notified10m: false });
+        saveLaunchReminders(reminders);
+        if (btn) { btn.classList.add('active'); btn.innerHTML = '\u2705 \u5df2\u8bbe\u63d0\u9192'; }
+        var launchDate = new Date(launchTime);
+        var dateStr = launchDate.toLocaleDateString('zh-CN') + ' ' + launchDate.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+        alert('\u2705 \u5df2\u8bbe\u7f6e\u63d0\u9192\uff01\n\u706b\u7bad\uff1a' + rocketName + '\n\u53d1\u5c04\u65f6\u95f4\uff1a' + dateStr + '\n\n\u53d1\u5c04\u524d1\u5c0f\u65f6\u548c10\u5206\u949f\u4f1a\u63a8\u9001\u6d4f\u89c8\u5668\u901a\u77e5\u3002');
+    }
+}
+var launchNotifyTimer = null;
+function startLaunchNotifyChecker() {
+    if (launchNotifyTimer) clearInterval(launchNotifyTimer);
+    launchNotifyTimer = setInterval(function() {
+        var reminders = getLaunchReminders();
+        var now = Date.now();
+        var changed = false;
+        for (var i = 0; i < reminders.length; i++) {
+            var r = reminders[i];
+            var diff = r.launchTime - now;
+            if (diff <= 0) continue;
+            if (!r.notified1h && diff <= 3600000 && diff > 600000) {
+                r.notified1h = true; changed = true;
+                if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+                    new Notification('\ud83d\udd14 \u53d1\u5c04\u63d0\u9192 (1\u5c0f\u65f6\u540e)', { body: r.rocket + ' \u5c06\u57281\u5c0f\u65f6\u540e\u53d1\u5c04\uff01' });
+                }
+            }
+            if (!r.notified10m && diff <= 600000 && diff > 0) {
+                r.notified10m = true; changed = true;
+                if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+                    new Notification('\ud83d\udd14 \u53d1\u5c04\u63d0\u9192 (10\u5206\u949f\u540e)', { body: r.rocket + ' \u5c06\u572810\u5206\u949f\u540e\u53d1\u5c04\uff01\u51c6\u5907\u89c2\u770b\uff01' });
+                }
+            }
+        }
+        if (changed) saveLaunchReminders(reminders);
+    }, 30000);
+}
+
+// ==================== 每日太空问答 ====================
+var QUIZ_BANK = [
+    { q: '\u592a\u9633\u7cfb\u4e2d\u6700\u5927\u7684\u884c\u661f\u662f\u54ea\u4e00\u9897\uff1f', options: ['\u5730\u7403', '\u6728\u661f', '\u571f\u661f', '\u5929\u738b\u661f'], answer: 1 },
+    { q: '\u4eba\u7c7b\u9996\u6b21\u767b\u6708\u662f\u54ea\u4e00\u5e74\uff1f', options: ['1965', '1969', '1972', '1975'], answer: 1 },
+    { q: 'ISS\u7ed5\u5730\u4e00\u5708\u5927\u7ea6\u9700\u8981\u591a\u4e45\uff1f', options: ['30\u5206\u949f', '90\u5206\u949f', '3\u5c0f\u65f6', '24\u5c0f\u65f6'], answer: 1 },
+    { q: '\u592a\u9633\u7cfb\u4e2d\u54ea\u9897\u884c\u661f\u62e5\u6709\u6700\u591a\u7684\u536b\u661f\uff1f', options: ['\u5730\u7403', '\u6728\u661f', '\u571f\u661f', '\u6d77\u738b\u661f'], answer: 1 },
+    { q: '\u706b\u661f\u4e0a\u6700\u9ad8\u7684\u5c71\u5cf0\u53eb\u4ec0\u4e48\uff1f', options: ['\u73e0\u7a46\u6717\u739b\u5cf0', '\u5965\u6797\u5e15\u65af\u5c71', '\u5bcc\u58eb\u5c71', '\u96f6\u5ea6\u5c71'], answer: 1 },
+    { q: '\u9999\u6975\u7684\u7b2c\u4e00\u4f4d\u5b87\u822a\u5458\u662f\u8c01\uff1f', options: ['\u5c24\u91cc\u52a0\u52a0\u6797', '\u963f\u59c6\u65af\u7279\u6717', '\u52a0\u52a0\u6797', '\u5217\u6602\u8bfa\u592b'], answer: 1 },
+    { q: '\u592a\u9633\u7684\u8868\u9762\u6e29\u5ea6\u5927\u7ea6\u662f\u591a\u5c11\uff1f', options: ['1000\u00b0C', '5500\u00b0C', '10000\u00b0C', '50000\u00b0C'], answer: 1 },
+    { q: '\u4ee5\u4e0b\u54ea\u4e2a\u4e0d\u662f\u77ed\u5468\u5f39\u661f\uff1f', options: ['\u54c8\u96f7\u5f57\u661f', '\u6069\u514b\u5f57\u661f', '\u54c8\u52d2\u5f57\u661f', '\u6d77\u738b\u661f'], answer: 3 },
+    { q: '\u6708\u7403\u7ed5\u5730\u7403\u516c\u8f6c\u4e00\u5708\u5927\u7ea6\u9700\u8981\u591a\u4e45\uff1f', options: ['7\u5929', '14\u5929', '27.3\u5929', '30\u5929'], answer: 2 },
+    { q: '\u4ee5\u4e0b\u54ea\u9897\u884c\u661f\u6ca1\u6709\u5927\u6c14\u5c42\uff1f', options: ['\u91d1\u661f', '\u5730\u7403', '\u706b\u661f', '\u6c34\u661f'], answer: 3 },
+    { q: 'NASA\u7684\u706b\u661f\u63a2\u6d4b\u8f66Perseverance\u662f\u54ea\u5e74\u767b\u9646\u7684\uff1f', options: ['2018', '2020', '2021', '2022'], answer: 2 },
+    { q: '\u592a\u9633\u7cfb\u4e2d\u6700\u70ed\u7684\u884c\u661f\u662f\u54ea\u4e00\u9897\uff1f', options: ['\u6c34\u661f', '\u91d1\u661f', '\u5730\u7403', '\u706b\u661f'], answer: 1 },
+    { q: '\u7b2c\u4e00\u4f4d\u592a\u7a7a\u6e38\u6c34\u7684\u4e2d\u56fd\u8b66\u5bdf\u662f\u8c01\uff1f', options: ['\u6768\u5229\u4f1f', '\u7f8e\u8fd0\u8fd1', '\u8d39\u9f99', '\u80e1\u5fd7\u6e0a'], answer: 1 },
+    { q: '\u6728\u661f\u7684\u5927\u7ea2\u6591\u662f\u4ec0\u4e48\uff1f', options: ['\u706b\u5c71\u55b7\u53d1', '\u5de8\u5927\u98ce\u66b4', '\u5c71\u8109', '\u6d77\u6d0b'], answer: 1 },
+    { q: '\u54ea\u9897\u884c\u661f\u88ab\u79f0\u4e3a\u8eba\u7740\u65cb\u8f6c\u7684\u884c\u661f\uff1f', options: ['\u5929\u738b\u661f', '\u6d77\u738b\u661f', '\u571f\u661f', '\u6728\u661f'], answer: 0 },
+    { q: '\u592a\u7a7a\u4e2d\u8ddd\u5730\u7403\u6700\u8fd1\u7684\u6052\u661f\u662f\u54ea\u4e00\u9897\uff1f', options: ['\u592a\u9633', '\u6bd4\u90bb\u661f', '\u5929\u72fc\u661f', '\u5357\u95e8\u4e8c'], answer: 1 },
+    { q: 'SpaceX\u7684Starship\u706b\u7bad\u4f7f\u7528\u4ec0\u4e48\u71c3\u6599\uff1f', options: ['\u7164\u6cb9', '\u7532\u70f7', '\u6db2\u6c27', '\u6c22\u6c14'], answer: 1 },
+    { q: '\u4ee5\u4e0b\u54ea\u4e2a\u7ec4\u7ec7\u53d1\u5c04\u4e86\u9999\u6975\u7a7a\u95f4\u7ad9\u6838\u5fc3\u8231\uff1f', options: ['NASA', 'ESA', 'Roscosmos', '\u4ee5\u4e0a\u4e09\u65b9'], answer: 3 },
+    { q: '\u5730\u7403\u7684\u91cd\u529b\u52a0\u901f\u5ea6\u5927\u7ea6\u662f\u591a\u5c11\uff1f', options: ['3.7', '9.8', '15', '25'], answer: 1 },
+    { q: '\u592a\u9633\u7684\u4e3b\u8981\u6210\u5206\u662f\u4ec0\u4e48\uff1f', options: ['\u6c22\u548c\u6c26', '\u6c22\u548c\u6c28', '\u78b3\u548c\u6c27', '\u94c1\u548c\u954d'], answer: 1 },
+    { q: '\u4ee5\u4e0b\u54ea\u4e2a\u4e0d\u662f\u9999\u6975\u7684\u5b87\u822a\u5458\uff1f', options: ['\u5c24\u91cc\u52a0\u52a0\u6797', '\u963f\u59c6\u65af\u7279\u6717', '\u5c3c\u5c14\u963f\u59c6\u65af\u7279\u6717', '\u5217\u6602\u8bfa\u592b'], answer: 2 },
+    { q: '\u706b\u661f\u7684\u4e00\u5929\u5927\u7ea6\u591a\u957f\uff1f', options: ['12\u5c0f\u65f6', '24.6\u5c0f\u65f6', '48\u5c0f\u65f6', '7\u5929'], answer: 1 },
+    { q: '\u6c34\u661f\u7ed5\u592a\u9633\u4e00\u5708\u9700\u8981\u591a\u4e45\uff1f', options: ['24\u5929', '88\u5929', '180\u5929', '365\u5929'], answer: 1 },
+    { q: '\u54ea\u4e2a\u56fd\u5bb6\u9996\u6b21\u767b\u9646\u706b\u661f\u7684\u706b\u536b\u4e00\u53f7\u9646\u6d88\u8231\uff1f', options: ['\u7f8e\u56fd', '\u82cf\u8054', '\u6b27\u6d32\u592a\u7a7a\u5c40', '\u4e2d\u56fd'], answer: 1 },
+    { q: '\u9999\u6975\u7a7a\u95f4\u7ad9\u8ddd\u5730\u7403\u591a\u8fdc\uff1f', options: ['300\u516c\u91cc', '400\u516c\u91cc', '500\u516c\u91cc', '600\u516c\u91cc'], answer: 1 },
+    { q: '\u54ea\u9897\u884c\u661f\u7684\u81ea\u8f6c\u8f74\u51e0\u4e4e\u5e73\u884c\u516c\u8f6c\u8f68\u9053\u9762\uff1f', options: ['\u571f\u661f', '\u5929\u738b\u661f', '\u6728\u661f', '\u6d77\u738b\u661f'], answer: 1 },
+    { q: '\u592a\u9633\u7cfb\u4e2d\u54ea\u9897\u884c\u661f\u7684\u98ce\u901f\u6700\u5feb\uff1f', options: ['\u5730\u7403', '\u6728\u661f', '\u6d77\u738b\u661f', '\u6c34\u661f'], answer: 2 },
+    { q: '\u6708\u7403\u7684\u76f4\u5f84\u5927\u7ea6\u662f\u591a\u5c11\uff1f', options: ['1000\u516c\u91cc', '1737\u516c\u91cc', '3474\u516c\u91cc', '6371\u516c\u91cc'], answer: 1 },
+    { q: '\u4e2d\u56fd\u7684\u706b\u661f\u63a2\u6d4b\u5668\u53eb\u4ec0\u4e48\uff1f', options: ['\u7389\u5154', '\u5929\u95ee', '\u795d\u878d', '\u8424\u706b'], answer: 1 }
+];
+
+function getQuizData() {
+    try {
+        var d = JSON.parse(localStorage.getItem('space_quiz') || '{}');
+        if (!d.totalAnswered) d.totalAnswered = 0;
+        if (!d.totalCorrect) d.totalCorrect = 0;
+        if (!d.streak) d.streak = 0;
+        if (!d.lastDate) d.lastDate = '';
+        if (!d.answeredDates) d.answeredDates = {};
+        return d;
+    } catch(e) { return { totalAnswered: 0, totalCorrect: 0, streak: 0, lastDate: '', answeredDates: {} }; }
+}
+function saveQuizData(d) { localStorage.setItem('space_quiz', JSON.stringify(d)); }
+function getDailyQuestion() {
+    var today = new Date().toISOString().split('T')[0];
+    var seed = 0;
+    for (var i = 0; i < today.length; i++) seed += today.charCodeAt(i);
+    return QUIZ_BANK[seed % QUIZ_BANK.length];
+}
+function getQuizBadges(d) {
+    var badges = [];
+    if (d.totalCorrect >= 1) badges.push('\u65b0\u624b');
+    if (d.totalCorrect >= 5) badges.push('\u63a2\u7d22\u8005');
+    if (d.totalCorrect >= 10) badges.push('\u592a\u7a7a\u4eba');
+    if (d.totalCorrect >= 20) badges.push('\u5b87\u822a\u5458');
+    if (d.totalCorrect >= 30) badges.push('\u661f\u9645\u4e13\u5bb6');
+    if (d.streak >= 3) badges.push('\u8fde\u80dcx' + d.streak);
+    if (d.streak >= 7) badges.push('\u4e00\u5468\u8ba1\u5212');
+    if (d.streak >= 14) badges.push('\u534a\u6708\u8ba1\u5212');
+    if (d.streak >= 30) badges.push('\u575a\u6301\u4e0d\u61c8');
+    return badges;
+}
+function loadDailyQuiz() {
+    var panel = document.getElementById('quizPanel');
+    if (!panel) return;
+    var data = getQuizData();
+    var today = new Date().toISOString().split('T')[0];
+    var q = getDailyQuestion();
+    var todayAnswered = data.answeredDates[today];
+    var badges = getQuizBadges(data);
+    var badgesHtml = badges.length > 0 ? '<div style="margin-top:8px;">' + badges.map(function(b){return '<span class="quiz-badge">' + b + '</span>';}).join('') + '</div>' : '';
+
+    var html = '<div class="quiz-header">';
+    html += '<div class="quiz-date">\u2b50 \u6bcf\u65e5\u592a\u7a7a\u95ee\u7b54 \u00b7 ' + today + '</div>';
+    html += '<div class="quiz-score-box">';
+    html += '<div class="quiz-score-item"><div class="quiz-score-num">' + data.totalCorrect + '/' + data.totalAnswered + '</div><div class="quiz-score-label">\u603b\u5f97\u5206</div></div>';
+    html += '<div class="quiz-score-item"><div class="quiz-score-num">' + data.streak + '</div><div class="quiz-score-label">\u8fde\u80dc\u5929\u6570</div></div>';
+    html += '</div>';
+    html += badgesHtml;
+    html += '</div>';
+
+    if (todayAnswered) {
+        var correct = todayAnswered.correct;
+        var chosen = todayAnswered.chosen;
+        html += '<div class="quiz-question">';
+        html += '<div class="quiz-q-text">' + q.q + '</div>';
+        html += '<div class="quiz-options">';
+        for (var i = 0; i < q.options.length; i++) {
+            var cls = 'quiz-option disabled';
+            if (i === q.answer) cls += ' correct';
+            if (i === chosen && i !== q.answer) cls += ' wrong';
+            html += '<div class="' + cls + '">' + q.options[i];
+            if (i === q.answer) html += ' \u2705';
+            if (i === chosen && i !== q.answer) html += ' \u274c';
+            html += '</div>';
+        }
+        html += '</div>';
+        html += '<div class="quiz-result">' + (correct ? '\ud83c\udf89 \u7b54\u5bf9\u4e86\uff01\u592a\u68d2\u4e86\uff01' : '\ud83d\udc4d \u6b63\u786e\u7b54\u6848\uff1a' + q.options[q.answer]) + '</div>';
+        html += '</div>';
+        html += '<div style="text-align:center;color:#667788;font-size:0.8rem;padding:12px;">\u660e\u5929\u518d\u6765\u6311\u6218\u65b0\u95ee\u9898\uff01</div>';
+    } else {
+        html += '<div class="quiz-question">';
+        html += '<div class="quiz-q-text">' + q.q + '</div>';
+        html += '<div class="quiz-options">';
+        for (var i = 0; i < q.options.length; i++) {
+            html += '<div class="quiz-option" onclick="answerQuiz(' + i + ')" data-idx="' + i + '">' + q.options[i] + '</div>';
+        }
+        html += '</div>';
+        html += '</div>';
+    }
+
+    panel.innerHTML = html;
+}
+function answerQuiz(chosen) {
+    var data = getQuizData();
+    var today = new Date().toISOString().split('T')[0];
+    var q = getDailyQuestion();
+    var correct = (chosen === q.answer);
+    data.totalAnswered++;
+    if (correct) data.totalCorrect++;
+    var yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    if (data.lastDate === yesterday) {
+        if (correct) data.streak++; else data.streak = 0;
+    } else if (data.lastDate !== today) {
+        data.streak = correct ? 1 : 0;
+    }
+    data.lastDate = today;
+    data.answeredDates[today] = { chosen: chosen, correct: correct };
+    saveQuizData(data);
+
+    var options = document.querySelectorAll('.quiz-option');
+    options.forEach(function(opt) {
+        var idx = parseInt(opt.getAttribute('data-idx'));
+        opt.classList.add('disabled');
+        opt.onclick = null;
+        if (idx === q.answer) opt.classList.add('correct');
+        if (idx === chosen && idx !== q.answer) opt.classList.add('wrong');
+    });
+
+    var question = document.querySelector('.quiz-question');
+    if (question) {
+        var result = document.createElement('div');
+        result.className = 'quiz-result';
+        result.innerHTML = correct ? '\ud83c\udf89 \u7b54\u5bf9\u4e86\uff01\u592a\u68d2\u4e86\uff01' : '\ud83d\udc4d \u6b63\u786e\u7b54\u6848\uff1a' + q.options[q.answer];
+        question.appendChild(result);
+    }
+
+    var pe = document.getElementById('profileQuizScore');
+    if (pe) pe.textContent = data.totalCorrect;
+
+    setTimeout(function() { loadDailyQuiz(); }, 2500);
+}
+
+startLaunchNotifyChecker();
+
 // ==================== 初始化新功能 ====================
 // Load APOD on page load
 loadAPOD();
@@ -6628,6 +6887,7 @@ function switchSDTab(tab, btn) {
             frame.src = 'https://eyes.nasa.gov/apps/solar-system/#/home?embed=true';
         }
     }
+    else if (tab === 'quiz') { loadDailyQuiz(); }
 }
 var issTimer = null;
 var issTrack = [];
