@@ -274,11 +274,23 @@ SpaceHub/
 │  └──────────────────────────────────────────┘ │
 ├──────────────────────────────────────────────┤
 │  🛰️ Space Data Center (scanline effect)       │
-│  [ISS][Planets][Moon][Asteroids]              │
+│  [ISS][Moon][Asteroids]              │
 │  [Crew][Meteors][Eclipses][⭐Bookmarks]      │
 │  🟢 Online: 12  🌌 NASA APOD                 │
 └──────────────────────────────────────────────┘
 ```
+
+### 📄 页面底部信息
+
+网站底部包含黑底页脚，内容如下（每行一项）：
+
+| 内容 | 说明 |
+|------|------|
+| 页面最后更新时间 | 显示最近更新日期 |
+| 联系作者邮箱 | polytrack1@outlook.com |
+| 中文标语 | 我们诞生于这颗暗淡蓝点，但目光早已越过银河。 |
+| 英文标语 | Born on a pale blue dot, our eyes have already pierced the bounds of the galaxy. |
+| 版权声明 | © 2026 SpaceHub. |
 
 ### 📄 License
 
