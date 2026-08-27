@@ -4129,7 +4129,7 @@ hr, .divider {
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="icon" type="image/png" href="/Space-Exploration-Post/favicon.png">
+<link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@300;400;500;600;700;800&family=Michroma&display=swap" rel="stylesheet">
@@ -6081,8 +6081,8 @@ function initWarpSpeed() {
             var sy = (star.y / star.z) * h + cy;
             if (sx < 0 || sx > w || sy < 0 || sy > h) continue;
 
-            var size = (1 - star.z / w) * 3;
-            var opacity = 1 - star.z / w;
+            var size = Math.max(0.1, (1 - star.z / w) * 3);
+            var opacity = Math.max(0, Math.min(1, 1 - star.z / w));
             var prevZ = star.z + speed;
             var psx = (star.x / prevZ) * w + cx;
             var psy = (star.y / prevZ) * h + cy;
