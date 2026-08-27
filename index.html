@@ -6807,44 +6807,199 @@ function renderAsteroids(panel, neos, totalCount, prefixHtml) {
 
 // ==================== ISS 当前乘组 ====================
 var crewLoaded = false;
-async function loadISSCrew() {
+async async function loadISSCrew() {
     var panel = document.getElementById('crewPanel');
     if (!panel) return;
     if (crewLoaded) return;
-    panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">\ud83d\ude80 加载ISS乘组信息...</div>';
+    panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">\u{1f680} \u52a0\u8f7dISS\u4e58\u7ec4\u4fe1\u606f...</div>';
+
+    // Astronaut name -> {agency, flag} lookup (comprehensive, covers active astronauts 2024-2027)
+    var astroDb = {
+        // NASA (USA)
+        'Jessica Meir': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Jack Hathaway': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Anil Menon': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Raja Chari': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Thomas Marshburn': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Kayla Barron': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Matthias Maurer': { agency: 'ESA', flag: '\u{1f1ea}\u{1f1f6}' },
+        'Bob Hines': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Samantha Cristoforetti': { agency: 'ESA', flag: '\u{1f1ea}\u{1f1f6}' },
+        'Kjell Lindgren': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Bob Behnken': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Doug Hurley': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Mike Hopkins': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Victor Glover': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Shannon Walker': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Soichi Noguchi': { agency: 'JAXA', flag: '\u{1f1ef}\u{1f1f5}' },
+        'Shane Kimbrough': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Megan McArthur': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Akihiko Hoshide': { agency: 'JAXA', flag: '\u{1f1ef}\u{1f1f5}' },
+        'Thomas Pesquet': { agency: 'ESA', flag: '\u{1f1ea}\u{1f1f6}' },
+        'Frank Rubio': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Stephen Bowen': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Warren Hoburg': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Sultan Al Neyadi': { agency: 'UAE', flag: '\u{1f1e6}\u{1f1ea}' },
+        'Andrei Fedyaev': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Jasmin Moghbeli': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Andreas Mogensen': { agency: 'ESA', flag: '\u{1f1ea}\u{1f1f6}' },
+        'Satoshi Furukawa': { agency: 'JAXA', flag: '\u{1f1ef}\u{1f1f5}' },
+        'Konstantin Borisov': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Matthew Dominick': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Michael Barratt': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Jeanette Epps': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Alexander Grebenkin': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Butch Wilmore': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Sunita Williams': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Nick Hague': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Aleksandr Gorbunov': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Zena Cardman': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Stephanie Wilson': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Anne McClain': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Nichole Ayers': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Takuya Onishi': { agency: 'JAXA', flag: '\u{1f1ef}\u{1f1f5}' },
+        'Kirill Peskov': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Jonny Kim': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Sergey Ryzhikov': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Alexey Zubritsky': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Sergey Krikalev': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Tracy Caldwell Dyson': { agency: 'NASA', flag: '\u{1f1fa}\u{1f1f8}' },
+        'Oleg Kononenko': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Nikolai Chub': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Oleg Artemyev': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Denis Matveev': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Sergey Korsakov': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Pyotr Dubrov': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Anna Kikina': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Andrey Fedyaev': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Frank de Winne': { agency: 'ESA', flag: '\u{1f1ea}\u{1f1f6}' },
+        'Andrei Fedyaev': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        'Sophie Adenot': { agency: 'ESA', flag: '\u{1f1ea}\u{1f1f6}' },
+        'Andrey Fedyaev': { agency: 'Roscosmos', flag: '\u{1f1f7}\u{1f1fa}' },
+        // Tiangong crew
+        'Li Guangsu': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Li Cong': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Ye Guangfu': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Jing Haipeng': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Zhu Yangzhu': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Gui Haichao': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Tang Shengjie': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Cai Xuzhe': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Song Lingdong': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Wang Haoze': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Chen Dong': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Liu Yang': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' },
+        'Cai Xuzhe': { agency: 'CNSA', flag: '\u{1f1e8}\u{1f1f3}' }
+    };
+
+    var fallbackCrew = [
+        { name: 'Jessica Meir', craft: 'ISS Expedition 75 (NASA)', flag: '\u{1f1fa}\u{1f1f8}' },
+        { name: 'Jack Hathaway', craft: 'ISS Expedition 75 (NASA)', flag: '\u{1f1fa}\u{1f1f8}' },
+        { name: 'Anil Menon', craft: 'ISS (Soyuz MS-29, NASA)', flag: '\u{1f1fa}\u{1f1f8}' },
+        { name: 'Sophie Adenot', craft: 'ISS Expedition 75 (ESA)', flag: '\u{1f1ea}\u{1f1f6}' },
+        { name: 'Andrey Fedyaev', craft: 'ISS Expedition 75 (Roscosmos)', flag: '\u{1f1f7}\u{1f1fa}' },
+        { name: 'Pyotr Dubrov', craft: 'ISS (Soyuz MS-29, Roscosmos)', flag: '\u{1f1f7}\u{1f1fa}' },
+        { name: 'Anna Kikina', craft: 'ISS (Soyuz MS-29, Roscosmos)', flag: '\u{1f1f7}\u{1f1fa}' }
+    ];
+
     try {
-        var resp = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
-        if (!resp.ok) throw new Error('API error: ' + resp.status);
-        var issData = await resp.json();
-        var crewCount = 7;
-        var stationName = 'ISS';
-        var html = '<div class="crew-header-info">\ud83d\ude80 ' + stationName + ' 当前乘组: <strong style="color:#5b8fff;">' + crewCount + '</strong> 名宇航员</div>';
-        var crew = [
-            { name: 'Jessica Meir', craft: 'ISS Expedition 75 (NASA)', flag: '\ud83c\uddfa\ud83c\uddf8' },
-            { name: 'Jack Hathaway', craft: 'ISS Expedition 75 (NASA)', flag: '\ud83c\uddfa\ud83c\uddf8' },
-            { name: 'Anil Menon', craft: 'ISS (Soyuz MS-29, NASA)', flag: '\ud83c\uddfa\ud83c\uddf8' },
-            { name: 'Sophie Adenot', craft: 'ISS Expedition 75 (ESA)', flag: '\ud83c\uddea\ud83c\uddf6' },
-            { name: 'Andrey Fedyaev', craft: 'ISS Expedition 75 (Roscosmos)', flag: '\ud83c\uddf7\ud83c\uddfa' },
-            { name: 'Pyotr Dubrov', craft: 'ISS (Soyuz MS-29, Roscosmos)', flag: '\ud83c\uddf7\ud83c\uddfa' },
-            { name: 'Anna Kikina', craft: 'ISS (Soyuz MS-29, Roscosmos)', flag: '\ud83c\uddf7\ud83c\uddfa' }
-        ];
+        var cacheKey = 'iss_crew_cache';
+        var cacheTimeKey = 'iss_crew_cache_time';
+        var now = Date.now();
+        var cachedTime = parseInt(localStorage.getItem(cacheTimeKey) || '0');
+        var cached = localStorage.getItem(cacheKey);
+
+        // Use cache if less than 1 hour old
+        if (cached && (now - cachedTime) < 3600000) {
+            try {
+                var cachedData = JSON.parse(cached);
+                renderCrewList(cachedData.iss, cachedData.tiangong);
+                return;
+            } catch(e) {}
+        }
+
+        var resp = await fetch('https://api.open-notify.org/astros.json');
+        if (!resp.ok) throw new Error('Astros API error: ' + resp.status);
+        var data = await resp.json();
+
+        var issCrew = [];
+        var tiangongCrew = [];
+        for (var i = 0; i < data.people.length; i++) {
+            var p = data.people[i];
+            var info = astroDb[p.name] || { agency: 'Unknown', flag: '\u{1f680}' };
+            var entry = {
+                name: p.name,
+                craft: p.craft,
+                agency: info.agency,
+                flag: info.flag
+            };
+            if (p.craft === 'ISS') issCrew.push(entry);
+            else if (p.craft === 'Tiangong') tiangongCrew.push(entry);
+        }
+
+        // Cache the result
+        localStorage.setItem(cacheKey, JSON.stringify({ iss: issCrew, tiangong: tiangongCrew }));
+        localStorage.setItem(cacheTimeKey, String(now));
+
+        renderCrewList(issCrew, tiangongCrew);
+    } catch(e) {
+        console.error('ISS crew fetch error:', e);
+        // Try cached data even if expired
+        var cached2 = localStorage.getItem('iss_crew_cache');
+        if (cached2) {
+            try {
+                var cachedData2 = JSON.parse(cached2);
+                renderCrewList(cachedData2.iss, cachedData2.tiangong);
+                var note2 = document.getElementById('crewPanel');
+                if (note2) {
+                    var warn = document.createElement('div');
+                    warn.style.cssText = 'text-align:center;padding:6px;color:#667788;font-size:0.8rem;';
+                    warn.textContent = '\u26a0\ufe0f \u5b9e\u65f6\u6570\u636e\u83b7\u53d6\u5931\u8d25\uff0c\u663e\u793a\u7f13\u5b58\u6570\u636e';
+                    note2.appendChild(warn);
+                }
+                return;
+            } catch(e2) {}
+        }
+        // Fallback to hardcoded
+        renderCrewList(fallbackCrew, []);
+        var note = document.getElementById('crewPanel');
+        if (note) {
+            var warn = document.createElement('div');
+            warn.style.cssText = 'text-align:center;padding:6px;color:#667788;font-size:0.8rem;';
+            warn.textContent = '\u26a0\ufe0f \u5b9e\u65f6\u6570\u636e\u83b7\u53d6\u5931\u8d25\uff0c\u663e\u793a\u9ed8\u8ba4\u4e58\u7ec4\u540d\u5355';
+            note.appendChild(warn);
+        }
+    }
+
+    function renderCrewList(issList, tgList) {
+        var html = '<div class="crew-header-info">\u{1f680} ISS \u5f53\u524d\u4e58\u7ec4: <strong style="color:#5b8fff;">' + issList.length + '</strong> \u540d\u5b87\u822a\u5458</div>';
         html += '<div class="crew-list">';
-        for (var i = 0; i < crew.length; i++) {
-            var c = crew[i];
+        for (var i = 0; i < issList.length; i++) {
+            var c = issList[i];
             html += '<div class="crew-card">';
             html += '<div class="crew-avatar">' + c.flag + '</div>';
             html += '<div class="crew-info">';
             html += '<div class="crew-name">' + escapeHtml(c.name) + '</div>';
-            html += '<div class="crew-craft">' + escapeHtml(c.craft) + '</div>';
+            html += '<div class="crew-craft">ISS (' + escapeHtml(c.agency) + ')</div>';
             html += '</div></div>';
         }
         html += '</div>';
-        html += '<div style="text-align:center;margin-top:12px;font-size:0.68rem;color:#445566;">乘组信息为近期驻站宇航员<br>实际乘组请以官方公布为准</div>';
+        if (tgList.length > 0) {
+            html += '<div class="crew-header-info" style="margin-top:16px;">\u{1f1e8}\u{1f1f3} \u5929\u5bab\u7a7a\u95f4\u7ad9\u4e58\u7ec4: <strong style="color:#5b8fff;">' + tgList.length + '</strong> \u540d\u5b87\u822a\u5458</div>';
+            html += '<div class="crew-list">';
+            for (var j = 0; j < tgList.length; j++) {
+                var t = tgList[j];
+                html += '<div class="crew-card">';
+                html += '<div class="crew-avatar">' + t.flag + '</div>';
+                html += '<div class="crew-info">';
+                html += '<div class="crew-name">' + escapeHtml(t.name) + '</div>';
+                html += '<div class="crew-craft">' + escapeHtml(t.craft) + ' (' + escapeHtml(t.agency) + ')</div>';
+                html += '</div></div>';
+            }
+            html += '</div>';
+        }
+        html += '<div style="text-align:center;margin-top:12px;font-size:0.75rem;color:#667788;">\u6570\u636e\u6765\u6e90: open-notify.org \u5b9e\u65f6\u5728\u8f68\u4eba\u5458API \u00b7 \u6bcf\u5c0f\u65f6\u66f4\u65b0</div>';
         panel.innerHTML = html;
-        crewLoaded = true;
-    } catch(e) {
-        console.error('Crew load error:', e);
-        panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">\u26a0\ufe0f 加载失败: ' + escapeHtml(e.message) + '<br><button onclick="crewLoaded=false;loadISSCrew()" style="margin-top:12px;padding:8px 20px;background:rgba(91,143,255,0.15);border:1px solid rgba(91,143,255,0.3);color:#5b8fff;border-radius:8px;cursor:pointer;">重试</button></div>';
     }
 }
 
