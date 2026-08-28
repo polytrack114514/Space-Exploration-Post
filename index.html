@@ -3253,40 +3253,6 @@ hr, .divider {
 .post-image { cursor: zoom-in !important; transition: opacity 0.2s ease; }
 .post-image:hover { opacity: 0.85; }
 
-        .profile-follow-btn {
-            padding: 8px 20px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-        .profile-follow-btn.follow {
-            background: var(--accent);
-            color: var(--bg);
-        }
-        .profile-follow-btn.following {
-            background: transparent;
-            border: 1px solid var(--border-focus);
-            color: var(--text-secondary);
-        }
-
-/* --- 关注按钮科幻样式 --- */
-.follow-btn, .btn-follow {
-    background: rgba(91, 143, 255, 0.1) !important;
-    border: 1px solid rgba(91, 143, 255, 0.3) !important;
-    color: var(--neon-blue) !important;
-    border-radius: 10px !important;
-    transition: all 0.3s !important;
-}
-.follow-btn:hover, .btn-follow:hover {
-    background: rgba(91, 143, 255, 0.2) !important;
-    border-color: var(--neon-blue) !important;
-    box-shadow: 0 0 16px rgba(91, 143, 255, 0.2) !important;
-    text-shadow: 0 0 6px rgba(91, 143, 255, 0.4) !important;
-}
-
 /* ==================== 站点设置面板 ==================== */
 .settings-panel { padding: 16px; }
 .settings-row {
@@ -4199,9 +4165,6 @@ hr, .divider {
                 <button class="tab" data-tab="new">
                     <span class="icon">🆕</span>最新
                 </button>
-                <button class="tab" data-tab="follow">
-                    <span class="icon">👥</span>关注
-                </button>
                 <button class="tab" data-tab="ai">
                     <span class="icon">🤖</span>AI助手
                 </button>
@@ -4665,11 +4628,6 @@ hr, .divider {
                 });
             }
 
-            // 关注过滤
-            if (currentTab === 'follow') {
-                const followed = JSON.parse(localStorage.getItem('space_follows')) || [];
-                displayPosts = displayPosts.filter(p => followed.includes(p.author));
-            }
             if (currentTab === 'hot') {
                 displayPosts.sort((a, b) => {
                     if (a.pinned && !b.pinned) return -1;
@@ -4686,8 +4644,8 @@ hr, .divider {
             if (displayPosts.length === 0) {
                 list.innerHTML = `
                     <div class="empty-state">
-                        <div class="emoji">${searchKeyword ? '🔍' : (currentTab === 'follow' ? '👥' : '🚀')}</div>
-                        <p>${searchKeyword ? '没有找到匹配的帖子，换个关键词试试吧' : (currentTab === 'follow' ? '还没有关注任何用户，去帖子中点击头像关注吧' : '还没有帖子，点击右上角发布第一条宇宙探索动态吧')}</p>
+                        <div class="emoji">${searchKeyword ? '🔍' : '🚀'}</div>
+                        <p>${searchKeyword ? '没有找到匹配的帖子，换个关键词试试吧' : '还没有帖子，点击右上角发布第一条宇宙探索动态吧'}</p>
                     </div>
                 `;
                 return;
@@ -4904,17 +4862,6 @@ hr, .divider {
                 const { data, error } = await sb.from('users').select('*');
                 if (error) throw error;
                 allUsers = data || [];
-                // Sync current user's follows from Supabase to localStorage
-                if (currentUser) {
-                    var u = allUsers.find(function(x) { return x.name === currentUser.name; });
-                    if (u && u.follows) {
-                        try {
-                            var dbFollows = JSON.parse(u.follows);
-                            localStorage.setItem('space_follows', JSON.stringify(dbFollows));
-                        } catch(e) {}
-                    }
-                }
-
             } catch (e) {
                 console.error('加载用户失败:', e);
             }
@@ -5432,33 +5379,6 @@ hr, .divider {
             document.getElementById('modalOverlay').classList.add('show');
         }
 
-        // ==================== 用户关注系统 ====================
-        function toggleFollow(username) {
-            let followed = JSON.parse(localStorage.getItem('space_follows')) || [];
-            var isFollowing = followed.includes(username);
-            if (isFollowing) {
-                followed = followed.filter(function(u) { return u !== username; });
-            } else {
-                followed.push(username);
-            }
-            localStorage.setItem('space_follows', JSON.stringify(followed));
-            // Send follow notification
-            if (!isFollowing && currentUser) {
-                addNotification(username, currentUser.name, 'follow', null, currentUser.name + ' 关注了你');
-            }
-            // Sync to Supabase users table
-            if (currentUser) {
-                sb.from('users').update({ follows: JSON.stringify(followed) }).eq('name', currentUser.name)
-                    .then(function() { loadUsers(); })
-                    .catch(function(e) { console.error('sync follows failed:', e); });
-            }
-            const profileModal = document.getElementById('profileModal');
-            if (profileModal && profileModal.classList.contains('show') && profileModal.dataset.username === username) {
-                showUserProfile(username);
-            }
-            if (currentTab === 'follow') renderPosts();
-        }
-
         // ==================== 用户资料 ====================
         function showUserProfile(username) {
 
@@ -5471,29 +5391,6 @@ hr, .divider {
             const avatar = getAvatar(username);
             const avHtml = avatar.startsWith('http') ? '<img src="' + avatar + '" alt="avatar">' : avatar;
             const badge = OFFICIAL_USERS[username] ? '<span class="badge-official">' + OFFICIAL_USERS[username].badge + '</span>' : '';
-            const followed = JSON.parse(localStorage.getItem('space_follows')) || [];
-            const isFollowing = followed.includes(username);
-            // Calculate following and followers counts from allUsers + localStorage
-            var followingCount = 0;
-            var followersCount = 0;
-            for (var i = 0; i < allUsers.length; i++) {
-                var u = allUsers[i];
-                var uFollows = [];
-                try { uFollows = JSON.parse(u.follows || '[]'); } catch(e) { uFollows = []; }
-                if (u.name === username) followingCount = uFollows.length;
-                if (uFollows.includes(username)) followersCount++;
-            }
-            // Also merge localStorage data for current user
-            if (currentUser && currentUser.name === username) {
-                followingCount = followed.length;
-            }
-            // Count followers from localStorage too (in case not yet synced to Supabase)
-            var localFollows = JSON.parse(localStorage.getItem('space_follows')) || [];
-            if (localFollows.includes(username)) followersCount++;
-            var followBtnHtml = '';
-            if (currentUser && currentUser.name !== username) {
-                followBtnHtml = '<button class="profile-follow-btn ' + (isFollowing ? 'following' : 'follow') + '" id="profileFollowBtn" data-username="' + escapeHtml(username) + '" onclick="toggleFollow(this.dataset.username)">' + (isFollowing ? '✓ 已关注' : '+ 关注') + '</button>';
-            }
             var bookmarksHtml = '';
             if (currentUser && currentUser.name === username) {
                 var myBookmarks = getBookmarks();
@@ -5539,7 +5436,7 @@ hr, .divider {
             } else {
                 postsHtml = '<div class="profile-posts"><div class="profile-posts-title">暂无帖子</div></div>';
             }
-            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + followingCount + '</span><span>关注</span></div><div class="profile-stat"><span class="profile-stat-num">' + followersCount + '</span><span>粉丝</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div>' + '</div></div>' + followBtnHtml + '</div>' + postsHtml + bookmarksHtml;
+            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div></div></div></div>' + postsHtml + bookmarksHtml;
             modal.classList.add('show');
         }
 
@@ -5702,7 +5599,7 @@ function renderNotifications() {
         return;
     }
 
-    var iconMap = { 'like': '❤️', 'comment': '💬', 'follow': '👥' };
+    var iconMap = { 'like': '❤️', 'comment': '💬' };
 
     list.innerHTML = notifications.map(function (n, index) {
         var icon = iconMap[n.type] || '🔔';
@@ -5751,7 +5648,7 @@ async function markAllNotificationsRead() {
  * 创建通知（不会给自己发通知）
  * @param {string} targetUser - 通知接收者用户名
  * @param {string} fromUser   - 通知发起者用户名
- * @param {string} type       - 通知类型: 'like' | 'comment' | 'follow'
+ * @param {string} type       - 通知类型: 'like' | 'comment'
  * @param {string|null} postId - 相关帖子 ID（可选）
  * @param {string} content    - 通知内容
  */
