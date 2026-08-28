@@ -4126,36 +4126,16 @@ hr, .divider {
         }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ==================== Supabase CDN Fallback ====================
-(function() {
-    var cdnUrls = [
-        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
-        'https://unpkg.com/@supabase/supabase-js@2',
-        'https://cdn.bootcdn.net/ajax/libs/supabase/2.76.1/supabase.min.js'
-    ];
-    var loaded = false;
-    function tryLoad(index) {
-        if (index >= cdnUrls.length) {
-            console.warn('[SpaceHub] 所有 Supabase CDN 均不可用，将以离线模式运行');
-            window.__supabaseFailed = true;
-            return;
-        }
-        var s = document.createElement('script');
-        s.src = cdnUrls[index];
-        s.onload = function() { loaded = true; console.log('[SpaceHub] Supabase 已加载 (' + cdnUrls[index] + ')'); };
-        s.onerror = function() { tryLoad(index + 1); };
-        document.head.appendChild(s);
-    }
-    tryLoad(0);
-    // Safety: if supabase still not loaded after 8s, mark as failed
-    setTimeout(function() {
-        if (!loaded && !window.__supabaseLoaded) {
-            console.warn('[SpaceHub] Supabase CDN 超时，尝试降级');
-            window.__supabFallback = true;
-        }
-    }, 8000);
-})();
+if (typeof supabase === 'undefined') {
+    document.write('<' + 'script src="https://unpkg.com/@supabase/supabase-js@2"><' + '/script>');
+}
+</script>
+<script>
+if (typeof supabase === 'undefined') {
+    document.write('<' + 'script src="https://cdn.bootcdn.net/ajax/libs/supabase/2.76.1/supabase.min.js"><' + '/script>');
+}
 </script>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4354,12 +4334,7 @@ hr, .divider {
             <button class="sd-tab" onclick="switchSDTab('crew', this)">ISS乘组</button>
             <button class="sd-tab" onclick="switchSDTab('meteors', this)">流星雨</button>
             <button class="sd-tab" onclick="switchSDTab('eclipses', this)">日食月食</button>
-            <button class="sd-tab" onclick="switchSDTab('weather', this)">🌡️ 太空天气</button>
-            <button class="sd-tab" onclick="switchSDTab('earthview', this)">🌍 地球全貌</button>
-            <button class="sd-tab" onclick="switchSDTab('eonet', this)">🔥 地球事件</button>
             <button class="sd-tab" onclick="switchSDTab('launches', this)">🚀 发射任务</button>
-            <button class="sd-tab" onclick="switchSDTab('exoplanets', this)">🔭 系外行星</button>
-            <button class="sd-tab" onclick="switchSDTab('mars', this)">🛸 火星车照片</button>
             <button class="sd-tab" onclick="switchSDTab('nasaeys', this)">🌐 3D太阳系</button>
                     </div>
         <div class="space-data-body">
@@ -4398,23 +4373,8 @@ hr, .divider {
             <div class="sd-panel" id="sdPanel-eclipses">
                 <div class="eclipse-panel" id="eclipsePanel">点击查看日食月食预报...</div>
             </div>
-            <div class="sd-panel" id="sdPanel-weather">
-                <div class="sd-content" id="spaceWeatherPanel">🌡️ 太空天气加载中...</div>
-            </div>
-            <div class="sd-panel" id="sdPanel-earthview">
-                <div class="sd-content" id="earthViewPanel">🌍 地球全貌加载中...</div>
-            </div>
-            <div class="sd-panel" id="sdPanel-eonet">
-                <div class="sd-content" id="eonetPanel">🔥 地球自然事件加载中...</div>
-            </div>
             <div class="sd-panel" id="sdPanel-launches">
                 <div class="sd-content" id="launchPanel">🚀 发射任务加载中...</div>
-            </div>
-            <div class="sd-panel" id="sdPanel-exoplanets">
-                <div class="sd-content" id="exoplanetPanel">🔭 系外行星加载中...</div>
-            </div>
-            <div class="sd-panel" id="sdPanel-mars">
-                <div class="sd-content" id="marsPanel">🛸 火星车照片加载中...</div>
             </div>
             <div class="sd-panel" id="sdPanel-bookmarks">
                 <div class="bookmarks-panel" id="bookmarksPanel">⭐ 加载收藏列表...</div>
@@ -6692,12 +6652,7 @@ function switchSDTab(tab, btn) {
     else if (tab === 'meteors') { renderMeteorShowers(); }
     else if (tab === 'eclipses') { renderEclipses(); }
     else if (tab === 'bookmarks') { loadBookmarks(); }
-    else if (tab === 'weather') { loadSpaceWeather(); }
-    else if (tab === 'earthview') { loadEarthView(); }
-    else if (tab === 'eonet') { loadEONET(); }
-    else if (tab === 'launches') { loadLaunches(); }
-    else if (tab === 'exoplanets') { loadExoplanets(); }
-    else if (tab === 'mars') { loadMarsPhotos(); }
+    else if (tab === 'launches') { loadLaunchData(); }
     else if (tab === 'nasaeys') {
         var frame = document.getElementById('nasaEyesFrame');
         if (frame && frame.src === 'about:blank') {
@@ -6881,146 +6836,9 @@ function renderAsteroids(panel, neos, totalCount, prefixHtml) {
     panel.innerHTML = html;
 }
 
-// ==================== 🌡️ 太空天气 (DONKI) ====================
-var spaceWeatherLoaded = false;
-async function loadSpaceWeather() {
-    var panel = document.getElementById('spaceWeatherPanel');
-    if (!panel) return;
-    if (spaceWeatherLoaded) return;
-    panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">🌡️ 加载太空天气数据...</div>';
-    var today = new Date().toISOString().slice(0, 10);
-    var cacheKey = 'sw_cache_' + today;
-    try { var cached = JSON.parse(localStorage.getItem(cacheKey)); if (cached) { renderSpaceWeather(panel, cached.flares, cached.storms); return; } } catch(e) {}
-    try {
-        var flaresRes = await fetch('https://api.nasa.gov/DONKI/FLR?startDate=' + today + '&endDate=' + today + '&api_key=' + NASA_API_KEY);
-        var stormsRes = await fetch('https://api.nasa.gov/DONKI/GST?startDate=' + today + '&endDate=' + today + '&api_key=' + NASA_API_KEY);
-        var flares = flaresRes.ok ? await flaresRes.json() : [];
-        var storms = stormsRes.ok ? await stormsRes.json() : [];
-        try { localStorage.setItem(cacheKey, JSON.stringify({ flares: flares, storms: storms })); } catch(e) {}
-        renderSpaceWeather(panel, flares, storms);
-        spaceWeatherLoaded = true;
-    } catch(e) {
-        panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">⚠️ ' + escapeHtml(e.message) + '</div>';
-    }
-}
-function renderSpaceWeather(panel, flares, storms) {
-    var html = '<div style="margin-bottom:12px;"><h3 style="color:#5b8fff;margin:0 0 8px;font-size:1rem;">☀️ 今日太阳耀斑</h3>';
-    if (!flares || flares.length === 0) {
-        html += '<p style="color:#667788;">今日无耀斑记录</p>';
-    } else {
-        for (var i = 0; i < Math.min(flares.length, 8); i++) {
-            var f = flares[i];
-            var cls = f.classification === 'C' ? '#ffaa00' : f.classification === 'M' ? '#ff6640' : '#ff2244';
-            html += '<div style="background:rgba(91,143,255,0.05);border:1px solid rgba(91,143,255,0.1);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">';
-            html += '<span style="color:#ccdde8;font-size:0.88rem;">' + escapeHtml(f.event_start.split('T')[0] + ' ' + f.event_start.split('T')[1].substring(0,5)) + '</span>';
-            html += '<span style="font-size:1.1rem;font-weight:700;color:' + cls + ';min-width:36px;text-align:right;">' + escapeHtml(f.classification) + '</span>';
-            html += '</div>';
-        }
-    }
-    html += '</div><div style="margin-top:16px;"><h3 style="color:#5b8fff;margin:0 0 8px;font-size:1rem;">🌊 地磁暴 (Kp指数)</h3>';
-    if (!storms || storms.length === 0) {
-        html += '<p style="color:#667788;">近30天无地磁暴记录</p>';
-    } else {
-        for (var j = 0; j < Math.min(storms.length, 6); j++) {
-            var gs = storms[j];
-            var kp = parseFloat(gs.kp_max) || 0;
-            var kpColor = kp >= 8 ? '#ff2244' : kp >= 6 ? '#ff6640' : kp >= 5 ? '#ffaa00' : '#40ff88';
-            html += '<div style="background:rgba(91,143,255,0.05);border:1px solid rgba(91,143,255,0.1);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">';
-            html += '<span style="color:#ccdde8;font-size:0.88rem;">' + escapeHtml(gs.event_start.split('T')[0]) + '</span>';
-            html += '<span style="font-size:1rem;font-weight:700;color:' + kpColor + '">Kp ' + kp.toFixed(1) + '</span>';
-            html += '</div>';
-        }
-    }
-    html += '</div><div style="text-align:center;margin-top:10px;font-size:0.68rem;color:#445566;">数据来源: NASA DONKI 太空天气数据中心</div>';
-    panel.innerHTML = html;
-}
-
-// ==================== 🌍 地球全貌 (EPIC) ====================
-var epodCached = null;
-async function loadEarthView() {
-    var panel = document.getElementById('earthViewPanel');
-    if (!panel) return;
-    if (epodCached) { renderEarthView(panel, epodCached); return; }
-    panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">🌍 加载地球全貌...</div>';
-    var today = new Date().toISOString().slice(0, 10);
-    var cacheKey = 'epic_cache_' + today;
-    try { var cached = JSON.parse(localStorage.getItem(cacheKey)); if (cached) { epodCached = cached; renderEarthView(panel, cached); return; } } catch(e) {}
-    try {
-        var resp = await fetch('https://api.nasa.gov/EPIC/api/natural/images?date=' + today + '&api_key=' + NASA_API_KEY);
-        if (!resp.ok) throw new Error('EPIC API error: ' + resp.status);
-        var data = await resp.json();
-        epodCached = data[0] || null;
-        try { localStorage.setItem(cacheKey, JSON.stringify(data[0])); } catch(e) {}
-        renderEarthView(panel, data[0]);
-    } catch(e) {
-        panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">⚠️ ' + escapeHtml(e.message) + '</div>';
-    }
-}
-function renderEarthView(panel, data) {
-    if (!data) { panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">今日暂无EPIC地球图像</div>'; return; }
-    var dateStr = data.date ? new Date(data.date).toLocaleDateString('zh-CN') : '';
-    var html = '<div style="text-align:center;margin-bottom:16px;">';
-    html += '<img src="' + data.image + '" alt="Earth" style="max-width:100%;border-radius:12px;box-shadow:0 0 30px rgba(91,143,255,0.2);" onclick="openImageLightbox(this.src)" class="post-image">';
-    html += '</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">';
-    html += '<div class="iss-info-item"><div class="iss-info-label">拍摄时间</div><div class="iss-info-value" style="font-size:0.9rem;">' + escapeHtml(dateStr) + '</div></div>';
-    html += '<div class="iss-info-item"><div class="iss-info-label">滤镜波段</div><div class="iss-info-value" style="font-size:0.9rem;">' + escapeHtml(data.filters ? data.filters[0] : '可见光') + '</div></div>';
-    if (data.lon !== null) html += '<div class="iss-info-item"><div class="iss-info-label">中心经度</div><div class="iss-info-value" style="font-size:0.9rem;">' + parseFloat(data.lon).toFixed(2) + '°</div></div>';
-    if (data.lat !== null) html += '<div class="iss-info-item"><div class="iss-info-label">中心纬度</div><div class="iss-info-value" style="font-size:0.9rem;">' + parseFloat(data.lat).toFixed(2) + '°</div></div>';
-    html += '</div><div style="text-align:center;margin-top:12px;font-size:0.78rem;color:#8899aa;">' + escapeHtml(data.caption || '') + '</div>';
-    html += '<div style="text-align:center;margin-top:8px;font-size:0.68rem;color:#445566;">数据来源: NASA EPIC / DSCOVR卫星</div>';
-    panel.innerHTML = html;
-}
-
-// ==================== 🔥 地球自然事件 (EONET) ====================
-var eonetLoaded = false;
-async function loadEONET() {
-    var panel = document.getElementById('eonetPanel');
-    if (!panel) return;
-    if (eonetLoaded) return;
-    panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">🔥 加载地球自然事件...</div>';
-    var cacheKey = 'eonet_cache_today';
-    var today = new Date().toISOString().slice(0, 10);
-    var now = Date.now();
-    try { var cached = JSON.parse(localStorage.getItem(cacheKey)); if (cached && cached.data && now - cached.time < 3600000) { renderEONET(panel, cached.data); return; } } catch(e) {}
-    try {
-        var resp = await fetch('https://eonet.gsfc.nasa.gov/api/v2.2/events?limit=15&status=open&apikey=' + NASA_API_KEY);
-        if (!resp.ok) throw new Error('EONET API error: ' + resp.status);
-        var data = await resp.json();
-        try { localStorage.setItem(cacheKey, JSON.stringify({ data: data, time: now })); } catch(e) {}
-        renderEONET(panel, data);
-        eonetLoaded = true;
-    } catch(e) {
-        panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">⚠️ ' + escapeHtml(e.message) + '</div>';
-    }
-}
-function renderEONET(panel, data) {
-    var events = data.events || [];
-    var html = '';
-    if (events.length === 0) { html = '<div style="text-align:center;padding:40px;color:#667788;">暂无活跃的地球自然事件</div>'; panel.innerHTML = html; return; }
-    var typeColors = { wildfire: '#ff6640', storm: '#5b8fff', drought: '#ffaa00', flood: '#40d4ff', volcano: '#ff2244', dust: '#ccaa66' };
-    for (var i = 0; i < events.length; i++) {
-        var ev = events[i];
-        var type = (ev.types || []).map(function(t) { return t.toLowerCase(); }).join(',');
-        var icon = type.indexOf('wildfire') >= 0 ? '🔥' : type.indexOf('storm') >= 0 ? '⛈️' : type.indexOf('drought') >= 0 ? '☀️' : type.indexOf('flood') >= 0 ? '🌊' : type.indexOf('volcano') >= 0 ? '🌋' : '🌍';
-        var color = '#5b8fff';
-        for (var k in typeColors) { if (type.indexOf(k) >= 0) { color = typeColors[k]; break; } }
-        var date = ev.dates ? (ev.dates.start ? new Date(ev.dates.start).toLocaleDateString('zh-CN') : '') : '';
-        html += '<div style="background:rgba(91,143,255,0.05);border:1px solid rgba(91,143,255,0.12);border-left:3px solid ' + color + ';border-radius:8px;padding:12px 16px;margin-bottom:8px;">';
-        html += '<div style="font-size:0.92rem;color:#ccdde8;font-weight:600;margin-bottom:4px;">' + icon + ' ' + escapeHtml(ev.title) + '</div>';
-        html += '<div style="font-size:0.75rem;color:#667788;">' + escapeHtml(date) + ' · ' + escapeHtml((ev.categories || []).map(function(c){return c.title;}).join(', ')) + '</div>';
-        if (ev.bbox && ev.bbox[0]) {
-            var bbox = ev.bbox[0];
-            html += '<div style="font-size:0.72rem;color:#445566;margin-top:4px;">坐标: ' + bbox[1].toFixed(2) + '°N ~ ' + bbox[3].toFixed(2) + '°N</div>';
-        }
-        html += '</div>';
-    }
-    html += '<div style="text-align:center;margin-top:10px;font-size:0.68rem;color:#445566;">数据来源: NASA Earth Observatory Natural Event Tracker (EONET)</div>';
-    panel.innerHTML = html;
-}
-
 // ==================== 🚀 发射任务详情 (Launch Library 2) ====================
 var launchesLoaded = false;
-async function loadLaunches() {
+async function loadLaunchData() {
     var panel = document.getElementById('launchPanel');
     if (!panel) return;
     if (launchesLoaded) return;
@@ -7039,13 +6857,13 @@ async function loadLaunches() {
             if (resp2.ok) { var d2 = await resp2.json(); launches = d2.results || []; }
         }
         try { localStorage.setItem(cacheKey, JSON.stringify(launches)); } catch(e) {}
-        renderLaunches(panel, launches);
+        renderLaunchData(panel, launches);
         launchesLoaded = true;
     } catch(e) {
         panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">⚠️ ' + escapeHtml(e.message) + '</div>';
     }
 }
-function renderLaunches(panel, launches) {
+function renderLaunchData(panel, launches) {
     if (!launches || launches.length === 0) {
         panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">暂无即将发射的任务</div>';
         return;
@@ -7071,115 +6889,6 @@ function renderLaunches(panel, launches) {
         html += '</div>';
     }
     html += '<div style="text-align:center;margin-top:10px;font-size:0.68rem;color:#445566;">数据来源: The Space Devs Launch Library 2</div>';
-    panel.innerHTML = html;
-}
-
-// ==================== 🔭 系外行星数据 (Exoplanet Archive) ====================
-var exoLoaded = false;
-async function loadExoplanets() {
-    var panel = document.getElementById('exoplanetPanel');
-    if (!panel) return;
-    if (exoLoaded) return;
-    panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">🔭 加载系外行星数据...</div>';
-    var cacheKey = 'exo_cache_7days';
-    var now = Date.now();
-    try { var cached = JSON.parse(localStorage.getItem(cacheKey)); if (cached && now - cached.time < 604800000) { renderExoplanets(panel, cached); return; } } catch(e) {}
-    try {
-        var resp = await fetch('https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblNavigate/nph-tblNav?table=pscomp&limit=20&sort=Distance+pc+asc&json=1&outputformat=json&api_key=' + NASA_API_KEY);
-        // Fallback: use Exoplanets API if direct archive fails
-        if (!resp.ok) throw new Error('fallback');
-        var data = await resp.json();
-        try { localStorage.setItem(cacheKey, JSON.stringify({ planets: data, time: now })); } catch(e) {}
-        renderExoplanets(panel, data);
-        exoLoaded = true;
-    } catch(e) {
-        // Fallback via alternative endpoint
-        try {
-            var fResp = await fetch('https://api.exoplanetarchive.info/api/query/SIMPLE?SELECT+%2A+FROM+pscomp+ORDER+BY+Distance_pc+ASC+LIMIT+20&format=json');
-            if (!fResp.ok) throw new Error('两种方式均失败，请稍后再试');
-            var fd = await fResp.json();
-            renderExoplanets(panel, fd.rows || fd);
-            exoLoaded = true;
-        } catch(e2) {
-            panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">⚠️ ' + escapeHtml(e2.message) + '</div>';
-        }
-    }
-}
-function renderExoplanets(panel, data) {
-    var planets = Array.isArray(data) ? data : (data.rows || []);
-    if (!planets || planets.length === 0) {
-        panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">暂无系外行星数据</div>';
-        return;
-    }
-    var html = '';
-    for (var i = 0; i < Math.min(planets.length, 15); i++) {
-        var p = planets[i];
-        var name = p.planet_name || p.NAME || '未知行星';
-        var dist = p.Distance_pc ? parseFloat(p.Distance_pc).toFixed(1) + ' pc' : (p.distance ? p.distance + ' ly' : '-');
-        var radius = p.radej ? parseFloat(p.radej).toFixed(2) + ' R⊕' : '-';
-        var period = p.period ? parseFloat(p.period).toFixed(1) + ' d' : '-';
-        var type = p.planet_type || p.TYPE || '类地/气态';
-        var typeColor = type.indexOf('超级地球') >= 0 || type.indexOf('Super-Earth') >= 0 ? '#40d4ff' : type.indexOf('气态') >= 0 || type.indexOf('Jupiter') >= 0 ? '#ffaa00' : '#cc88ff';
-        html += '<div style="background:rgba(91,143,255,0.05);border:1px solid rgba(91,143,255,0.1);border-radius:8px;padding:10px 14px;margin-bottom:6px;">';
-        html += '<div style="font-size:0.92rem;color:#ccdde8;font-weight:600;margin-bottom:4px;">⭐ ' + escapeHtml(name) + '</div>';
-        html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;font-size:0.78rem;">';
-        html += '<span style="color:#8899aa;">距离: <strong style="color:#5b8fff;">' + escapeHtml(dist) + '</strong></span>';
-        html += '<span style="color:#8899aa;">半径: <strong style="color:#5b8fff;">' + escapeHtml(radius) + '</strong></span>';
-        html += '<span style="color:#8899aa;">公转周期: <strong style="color:#5b8fff;">' + escapeHtml(period) + '</strong></span>';
-        html += '</div>';
-        html += '</div>';
-    }
-    html += '<div style="text-align:center;margin-top:10px;font-size:0.68rem;color:#445566;">数据来源: NASA Exoplanet Archive</div>';
-    panel.innerHTML = html;
-}
-
-// ==================== 🛸 火星车照片 (Mars Rover Photos) ====================
-var marsLoaded = false;
-async function loadMarsPhotos() {
-    var panel = document.getElementById('marsPanel');
-    if (!panel) return;
-    if (marsLoaded) return;
-    panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">🛸 加载火星车照片...</div>';
-    var cacheKey = 'mars_cache_today';
-    var today = new Date().toISOString().slice(0, 10);
-    try { var cached = JSON.parse(localStorage.getItem(cacheKey)); if (cached) { renderMarsPhotos(panel, cached.photos || cached, today); return; } } catch(e) {}
-    try {
-        var resp = await fetch('https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=' + today + '&api_key=' + NASA_API_KEY);
-        if (!resp.ok) throw new Error('Mars API error: ' + resp.status);
-        var data = await resp.json();
-        var photos = data.photos || [];
-        // If no Curiosity photos, try Perseverance
-        if (photos.length === 0) {
-            var resp2 = await fetch('https://api.nasa.gov/mars-photos/api/v1/rovers/perseverance/photos?earth_date=' + today + '&api_key=' + NASA_API_KEY);
-            if (resp2.ok) { var d2 = await resp2.json(); photos = d2.photos || []; }
-        }
-        try { localStorage.setItem(cacheKey, JSON.stringify({ photos: photos, date: today })); } catch(e) {}
-        renderMarsPhotos(panel, photos, today);
-        marsLoaded = true;
-    } catch(e) {
-        panel.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4060;">⚠️ ' + escapeHtml(e.message) + '</div>';
-    }
-}
-function renderMarsPhotos(panel, photos, dateStr) {
-    if (!photos || photos.length === 0) {
-        panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">🛸 ' + escapeHtml(dateStr) + ' 暂无火星车照片<br><span style="font-size:0.78rem;">可能是火星日休息日，尝试其他日期</span></div>';
-        return;
-    }
-    var html = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">';
-    for (var i = 0; i < Math.min(photos.length, 9); i++) {
-        var p = photos[i];
-        var img = p.img_src;
-        var cam = p.camera ? p.camera.full_name : '未知相机';
-        var rover = p.rover ? p.rover.name : '';
-        var thumbUrl = img.replace('/full/', '/mss/').replace('/sol-', '/sol-').replace('/eps-', '/eps-');
-        html += '<div style="cursor:pointer;border-radius:8px;overflow:hidden;border:1px solid rgba(91,143,255,0.15);" onclick="openImageLightbox(\'' + img.replace(/'/g,"\\'") + '\')">';
-        html += '<img src="' + thumbUrl + '" alt="' + escapeHtml(cam) + '" style="width:100%;aspect-ratio:1;object-fit:cover;background:#0a0f1a;" loading="lazy">';
-        html += '<div style="padding:6px 8px;background:rgba(5,8,16,0.9);font-size:0.68rem;color:#8899aa;">' + escapeHtml(rover) + ' · ' + escapeHtml(cam) + '</div>';
-        html += '</div>';
-    }
-    html += '</div>';
-    html += '<div style="text-align:center;font-size:0.78rem;color:#667788;">点击📷图片可放大查看 | 数据来源: ' + escapeHtml(dateStr) + '</div>';
-    html += '<div style="text-align:center;margin-top:8px;font-size:0.68rem;color:#445566;">数据来源: NASA Mars Rover Photos API</div>';
     panel.innerHTML = html;
 }
 
