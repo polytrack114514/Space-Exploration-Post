@@ -6845,7 +6845,7 @@ async function loadLaunchData() {
     panel.innerHTML = '<div style="text-align:center;padding:40px;color:#667788;">🚀 加载发射任务...</div>';
     var today = new Date().toISOString().slice(0, 10);
     var cacheKey = 'launches_cache_' + today;
-    try { var cached = JSON.parse(localStorage.getItem(cacheKey)); if (cached) { renderLaunches(panel, cached); return; } } catch(e) {}
+    try { var cached = JSON.parse(localStorage.getItem(cacheKey)); if (cached) { renderLaunchData(panel, cached); return; } } catch(e) {}
     try {
         var resp = await fetch('https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=12&network__name=NASA&net_score_min=50&pretty=true');
         if (!resp.ok) throw new Error('Launch Library API error: ' + resp.status);
@@ -6872,9 +6872,9 @@ function renderLaunchData(panel, launches) {
     for (var i = 0; i < launches.length; i++) {
         var lv = launches[i];
         var name = lv.name || '未命名任务';
-        var net = (lv.network || []).map(function(n){return n.name;}).join(', ') || '未知网络';
-        var vehicle = (lv.rocket || {}).configuration || (lv.pad || {}).site || '';
-        var windowStart = lv.window_start || '';
+        var lsp = (lv.launch_service_provider || {}).name || '未知机构';
+        var vehicle = ((lv.rocket || {}).configuration || {}).name || (lv.pad || {}).name || '';
+        var windowStart = lv.window_start || lv.net || '';
         var dateStr = windowStart ? new Date(windowStart).toLocaleString('zh-CN', {timeZone:'UTC'}) : '';
         var isToday = windowStart && windowStart.slice(0,10) === new Date().toISOString().slice(0,10);
         var statusColor = isToday ? '#40ff88' : '#667788';
@@ -6884,7 +6884,7 @@ function renderLaunchData(panel, launches) {
         html += '<span style="color:#ccdde8;font-weight:600;font-size:0.92rem;">🚀 ' + escapeHtml(name) + '</span>';
         html += '<span style="font-size:0.78rem;color:' + statusColor + ';background:rgba(64,255,136,0.08);padding:2px 8px;border-radius:4px;">' + escapeHtml(statusText) + '</span>';
         html += '</div>';
-        html += '<div style="font-size:0.78rem;color:#8899aa;">' + escapeHtml(vehicle) + ' · ' + escapeHtml(net) + '</div>';
+        html += '<div style="font-size:0.78rem;color:#8899aa;">' + escapeHtml(vehicle) + ' · ' + escapeHtml(lsp) + '</div>';
         if (dateStr) html += '<div style="font-size:0.75rem;color:#667788;margin-top:2px;">发射窗口: ' + escapeHtml(dateStr) + ' (UTC)</div>';
         html += '</div>';
     }
