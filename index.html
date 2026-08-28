@@ -4181,6 +4181,9 @@ if (typeof supabase === 'undefined') {
                 <button class="tab" data-tab="launches">
                     <span class="icon">🚀</span>火箭发射
                 </button>
+                <button class="tab" data-tab="bookmarks">
+                    <span class="icon">⭐</span>收藏
+                </button>
             </div>
             <div class="search-box">
                 <span class="search-icon">🔍</span>
@@ -4223,6 +4226,9 @@ if (typeof supabase === 'undefined') {
                 <div class="launch-list" id="launchList"></div>
                 <div class="launch-list" id="launchedList" style="display:none;"></div>
             </div>
+        </div>
+        <div class="posts-list" id="bookmarksTabContainer" style="display:none;">
+            <div class="loading">正在加载收藏...</div>
         </div>
     </div>
     <!-- 发帖弹窗 -->
@@ -4869,16 +4875,25 @@ if (typeof supabase === 'undefined') {
                     document.getElementById('postsList').style.display = 'none';
                     document.getElementById('aiChatContainer').style.display = '';
                     document.getElementById('launchTabContainer').style.display = 'none';
+                    document.getElementById('bookmarksTabContainer').style.display = 'none';
                     initAI();
                 } else if (currentTab === 'launches') {
                     document.getElementById('postsList').style.display = 'none';
                     document.getElementById('aiChatContainer').style.display = 'none';
                     document.getElementById('launchTabContainer').style.display = '';
+                    document.getElementById('bookmarksTabContainer').style.display = 'none';
                     renderLaunches();
+                } else if (currentTab === 'bookmarks') {
+                    document.getElementById('postsList').style.display = 'none';
+                    document.getElementById('aiChatContainer').style.display = 'none';
+                    document.getElementById('launchTabContainer').style.display = 'none';
+                    document.getElementById('bookmarksTabContainer').style.display = '';
+                    renderBookmarksTab();
                 } else {
                     document.getElementById('postsList').style.display = '';
                     document.getElementById('aiChatContainer').style.display = 'none';
                     document.getElementById('launchTabContainer').style.display = 'none';
+                    document.getElementById('bookmarksTabContainer').style.display = 'none';
                     renderPosts();
                 }
             });
@@ -6494,6 +6509,7 @@ function toggleBookmark(postId, postAuthor) {
     if (document.getElementById('sdPanel-bookmarks') && document.getElementById('sdPanel-bookmarks').classList.contains('active')) {
         loadBookmarks();
     }
+    if (currentTab === 'bookmarks') renderBookmarksTab();
 }
 
 function loadBookmarks() {
@@ -6529,6 +6545,36 @@ function removeBookmark(index) {
     bookmarks.splice(index, 1);
     saveBookmarks(bookmarks);
     loadBookmarks();
+    if (currentTab === 'bookmarks') renderBookmarksTab();
+}
+
+function renderBookmarksTab() {
+    var panel = document.getElementById('bookmarksTabContainer');
+    if (!panel) return;
+    if (!currentUser) {
+        panel.innerHTML = '<div class="empty-state"><div class="emoji">🔒</div><p>请先登录后查看收藏</p></div>';
+        return;
+    }
+    var bookmarks = getBookmarks();
+    if (bookmarks.length === 0) {
+        panel.innerHTML = '<div class="empty-state"><div class="emoji">⭐</div><p>还没有收藏任何帖子<br><small style="color:var(--text-muted);">点击帖子中的「☆ 收藏」按钮即可收藏</small></p></div>';
+        return;
+    }
+    var html = '<div style="margin-bottom:12px;font-size:0.85rem;color:var(--text-muted);">共 ' + bookmarks.length + ' 个收藏</div>';
+    bookmarks.forEach(function(bm, i) {
+        var post = posts.find(function(p) { return p.id === bm.postId; });
+        if (!post) return;
+        html += '<div class="bookmark-post-item" onclick="scrollToPost(\'' + bm.postId + '\')">';
+        html += '<button class="bookmark-remove-btn" onclick="event.stopPropagation();removeBookmark(' + i + ')">✕</button>';
+        if (post.title) html += '<div class="bookmark-post-title">' + escapeHtml(post.title) + '</div>';
+        else html += '<div class="bookmark-post-title">无标题帖子</div>';
+        html += '<div class="bookmark-post-meta">';
+        html += '<span>👤 ' + escapeHtml(post.author) + '</span>';
+        html += '<span>❤️ ' + (post.likes || 0) + '</span>';
+        html += '<span>🕐 ' + formatTime(post.time) + '</span>';
+        html += '</div></div>';
+    });
+    panel.innerHTML = html;
 }
 function scrollToPost(postId) {
     if (typeof closeSpaceDataModal === 'function') closeSpaceDataModal();
