@@ -6136,7 +6136,7 @@ function extractMentions(text) {
 
 // ==================== NASA 每日天文一图 ====================
 // NASA API Key - 免费申请：https://api.nasa.gov (替换 DEMO_KEY 可无限请求)
-var NASA_API_KEY = 'DEMO_KEY';
+var NASA_API_KEY = 'llTHds3HslMGm93xpIjm0kt7NyJ1PFW1DZ8WMynt';
 async function loadAPOD() {
     var container = document.getElementById('apodContainer');
     if (!container) return;
@@ -6738,9 +6738,9 @@ async function loadAsteroids() {
         return;
     }
     try {
-        var resp = await fetch('https://api.nasa.gov/neo/rest/v1/feed?start_date=' + today + '&end_date=' + today + '&api_key=DEMO_KEY');
+        var resp = await fetch('https://api.nasa.gov/neo/rest/v1/feed?start_date=' + today + '&end_date=' + today + '&api_key=llTHds3HslMGm93xpIjm0kt7NyJ1PFW1DZ8WMynt');
         if (!resp.ok) {
-            if (resp.status === 429) throw new Error('NASA API 请求次数已达上限 (DEMO_KEY 限制每小时30次)，请稍后再试');
+            if (resp.status === 429) throw new Error('NASA API 请求次数已达上限，请稍后再试');
             throw new Error('NASA NeoWS API error: ' + resp.status);
         }
         var data = await resp.json();
