@@ -4126,7 +4126,37 @@ hr, .divider {
         }
 
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ==================== Supabase CDN Fallback ====================
+(function() {
+    var cdnUrls = [
+        'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+        'https://unpkg.com/@supabase/supabase-js@2',
+        'https://cdn.bootcdn.net/ajax/libs/supabase/2.76.1/supabase.min.js'
+    ];
+    var loaded = false;
+    function tryLoad(index) {
+        if (index >= cdnUrls.length) {
+            console.warn('[SpaceHub] 所有 Supabase CDN 均不可用，将以离线模式运行');
+            window.__supabaseFailed = true;
+            return;
+        }
+        var s = document.createElement('script');
+        s.src = cdnUrls[index];
+        s.onload = function() { loaded = true; console.log('[SpaceHub] Supabase 已加载 (' + cdnUrls[index] + ')'); };
+        s.onerror = function() { tryLoad(index + 1); };
+        document.head.appendChild(s);
+    }
+    tryLoad(0);
+    // Safety: if supabase still not loaded after 8s, mark as failed
+    setTimeout(function() {
+        if (!loaded && !window.__supabaseLoaded) {
+            console.warn('[SpaceHub] Supabase CDN 超时，尝试降级');
+            window.__supabFallback = true;
+        }
+    }, 8000);
+})();
+</script>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4406,7 +4436,24 @@ hr, .divider {
 // ==================== Supabase 配置 ====================
         const SUPABASE_URL = 'https://tktfrrvaqwbtdhiqwnna.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrdGZycnZhcXdidGRoaXF3bm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MzcyMjYsImV4cCI6MjEwMTMxMzIyNn0.CYNPqmQUrnkMFUq-Bkd_09q7CjQ8rZlNX5brb5-UrbQ';
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // 全局错误处理：即使 Supabase 失败也要隐藏加载动画
+        window.addEventListener('error', function(e) {
+            console.error('[SpaceHub] 全局错误:', e.message);
+            hideSpaceLoader();
+        });
+        // 安全初始化 Supabase 客户端
+        var sb;
+        try {
+            if (typeof supabase === 'undefined') {
+                throw new Error('Supabase SDK 未加载');
+            }
+            sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('[SpaceHub] Supabase 初始化成功');
+        } catch (e) {
+            console.error('[SpaceHub] Supabase 初始化失败:', e.message);
+            sb = null;
+            hideSpaceLoader();  // 失败也要显示页面
+        }
         // ==================== 数据 ====================
         let posts = [];
         let currentTab = 'hot';
