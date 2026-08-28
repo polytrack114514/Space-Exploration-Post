@@ -1,0 +1,3223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探索宇宙帖子</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+            --bg: #000000;
+            --surface: rgba(20, 20, 25, 0.75);
+            --surface-hover: rgba(30, 30, 38, 0.85);
+            --text-primary: #f0f0f5;
+            --text-secondary: #888899;
+            --text-muted: #555566;
+            --accent: #e8e8f0;
+            --accent-hover: #ffffff;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-focus: rgba(255, 255, 255, 0.15);
+            --danger: #ff5555;
+            --gold: #ffd700;
+            --gold-hover: #ffe44d;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.imglt.com/20260803/0994543291ec65795e5eadac3a134b6f.jpg') center/cover no-repeat;
+            z-index: 0;
+        }
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1;
+        }
+        .header {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            max-width: 400px;
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.25s;
+        }
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+        .search-box input:focus {
+            border-color: var(--gold);
+        }
+        .search-box .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .search-clear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: none;
+        }
+        .search-clear:hover {
+            color: var(--text-primary);
+        }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            padding: 4px;
+            background: var(--surface);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+                    }
+        .tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            letter-spacing: 0.01em;
+        }
+        .tab:hover {
+            color: var(--text-primary);
+        }
+        .tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+        .tab .icon {
+            margin-right: 6px;
+        }
+        .fab-post {
+            padding: 12px 28px;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .fab-post:hover {
+            background: var(--gold-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(255, 215, 0, 0.25);
+        }
+        .fab-post:active {
+            transform: translateY(0);
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            animation: overlayIn 0.25s ease;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        @keyframes overlayIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal {
+            background: #1a1a24;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 36px 32px 32px;
+            width: 90%;
+            max-width: 480px;
+            position: relative;
+            animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.92) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        .modal-close:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .modal-title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 28px;
+            color: var(--text-primary);
+        }
+        .modal-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: #22222e;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.25s;
+            margin-bottom: 16px;
+        }
+        .modal-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        }
+        .modal-input::placeholder {
+            color: var(--text-muted);
+        }
+        .modal-textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 14px 18px;
+            background: #22222e;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            resize: vertical;
+            transition: all 0.25s;
+            line-height: 1.6;
+        }
+        .modal-textarea:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        }
+        .modal-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .modal-submit {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            margin-top: 20px;
+        }
+        .modal-submit:hover {
+            background: var(--gold-hover);
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+        }
+        .modal-submit:active {
+            transform: scale(0.98);
+        }
+        .modal-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .post-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.4s ease;
+                    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .post-card:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-focus);
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+            gap: 10px;
+        }
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+            flex: 1;
+        }
+        .author-name {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            word-break: break-word;
+            line-height: 1.4;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+        }
+        .post-time {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .post-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .post-content {
+            color: rgba(240, 240, 245, 0.85);
+            line-height: 1.75;
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-weight: 400;
+        }
+        .post-source {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 14px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+        .source-label {
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .source-link {
+            color: #4fc3f7;
+            text-decoration: none;
+            word-break: break-all;
+            transition: color 0.2s;
+        }
+        .source-link:hover {
+            color: #81d4fa;
+            text-decoration: underline;
+        }
+        .pin-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: rgba(255, 215, 0, 0.8);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            margin-right: 4px;
+        }
+        .post-card:hover .pin-btn {
+            opacity: 1;
+        }
+        .pin-btn:hover {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.6);
+            color: #ffd700;
+        }
+        .post-card:has(.pinned) {
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        /* 登录区域 */
+        .auth-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+        .auth-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+                    }
+        .auth-avatar-small {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+        }
+        .auth-name {
+            font-weight: 500; max-width: 120px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .btn-logout {
+            padding: 4px 10px; background: transparent; border: none;
+            color: var(--text-muted); font-size: 0.75rem;
+            cursor: pointer; font-family: inherit;
+        }
+        .btn-logout:hover { color: var(--danger); }
+        .btn-auth {
+            padding: 8px 18px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.25s;
+                    }
+        .btn-auth:hover {
+            color: var(--text-primary);
+            border-color: var(--border-focus);
+        }
+        /* 登录弹窗 */
+        .auth-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 150;
+            display: none; align-items: center; justify-content: center;
+        }
+        .auth-modal-overlay.show { display: flex; }
+        .auth-modal {
+            background: #0f0f0f; border-radius: 20px;
+            padding: 36px; width: 90%; max-width: 400px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .auth-modal h2 {
+            font-size: 1.3rem; margin-bottom: 24px;
+            text-align: center; color: var(--text-primary);
+        }
+        .auth-field { margin-bottom: 16px; }
+        .auth-field label {
+            display: block; font-size: 0.82rem;
+            color: var(--text-secondary); margin-bottom: 6px;
+        }
+        .auth-field input {
+            width: 100%; padding: 12px 14px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem; font-family: inherit; outline: none;
+        }
+        .auth-field input:focus { border-color: var(--border-focus); }
+        .auth-field input::placeholder { color: var(--text-muted); }
+        .auth-submit {
+            width: 100%; padding: 12px;
+            background: #ffffff; color: #000000;
+            border: none; border-radius: 12px;
+            font-size: 0.92rem; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.25s; margin-top: 8px;
+        }
+        .auth-submit:hover { background: #e0e0e0; }
+        .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .auth-switch {
+            text-align: center; margin-top: 16px;
+            font-size: 0.82rem; color: var(--text-muted);
+        }
+        .auth-switch a {
+            color: var(--gold); cursor: pointer; text-decoration: none;
+        }
+        .auth-switch a:hover { text-decoration: underline; }
+        .auth-error {
+            background: rgba(255,85,85,0.1);
+            border: 1px solid rgba(255,85,85,0.2);
+            border-radius: 10px; padding: 10px 14px;
+            color: #ff8888; font-size: 0.82rem;
+            margin-bottom: 16px; display: none;
+        }
+        .auth-error.show { display: block; }
+        .auth-success {
+            background: rgba(100,255,100,0.1);
+            border: 1px solid rgba(100,255,100,0.2);
+            border-radius: 10px; padding: 10px 14px;
+            color: #88ff88; font-size: 0.82rem;
+            margin-bottom: 16px; display: none;
+        }
+        .auth-success.show { display: block; }
+        .auth-close {
+            position: absolute; top: 12px; right: 16px;
+            background: transparent; border: none;
+            color: var(--text-muted); font-size: 1.2rem; cursor: pointer;
+        }
+        /* 图片上传 */
+        .image-input-row {
+            display: flex; gap: 8px; align-items: center; margin-bottom: 12px;
+        }
+        .image-input {
+            flex: 1; padding: 10px 14px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.88rem; font-family: inherit; outline: none;
+        }
+        .image-input:focus { border-color: var(--border-focus); }
+        .image-input::placeholder { color: var(--text-muted); }
+        .post-images {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+        }
+        .post-image {
+            max-width: 100%; max-height: 300px;
+            border-radius: 12px; border: 1px solid var(--border);
+            object-fit: cover;
+        }
+        /* 分享按钮 */
+        /* 烟花 */
+        @media (max-width: 600px) {
+            .pin-btn {
+                opacity: 1;
+            }
+        }
+        .delete-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 100, 100, 0.3);
+            color: rgba(255, 120, 120, 0.7);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .post-card:hover .delete-btn {
+            opacity: 1;
+        }
+        .delete-btn:hover {
+            background: rgba(255, 80, 80, 0.15);
+            border-color: rgba(255, 100, 100, 0.6);
+            color: rgba(255, 150, 150, 1);
+        }
+        /* 登录区域 */
+        .auth-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+        .auth-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+                    }
+        .auth-avatar-small {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+        }
+        .auth-name {
+            font-weight: 500; max-width: 120px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .btn-logout {
+            padding: 4px 10px; background: transparent; border: none;
+            color: var(--text-muted); font-size: 0.75rem;
+            cursor: pointer; font-family: inherit;
+        }
+        .btn-logout:hover { color: var(--danger); }
+        .btn-auth {
+            padding: 8px 18px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.25s;
+                    }
+        .btn-auth:hover {
+            color: var(--text-primary);
+            border-color: var(--border-focus);
+        }
+        /* 登录弹窗 */
+        .auth-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 150;
+            display: none; align-items: center; justify-content: center;
+        }
+        .auth-modal-overlay.show { display: flex; }
+        .auth-modal {
+            background: #0f0f0f; border-radius: 20px;
+            padding: 36px; width: 90%; max-width: 400px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .auth-modal h2 {
+            font-size: 1.3rem; margin-bottom: 24px;
+            text-align: center; color: var(--text-primary);
+        }
+        .auth-field { margin-bottom: 16px; }
+        .auth-field label {
+            display: block; font-size: 0.82rem;
+            color: var(--text-secondary); margin-bottom: 6px;
+        }
+        .auth-field input {
+            width: 100%; padding: 12px 14px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem; font-family: inherit; outline: none;
+        }
+        .auth-field input:focus { border-color: var(--border-focus); }
+        .auth-field input::placeholder { color: var(--text-muted); }
+        .auth-submit {
+            width: 100%; padding: 12px;
+            background: #ffffff; color: #000000;
+            border: none; border-radius: 12px;
+            font-size: 0.92rem; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.25s; margin-top: 8px;
+        }
+        .auth-submit:hover { background: #e0e0e0; }
+        .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .auth-switch {
+            text-align: center; margin-top: 16px;
+            font-size: 0.82rem; color: var(--text-muted);
+        }
+        .auth-switch a {
+            color: var(--gold); cursor: pointer; text-decoration: none;
+        }
+        .auth-switch a:hover { text-decoration: underline; }
+        .auth-error {
+            background: rgba(255,85,85,0.1);
+            border: 1px solid rgba(255,85,85,0.2);
+            border-radius: 10px; padding: 10px 14px;
+            color: #ff8888; font-size: 0.82rem;
+            margin-bottom: 16px; display: none;
+        }
+        .auth-error.show { display: block; }
+        .auth-success {
+            background: rgba(100,255,100,0.1);
+            border: 1px solid rgba(100,255,100,0.2);
+            border-radius: 10px; padding: 10px 14px;
+            color: #88ff88; font-size: 0.82rem;
+            margin-bottom: 16px; display: none;
+        }
+        .auth-success.show { display: block; }
+        .auth-close {
+            position: absolute; top: 12px; right: 16px;
+            background: transparent; border: none;
+            color: var(--text-muted); font-size: 1.2rem; cursor: pointer;
+        }
+        /* 图片上传 */
+        .image-input-row {
+            display: flex; gap: 8px; align-items: center; margin-bottom: 12px;
+        }
+        .image-input {
+            flex: 1; padding: 10px 14px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.88rem; font-family: inherit; outline: none;
+        }
+        .image-input:focus { border-color: var(--border-focus); }
+        .image-input::placeholder { color: var(--text-muted); }
+        .post-images {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+        }
+        .post-image {
+            max-width: 100%; max-height: 300px;
+            border-radius: 12px; border: 1px solid var(--border);
+            object-fit: cover;
+        }
+        /* 分享按钮 */
+        /* 烟花 */
+        @media (max-width: 600px) {
+        .pin-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: rgba(255, 215, 0, 0.8);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            margin-right: 4px;
+        }
+        .post-card:hover .pin-btn {
+            opacity: 1;
+        }
+        .pin-btn:hover {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.6);
+            color: #ffd700;
+        }
+        .post-card:has(.pinned) {
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        /* 登录区域 */
+        .auth-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+        .auth-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+                    }
+        .auth-avatar-small {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+        }
+        .auth-name {
+            font-weight: 500; max-width: 120px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .btn-logout {
+            padding: 4px 10px; background: transparent; border: none;
+            color: var(--text-muted); font-size: 0.75rem;
+            cursor: pointer; font-family: inherit;
+        }
+        .btn-logout:hover { color: var(--danger); }
+        .btn-auth {
+            padding: 8px 18px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.25s;
+                    }
+        .btn-auth:hover {
+            color: var(--text-primary);
+            border-color: var(--border-focus);
+        }
+        /* 登录弹窗 */
+        .auth-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 150;
+            display: none; align-items: center; justify-content: center;
+        }
+        .auth-modal-overlay.show { display: flex; }
+        .auth-modal {
+            background: #0f0f0f; border-radius: 20px;
+            padding: 36px; width: 90%; max-width: 400px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .auth-modal h2 {
+            font-size: 1.3rem; margin-bottom: 24px;
+            text-align: center; color: var(--text-primary);
+        }
+        .auth-field { margin-bottom: 16px; }
+        .auth-field label {
+            display: block; font-size: 0.82rem;
+            color: var(--text-secondary); margin-bottom: 6px;
+        }
+        .auth-field input {
+            width: 100%; padding: 12px 14px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem; font-family: inherit; outline: none;
+        }
+        .auth-field input:focus { border-color: var(--border-focus); }
+        .auth-field input::placeholder { color: var(--text-muted); }
+        .auth-submit {
+            width: 100%; padding: 12px;
+            background: #ffffff; color: #000000;
+            border: none; border-radius: 12px;
+            font-size: 0.92rem; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.25s; margin-top: 8px;
+        }
+        .auth-submit:hover { background: #e0e0e0; }
+        .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .auth-switch {
+            text-align: center; margin-top: 16px;
+            font-size: 0.82rem; color: var(--text-muted);
+        }
+        .auth-switch a {
+            color: var(--gold); cursor: pointer; text-decoration: none;
+        }
+        .auth-switch a:hover { text-decoration: underline; }
+        .auth-error {
+            background: rgba(255,85,85,0.1);
+            border: 1px solid rgba(255,85,85,0.2);
+            border-radius: 10px; padding: 10px 14px;
+            color: #ff8888; font-size: 0.82rem;
+            margin-bottom: 16px; display: none;
+        }
+        .auth-error.show { display: block; }
+        .auth-success {
+            background: rgba(100,255,100,0.1);
+            border: 1px solid rgba(100,255,100,0.2);
+            border-radius: 10px; padding: 10px 14px;
+            color: #88ff88; font-size: 0.82rem;
+            margin-bottom: 16px; display: none;
+        }
+        .auth-success.show { display: block; }
+        .auth-close {
+            position: absolute; top: 12px; right: 16px;
+            background: transparent; border: none;
+            color: var(--text-muted); font-size: 1.2rem; cursor: pointer;
+        }
+        /* 图片上传 */
+        .image-input-row {
+            display: flex; gap: 8px; align-items: center; margin-bottom: 12px;
+        }
+        .image-input {
+            flex: 1; padding: 10px 14px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.88rem; font-family: inherit; outline: none;
+        }
+        .image-input:focus { border-color: var(--border-focus); }
+        .image-input::placeholder { color: var(--text-muted); }
+        .post-images {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+        }
+        .post-image {
+            max-width: 100%; max-height: 300px;
+            border-radius: 12px; border: 1px solid var(--border);
+            object-fit: cover;
+        }
+        /* 分享按钮 */
+        /* 烟花 */
+        @media (max-width: 600px) {
+            .pin-btn {
+                opacity: 1;
+            }
+        }
+        .delete-btn {
+                opacity: 1;
+            }
+        }
+        .badge {
+            display: inline-block;
+            padding: 1px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-developer {
+            background: linear-gradient(90deg, #0a0a1a, #1a1a3a, #0a0a1a);
+            color: #00eaff;
+            border: 1px solid #00eaff;
+            box-shadow: 0 0 8px rgba(0, 234, 255, 0.4), inset 0 0 4px rgba(0, 234, 255, 0.1);
+            text-shadow: 0 0 4px rgba(0, 234, 255, 0.8);
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        .badge-developer::before {
+            content: '</>';
+            font-size: 9px;
+            margin-right: 2px;
+            opacity: 0.9;
+        }
+        .badge-admin {
+            background: linear-gradient(135deg, #ffd700, #ffb800, #ffd700);
+            color: #3d2800;
+            border: 1px solid #ffd700;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+            font-family: 'Georgia', serif;
+        }
+        .badge-admin::before {
+            content: '👑';
+            font-size: 10px;
+            margin-right: 2px;
+        }
+        .post-footer {
+            display: flex;
+            gap: 24px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        .action-btn:hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .action-btn.liked {
+            color: #ff6b6b;
+        }
+        .action-btn.liked:hover {
+            background: rgba(255, 107, 107, 0.08);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state .emoji {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .empty-state p {
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+        /* 加载提示 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        /* 评论区 */
+        .comments-section {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .comments-section.show {
+            display: block;
+        }
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            justify-content: space-between;
+        }
+        .comment-avatar {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+        .comment-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .comment-author {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+        }
+        .comment-text {
+            font-size: 0.88rem;
+            color: rgba(240, 240, 245, 0.75);
+            line-height: 1.6;
+            word-break: break-word;
+        }
+        .comment-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .comment-input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .comment-input-row {
+            display: flex;
+            gap: 8px;
+        }
+        .comment-input {
+            flex: 1;
+            padding: 8px 12px;
+            background: #22222e;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+        }
+        .comment-input:focus {
+            border-color: var(--border-focus);
+        }
+        .comment-input::placeholder {
+            color: var(--text-muted);
+        }
+        .comment-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            background: #22222e;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+            resize: vertical;
+            min-height: 50px;
+        }
+        .comment-textarea:focus {
+            border-color: var(--border-focus);
+        }
+        .comment-submit {
+            padding: 8px 16px;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            align-self: flex-end;
+        }
+        .comment-submit:hover {
+            background: var(--gold-hover);
+        }
+        .comment-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .comments-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        .comments-toggle-btn:hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .comments-toggle-btn.active {
+            color: var(--accent-light);
+        }
+        /* 登录区域 */
+        .auth-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+        .auth-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+                    }
+        .auth-avatar-small {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+        }
+        .auth-name {
+            font-weight: 500; max-width: 120px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .btn-logout {
+            padding: 4px 10px; background: transparent; border: none;
+            color: var(--text-muted); font-size: 0.75rem;
+            cursor: pointer; font-family: inherit;
+        }
+        .btn-logout:hover { color: var(--danger); }
+        .btn-auth {
+            padding: 8px 18px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.25s;
+                    }
+        .btn-auth:hover {
+            color: var(--text-primary);
+            border-color: var(--border-focus);
+        }
+        /* 登录弹窗 */
+        .auth-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 150;
+            display: none; align-items: center; justify-content: center;
+        }
+        .auth-modal-overlay.show { display: flex; }
+        .auth-modal {
+            background: #0f0f0f; border-radius: 20px;
+            padding: 36px; width: 90%; max-width: 400px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .auth-modal h2 {
+            font-size: 1.3rem; margin-bottom: 24px;
+            text-align: center; color: var(--text-primary);
+        }
+        .auth-field { margin-bottom: 16px; }
+        .auth-field label {
+            display: block; font-size: 0.82rem;
+            color: var(--text-secondary); margin-bottom: 6px;
+        }
+        .auth-field input {
+            width: 100%; padding: 12px 14px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem; font-family: inherit; outline: none;
+        }
+        .auth-field input:focus { border-color: var(--border-focus); }
+        .auth-field input::placeholder { color: var(--text-muted); }
+        .auth-submit {
+            width: 100%; padding: 12px;
+            background: #ffffff; color: #000000;
+            border: none; border-radius: 12px;
+            font-size: 0.92rem; font-weight: 600;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.25s; margin-top: 8px;
+        }
+        .auth-submit:hover { background: #e0e0e0; }
+        .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .auth-switch {
+            text-align: center; margin-top: 16px;
+            font-size: 0.82rem; color: var(--text-muted);
+        }
+        .auth-switch a {
+            color: var(--gold); cursor: pointer; text-decoration: none;
+        }
+        .auth-switch a:hover { text-decoration: underline; }
+        .auth-error {
+            background: rgba(255,85,85,0.1);
+            border: 1px solid rgba(255,85,85,0.2);
+            border-radius: 10px; padding: 10px 14px;
+            color: #ff8888; font-size: 0.82rem;
+            margin-bottom: 16px; display: none;
+        }
+        .auth-error.show { display: block; }
+        .auth-success {
+            background: rgba(100,255,100,0.1);
+            border: 1px solid rgba(100,255,100,0.2);
+            border-radius: 10px; padding: 10px 14px;
+            color: #88ff88; font-size: 0.82rem;
+            margin-bottom: 16px; display: none;
+        }
+        .auth-success.show { display: block; }
+        .auth-close {
+            position: absolute; top: 12px; right: 16px;
+            background: transparent; border: none;
+            color: var(--text-muted); font-size: 1.2rem; cursor: pointer;
+        }
+        /* 图片上传 */
+        .image-input-row {
+            display: flex; gap: 8px; align-items: center; margin-bottom: 12px;
+        }
+        .image-input {
+            flex: 1; padding: 10px 14px;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.88rem; font-family: inherit; outline: none;
+        }
+        .image-input:focus { border-color: var(--border-focus); }
+        .image-input::placeholder { color: var(--text-muted); }
+        .post-images {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+        }
+        .post-image {
+            max-width: 100%; max-height: 300px;
+            border-radius: 12px; border: 1px solid var(--border);
+            object-fit: cover;
+        }
+        /* 分享按钮 */
+        /* 烟花 */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            .container {
+                padding: 0 14px 40px;
+            }
+            .modal {
+                padding: 28px 24px 24px;
+                border-radius: 20px;
+            }
+            .post-card {
+                padding: 18px;
+                border-radius: 16px;
+            }
+            .top-bar {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .tabs {
+                width: 100%;
+            }
+            .fab-post {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
+        /* ==================== 火箭发射时间表 ==================== */
+        .launch-section {
+            position: relative;
+            z-index: 2;
+            max-width: 720px;
+            margin: 0 auto 32px;
+            padding: 0 20px;
+        }
+        .launch-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .launch-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .launch-header .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: #00d2d3;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        .launch-tabs {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px;
+            background: var(--surface);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin-bottom: 16px;
+        }
+        .launch-tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            letter-spacing: 0.01em;
+        }
+        .launch-tab:hover {
+            color: var(--text-primary);
+        }
+        .launch-tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+        .launch-controls-wrap {
+            margin-left: auto;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px #00d2d3; }
+            50% { opacity: 0.3; box-shadow: 0 0 2px #00d2d3; }
+        }
+        .launch-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .launch-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        .launch-card:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-focus);
+        }
+        .launch-card.launching-soon {
+            border-color: rgba(0, 210, 211, 0.3);
+        }
+        .launch-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+        .launch-info {
+            flex: 1;
+        }
+        .launch-rocket {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .launch-agency {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .launch-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .launch-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .launch-badge {
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .badge-soon {
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+        }
+        .badge-upcoming {
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--gold);
+        }
+        .badge-tentative {
+            background: rgba(136, 136, 153, 0.15);
+            color: var(--text-secondary);
+        }
+        .launch-countdown {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .countdown-box {
+            flex: 1;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 10px 6px;
+        }
+        .countdown-num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+        .countdown-label {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .launch-desc {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+        .launch-launched {
+            text-align: center;
+            padding: 12px;
+            color: #00d2d3;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .badge-launched {
+            background: rgba(255, 107, 107, 0.15);
+            color: #ff6b6b;
+        }
+        .launch-card.launched-card {
+            opacity: 0.85;
+            border-color: rgba(255, 107, 107, 0.15);
+        }
+        .launched-time {
+            text-align: center;
+            padding: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .launched-time strong {
+            color: #ff6b6b;
+        }
+        @media (max-width: 520px) {
+            .countdown-num { font-size: 1.3rem; }
+            .launch-card { padding: 16px; }
+        }
+        /* ==================== 官方机构徽章 ==================== */
+        .badge-official {
+            display: inline-block;
+            font-size: 0.68rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-left: 6px;
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+            vertical-align: middle;
+        }
+        .auth-avatar-small img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .auth-user-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+        .btn-add-launch {
+            padding: 8px 16px;
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+            border: 1px solid rgba(0, 210, 211, 0.3);
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+        .btn-add-launch:hover {
+            background: rgba(0, 210, 211, 0.25);
+        }
+        .launch-image {
+            width: 100%;
+            max-height: 280px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+        .launch-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .launch-edit-btn, .launch-delete-btn {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .launch-edit-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+        }
+        .launch-edit-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+        }
+        .launch-delete-btn {
+            background: rgba(255, 85, 85, 0.1);
+            color: var(--danger);
+        }
+        .launch-delete-btn:hover {
+            background: rgba(255, 85, 85, 0.2);
+        }
+/* ==================== 发射日期待确定 ==================== */
+.tbd-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    background: rgba(255, 215, 0, 0.06);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+.tbd-checkbox-row:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+.tbd-checkbox-row input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--gold);
+    flex-shrink: 0;
+}
+.tbd-checkbox-row input:checked + span {
+    color: var(--gold);
+    font-weight: 500;
+}
+.launch-tbd-message {
+    text-align: center;
+    padding: 20px 16px;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+#launchDate:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+        /* === Light Theme === */
+        [data-theme="light"] {
+            --bg: #f5f5f7;
+            --surface: rgba(255, 255, 255, 0.85);
+            --surface-hover: rgba(240, 240, 245, 0.95);
+            --text-primary: #1a1a2e;
+            --text-secondary: #555566;
+            --text-muted: #9999aa;
+            --accent: #2a2a3e;
+            --accent-hover: #000000;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-focus: rgba(0, 0, 0, 0.2);
+            --danger: #d63638;
+            --gold: #b8860b;
+            --gold-hover: #d4a017;
+        }
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-focus);
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .theme-toggle:hover {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+        }
+        /* === Edit Button === */
+        .edit-btn {
+            background: transparent;
+            border: 1px solid rgba(100, 160, 255, 0.3);
+            color: rgba(100, 160, 255, 0.8);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            margin-right: 4px;
+        }
+        .post-card:hover .edit-btn {
+            opacity: 1;
+        }
+        .edit-btn:hover {
+            background: rgba(100, 160, 255, 0.15);
+            border-color: rgba(100, 160, 255, 0.6);
+            color: #64a0ff;
+        }
+        /* === Space Calendar === */
+        .calendar-section {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .calendar-header:hover {
+            background: var(--surface-hover);
+        }
+        .calendar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .calendar-toggle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: transform 0.2s ease;
+        }
+        .calendar-section.collapsed .calendar-toggle {
+            transform: rotate(-90deg);
+        }
+        .calendar-body {
+            padding: 0 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .calendar-section.collapsed .calendar-body {
+            max-height: 0;
+            padding: 0 20px;
+            overflow: hidden;
+        }
+        .calendar-event {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            align-items: flex-start;
+        }
+        .calendar-event:last-child {
+            border-bottom: none;
+        }
+        .calendar-event-year {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-width: 60px;
+        }
+        .calendar-event-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .calendar-event-highlight {
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 4px 0;
+        }
+        /* === Profile Modal === */
+        .profile-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none; align-items: center; justify-content: center;
+        }
+        .profile-modal-overlay.show {
+            display: flex;
+        }
+        .profile-modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 560px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .profile-avatar-large {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--surface-hover);
+        }
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-info {
+            flex: 1;
+        }
+        .profile-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .profile-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-stat-num {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .profile-follow-btn {
+            padding: 8px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .profile-follow-btn.follow {
+            background: var(--accent);
+            color: var(--bg);
+        }
+        .profile-follow-btn.following {
+            background: transparent;
+            border: 1px solid var(--border-focus);
+            color: var(--text-secondary);
+        }
+        .profile-posts {
+            margin-top: 16px;
+        }
+        .profile-posts-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .profile-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        .profile-close:hover {
+            background: var(--surface-hover);
+            color: var(--text-primary);
+        }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <header class="header">
+        <h1>探索宇宙帖子</h1>
+        <p>探索浩瀚宇宙，分享星辰大海，一起畅聊太空奥秘</p>
+    </header>
+
+    <!-- 历史上的今天 -->
+    <div class="calendar-section" id="calendarSection">
+        <div class="calendar-header" onclick="toggleCalendar()">
+            <span class="calendar-title">📅 历史上的今天</span>
+            <span class="calendar-toggle" id="calendarToggle">▼</span>
+        </div>
+        <div class="calendar-body" id="calendarBody"></div>
+    </div>
+
+    <!-- 火箭发射时间表 -->
+    <div class="launch-section">
+        <div class="launch-tabs">
+            <button class="launch-tab active" data-launch-tab="upcoming">
+                <span>🚀 近期发射</span>
+            </button>
+            <button class="launch-tab" data-launch-tab="launched">
+                <span>🏁 已发射</span>
+            </button>
+            <div class="launch-controls-wrap" id="launchControlsWrap"></div>
+        </div>
+        <div class="launch-list" id="launchList"></div>
+        <div class="launch-list" id="launchedList" style="display:none;"></div>
+    </div>
+    <div class="container">
+        <div class="top-bar">
+            <div class="tabs">
+                <button class="tab active" data-tab="hot">
+                    <span class="icon">🔥</span>热门
+                </button>
+                <button class="tab" data-tab="new">
+                    <span class="icon">🆕</span>最新
+                </button>
+                <button class="tab" data-tab="follow">
+                    <span class="icon">👥</span>关注
+                </button>
+            </div>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="搜索帖子标题或内容..." oninput="handleSearch(this.value)">
+                <button class="search-clear" id="searchClear" onclick="clearSearch()">×</button>
+            </div>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换主题">🌙</button>
+            <div class="auth-area" id="authArea">
+                <button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>
+            </div>
+            <button class="fab-post" onclick="openModal()">✨ 发布帖子</button>
+        </div>
+        <div class="posts-list" id="postsList">
+            <div class="loading">正在加载帖子...</div>
+        </div>
+    </div>
+    <!-- 发帖弹窗 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-title" id="modalTitleText">发布帖子</div>
+            <input type="text" class="modal-input" id="modalName" placeholder="你的名字" maxlength="20">
+            <input type="text" class="modal-input" id="modalTitle" placeholder="标题" maxlength="50">
+            <div class="image-input-row">
+                <input type="text" class="image-input" id="modalImage" placeholder="图片链接（可选，粘贴图片URL）" maxlength="500">
+            </div>
+            <textarea class="modal-textarea" id="modalContent" placeholder="内容" maxlength="1000"></textarea>
+            <input type="text" class="modal-input" id="modalSourceUrl" placeholder="内容来源（可选，粘贴原文网址）" maxlength="500">
+            <button class="modal-submit" id="submitBtn" onclick="submitPost()">发布</button>
+        </div>
+    </div>
+    <!-- 发射编辑弹窗 -->
+    <div class="modal-overlay" id="launchModalOverlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeLaunchEditor()">×</button>
+            <div class="modal-title" id="launchModalTitle">添加火箭发射</div>
+            <input type="text" class="modal-input" id="launchRocket" placeholder="火箭名称（如：朱雀三号遥二）" maxlength="50">
+            <input type="text" class="modal-input" id="launchAgency" placeholder="机构（如：蓝箭航天）" maxlength="50">
+            <input type="datetime-local" class="modal-input" id="launchDate" style="color-scheme: dark;">
+            <label class="tbd-checkbox-row">
+                <input type="checkbox" id="launchDateTBD" onchange="toggleLaunchDateTBD(this.checked)">
+                <span>发射日期待确定</span>
+            </label>
+            <input type="text" class="modal-input" id="launchLocation" placeholder="发射地点" maxlength="100">
+            <input type="text" class="modal-input" id="launchMission" placeholder="任务（简短描述）" maxlength="100">
+            <input type="text" class="modal-input" id="launchImage" placeholder="图片链接（可选）" maxlength="500">
+            <textarea class="modal-textarea" id="launchDesc" placeholder="详细描述（可选）" maxlength="500"></textarea>
+            <button class="modal-submit" id="launchSubmitBtn" onclick="submitLaunch()">保存</button>
+        </div>
+    </div>
+    <!-- 用户认证弹窗 -->
+    <div class="auth-modal-overlay" id="authModal">
+        <div class="auth-modal">
+            <h2 id="authTitle">登录</h2>
+            <div class="auth-error" id="authError"></div>
+            <div class="auth-success" id="authSuccess"></div>
+            <div class="auth-field">
+                <label>用户名</label>
+                <input type="text" id="authUsername" placeholder="起一个用户名" maxlength="20">
+            </div>
+            <div class="auth-field">
+                <label>密码</label>
+                <input type="password" id="authPassword" placeholder="密码（至少6位）">
+            </div>
+            <div class="auth-field" id="authConfirmField" style="display:none">
+                <label>确认密码</label>
+                <input type="password" id="authConfirm" placeholder="再输入一次密码">
+            </div>
+            <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()">登录</button>
+            <div class="auth-switch">
+                <span id="authSwitchText">还没有账号？</span>
+                <a id="authSwitchLink" onclick="toggleAuthMode()">注册</a>
+            </div>
+            <button class="auth-close" onclick="closeAuthModal()">&times;</button>
+        </div>
+    </div>
+    <!-- 用户资料弹窗 -->
+    <div class="profile-modal-overlay" id="profileModal">
+        <div class="profile-modal">
+            <button class="profile-close" onclick="closeProfileModal()">&times;</button>
+            <div id="profileContent"></div>
+        </div>
+    </div>
+
+<script>
+// ==================== Supabase 配置 ====================
+        const SUPABASE_URL = 'https://tktfrrvaqwbtdhiqwnna.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrdGZycnZhcXdidGRoaXF3bm5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MzcyMjYsImV4cCI6MjEwMTMxMzIyNn0.CYNPqmQUrnkMFUq-Bkd_09q7CjQ8rZlNX5brb5-UrbQ';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // ==================== 数据 ====================
+        let posts = [];
+        let currentTab = 'hot';
+        let likedPosts = JSON.parse(localStorage.getItem('likedPosts')) || {};
+        let isLoading = false;
+        // ==================== 官方机构账号配置 ====================
+        const OFFICIAL_USERS = {
+            'NASA': { avatar: 'https://www.nasa.gov/wp-content/themes/nasa/assets/images/nasa-logo.svg', badge: 'NASA官方' },
+            'CNSA': { avatar: 'https://picx.zhimg.com/v2-264f1e06887851be0703902fb9f106ca_r.jpg?source=2c26e567', badge: '国家航天局' },
+            'SpaceX': { avatar: 'https://i.imglt.com/20260802/f61b49848b4eda0e49a759683af30679.jpg', badge: 'SpaceX官方' },
+            '其他火箭发射': { avatar: 'https://i0.hdslb.com/bfs/new_dyn/43b61571f1e9a172c5ef0e1bc70d709f3461574224251726.jpg', badge: '火箭发射' }
+        };
+        function isOfficialUser(name) {
+            return !!OFFICIAL_USERS[name];
+        }
+        // ==================== 从云端加载帖子 ====================
+        async function loadPosts() {
+            isLoading = true;
+            try {
+                const { data: postData, error: postErr } = await sb.from('posts').select('*').order('time', { ascending: false });
+                if (postErr) throw postErr;
+                posts = postData || [];
+                renderPosts();
+                // 加载发射数据
+                await loadLaunches();
+            } catch (err) {
+                console.error('加载失败:', err);
+                document.getElementById('postsList').innerHTML = '<div class="empty-state"><div class="emoji">⚠️</div><p>加载失败，请检查网络连接</p></div>';
+            }
+            isLoading = false;
+        }
+        // ==================== 加载发射数据 ====================
+        async function loadLaunches() {
+            try {
+                const { data, error } = await sb.from('launches').select('*').order('date', { ascending: true });
+                if (error) throw error;
+                if (data && data.length > 0) {
+                    launches = data;
+                    renderLaunches();
+                } else {
+                    // 首次运行，插入默认数据
+                    for (const l of launches) {
+                        await sb.from('launches').insert({
+                            rocket: l.rocket, agency: l.agency, date: l.date,
+                            location: l.location, mission: l.mission,
+                            image: l.image || '', description: l.description, status: l.status || 'tentative'
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('加载发射数据失败:', err);
+            }
+        }
+        // ==================== 更新单个帖子到 Supabase ====================
+        async function updatePostDB(postId) {
+            const post = posts.find(p => String(p.id) === String(postId));
+            if (!post) return;
+            try {
+                const { error } = await sb.from('posts').update({
+                    likes: post.likes || 0,
+                    comments: post.comments || [],
+                    pinned: post.pinned || false,
+                    source_url: post.source_url || ''
+                }).eq('id', postId);
+                if (error) console.error('更新帖子失败:', error);
+            } catch (err) {
+                console.error('更新帖子失败:', err);
+            }
+        }
+        // ==================== saveLaunches 兼容占位 ====================
+        async function saveLaunches() {}
+        // ==================== 自动刷新（每1分钟同步一次） ====================
+        setInterval(() => {
+            if (!isLoading) loadPosts();
+        }, 60000);
+        // ==================== 模态框 ====================
+        function openModal() {
+            editingPostId = null;
+            document.getElementById('modalTitleText').textContent = '发布帖子';
+            document.getElementById('modalOverlay').classList.add('show');
+            setTimeout(() => {
+                document.getElementById('modalName').focus();
+            }, 100);
+        }
+        function closeModal() {
+            editingPostId = null;
+            document.getElementById('modalOverlay').classList.remove('show');
+            document.getElementById('modalName').value = '';
+            document.getElementById('modalTitle').value = '';
+            document.getElementById('modalContent').value = '';
+            document.getElementById('modalImage').value = '';
+            document.getElementById('modalSourceUrl').value = '';
+            document.getElementById('modalName').readOnly = false;
+            document.getElementById('modalName').style.opacity = '1';
+        }
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { closeModal(); closeLaunchEditor(); closeProfileModal(); }
+        });
+        // ==================== 发帖 ====================
+        async function submitPost() {
+            const name = document.getElementById('modalName').value.trim();
+            const title = document.getElementById('modalTitle').value.trim();
+            const content = document.getElementById('modalContent').value.trim();
+            const sourceUrl = document.getElementById('modalSourceUrl') ? (document.getElementById('modalSourceUrl').value.trim() || '') : '';
+            if (!name) {
+                document.getElementById('modalName').focus();
+                return;
+            }
+            if (!title && !content) {
+                document.getElementById('modalTitle').focus();
+                return;
+            }
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = editingPostId ? '保存中...' : '发布中...';
+
+            // === 编辑模式 ===
+            if (editingPostId) {
+                try {
+                    const editImage = document.getElementById('modalImage') ? (document.getElementById('modalImage').value.trim() || '') : '';
+                    const { error: editErr } = await sb.from('posts').update({
+                        title: title,
+                        content: content,
+                        image: editImage,
+                        source_url: sourceUrl
+                    }).eq('id', editingPostId);
+                    if (editErr) throw editErr;
+                    const ep = posts.find(p => String(p.id) === String(editingPostId));
+                    if (ep) {
+                        ep.title = title;
+                        ep.content = content;
+                        ep.image = editImage;
+                        ep.source_url = sourceUrl;
+                    }
+                    closeModal();
+                    renderPosts();
+                } catch (err) {
+                    alert('保存失败: ' + err.message);
+                }
+                btn.disabled = false;
+                btn.textContent = '发布';
+                return;
+            }
+
+            const newPost = {
+                id: Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                title: title,
+                content: content,
+                author: name,
+                avatar: getAvatar(name),
+                image: document.getElementById('modalImage') ? (document.getElementById('modalImage').value.trim() || '') : '',
+                source_url: sourceUrl,
+                time: Date.now(),
+                likes: 0,
+                comments: []
+            };
+            // 插入到 Supabase
+            try {
+                const { error } = await sb.from('posts').insert({
+                    id: newPost.id,
+                    title: newPost.title,
+                    content: newPost.content,
+                    author: newPost.author,
+                    avatar: newPost.avatar,
+                    image: newPost.image,
+                    source_url: newPost.source_url || '',
+                    time: newPost.time,
+                    likes: 0,
+                    comments: [],
+                    pinned: false
+                });
+                if (error) throw error;
+                posts.unshift(newPost);
+                closeModal();
+                currentTab = 'new';
+                updateTabs();
+                renderPosts();
+            } catch (err) {
+                alert('发布失败: ' + err.message);
+            }
+            btn.disabled = false;
+            btn.textContent = '发布';
+        }
+        // ==================== 点赞 ====================
+        async function toggleLike(id) {
+            const isLiked = likedPosts[id] || false;
+            // 在本地找到帖子并修改
+            const post = posts.find(p => p.id === id);
+            if (post) {
+                post.likes = isLiked ? Math.max(0, (post.likes || 0) - 1) : (post.likes || 0) + 1;
+            }
+            likedPosts[id] = !isLiked;
+            localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+            renderPosts();
+            // 同步到 Supabase
+            updatePostDB(id);
+        }
+        // ==================== 渲染 ====================
+        let searchKeyword = '';
+        function handleSearch(val) {
+            searchKeyword = val.trim().toLowerCase();
+            document.getElementById('searchClear').style.display = searchKeyword ? 'block' : 'none';
+            renderPosts();
+        }
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            searchKeyword = '';
+            document.getElementById('searchClear').style.display = 'none';
+            renderPosts();
+        }
+        function renderPosts() {
+            const list = document.getElementById('postsList');
+            let displayPosts = [...posts];
+            // 搜索过滤
+            if (searchKeyword) {
+                displayPosts = displayPosts.filter(p => {
+                    const title = (p.title || '').toLowerCase();
+                    const content = (p.content || '').toLowerCase();
+                    const author = (p.author || '').toLowerCase();
+                    const source = (p.source_url || '').toLowerCase();
+                    return title.includes(searchKeyword) || content.includes(searchKeyword) || author.includes(searchKeyword) || source.includes(searchKeyword);
+                });
+            }
+            // 关注过滤
+            if (currentTab === 'follow') {
+                const followed = JSON.parse(localStorage.getItem('space_follows')) || [];
+                displayPosts = displayPosts.filter(p => followed.includes(p.author));
+            }
+            if (currentTab === 'hot') {
+                displayPosts.sort((a, b) => {
+                    if (a.pinned && !b.pinned) return -1;
+                    if (!a.pinned && b.pinned) return 1;
+                    return (b.likes || 0) - (a.likes || 0);
+                });
+            } else {
+                displayPosts.sort((a, b) => {
+                    if (a.pinned && !b.pinned) return -1;
+                    if (!a.pinned && b.pinned) return 1;
+                    return (b.time || 0) - (a.time || 0);
+                });
+            }
+            if (displayPosts.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="emoji">${searchKeyword ? '🔍' : (currentTab === 'follow' ? '👥' : '🚀')}</div>
+                        <p>${searchKeyword ? '没有找到匹配的帖子，换个关键词试试吧' : (currentTab === 'follow' ? '还没有关注任何用户，去帖子中点击头像关注吧' : '还没有帖子，点击右上角发布第一条宇宙探索动态吧')}</p>
+                    </div>
+                `;
+                return;
+            }
+            list.innerHTML = displayPosts.map(post => {
+                const isLiked = likedPosts[post.id] || false;
+                return `
+                    <div class="post-card" data-id="${post.id}">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <div class="avatar" style="cursor:pointer;" onclick="showUserProfile('${escapeHtml(post.author)}')">${post.avatar.startsWith('http') ? `<img src="${post.avatar}" alt="avatar">` : post.avatar}</div>
+                                <div class="author-info">
+                                    <span class="author-name">
+                                        ${escapeHtml(post.author)}
+                                        ${OFFICIAL_USERS[post.author] ? `<span class="badge-official">${OFFICIAL_USERS[post.author].badge}</span>` : ''}
+                                    </span>
+                                    <span class="post-time">${formatTime(post.time)}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-shrink: 0; gap: 4px;">
+                                <button class="pin-btn" onclick="togglePin('${post.id}')" title="置顶/取消置顶">${post.pinned ? '📌 取消置顶' : '📌 置顶'}</button>
+                                ${currentUser && post.author === currentUser.name ? `<button class="edit-btn" onclick="editPost('${post.id}')" title="编辑帖子">✏️ 编辑</button>` : ''}
+                                <button class="delete-btn" onclick="deletePost('${post.id}')" title="删除帖子">🗑 删除</button>
+                            </div>
+                        </div>
+                        ${post.title ? `<div class="post-title">${post.pinned ? '📌 ' : ''}${escapeHtml(post.title)}</div>` : ''}
+                        ${post.image ? `<div class='post-images'><img src='${escapeHtml(post.image)}' class='post-image' alt='图片' onerror="this.style.display='none'"></div>` : ''}
+                        <div class="post-content">${escapeHtml(post.content)}</div>
+                        ${post.source_url ? `<div class="post-source"><span class="source-label">📄 内容来源：</span><a href="${escapeHtml(post.source_url)}" target="_blank" rel="noopener noreferrer" class="source-link">${escapeHtml(post.source_url.length > 60 ? post.source_url.substring(0, 60) + '...' : post.source_url)}</a></div>` : ''}
+                        <div class="post-footer">
+                            <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
+                                <span>${isLiked ? '❤️' : '🤍'}</span>
+                                <span>${post.likes || 0}</span>
+                            </button>
+                            <button class="comments-toggle-btn" onclick="toggleComments('${post.id}')">
+                                <span>💬</span>
+                                <span>${(post.comments && post.comments.length) || 0}</span>
+                            </button>
+                        </div>
+                        <div class="comments-section" id="comments-${post.id}">
+                            <div class="comments-list" id="comments-list-${post.id}">
+                                ${(post.comments && post.comments.length > 0) ? post.comments.map(c => `
+                                    <div class="comment-item">
+                                        <div class="comment-avatar">🌟</div>
+                                        <div class="comment-body">
+                                            <div class="comment-author">${escapeHtml(c.author)}</div>
+                                            <div class="comment-text">${escapeHtml(c.content)}</div>
+                                            <div class="comment-time">${formatTime(c.time)}</div>
+                                        </div>
+                                        <button class="action-btn" style="color:#ff5555;font-size:12px;" onclick="deleteComment('${post.id}', '${c.id}')">🗑️</button>
+                                    </div>
+                                `).join('') : '<div style="color: var(--text-muted); font-size: 0.85rem; padding: 8px 0;">暂无评论，来做第一个评论的人吧</div>'}
+                            </div>
+                            <div class="comment-input-area">
+                                <div class="comment-input-row">
+                                    <input type="text" class="comment-input" id="comment-name-${post.id}" placeholder="你的名字" maxlength="20">
+                                </div>
+                                <textarea class="comment-textarea" id="comment-text-${post.id}" placeholder="写下你的评论..." maxlength="300"></textarea>
+                                <button class="comment-submit" onclick="submitComment('${post.id}')">发送评论</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        async function togglePin(postId) {
+            const password = prompt('请输入管理员密码：');
+            if (password === null) return;
+            if (password !== '1028') {
+                alert('密码错误！');
+                return;
+            }
+            const post = posts.find(p => String(p.id) === String(postId));
+            if (post) {
+                post.pinned = !post.pinned;
+                await updatePostDB(postId);
+                renderPosts();
+                alert(post.pinned ? '📌 已置顶' : '📌 已取消置顶');
+            }
+        }
+        async function deletePost(postId) {
+            const password = prompt('请输入删除密码:');
+            if (password === null) return;
+            if (password !== '1028') {
+                alert('密码错误，无法删除！');
+                return;
+            }
+            if (!confirm('确定要删除这条帖子吗？')) return;
+            try {
+                const { error } = await sb.from('posts').delete().eq('id', postId);
+                if (error) throw error;
+                posts = posts.filter(p => String(p.id) !== String(postId));
+                renderPosts();
+                alert('🗑 帖子已删除');
+            } catch (err) {
+                alert('删除失败: ' + err.message);
+            }
+        }
+        // ==================== 评论功能 ====================
+        function toggleComments(postId) {
+            const section = document.getElementById('comments-' + postId);
+            if (section) {
+                section.classList.toggle('show');
+            }
+        }
+        async function submitComment(postId) {
+            const nameInput = document.getElementById('comment-name-' + postId);
+            const textInput = document.getElementById('comment-text-' + postId);
+            const name = nameInput.value.trim();
+            const content = textInput.value.trim();
+            if (!name) {
+                nameInput.focus();
+                return;
+            }
+            if (!content) {
+                textInput.focus();
+                return;
+            }
+            const post = posts.find(p => String(p.id) === String(postId));
+            if (!post) return;
+            if (!post.comments) post.comments = [];
+            post.comments.push({
+                id: Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                author: name,
+                content: content,
+                time: Date.now()
+            });
+            nameInput.value = '';
+            textInput.value = '';
+            await updatePostDB(postId);
+            renderPosts();
+            // 重新展开评论区
+            setTimeout(() => {
+                const section = document.getElementById('comments-' + postId);
+                if (section) section.classList.add('show');
+            }, 50);
+        }
+        async function deleteComment(postId, commentId) {
+            const pwd = prompt('请输入删除密码：');
+            if (pwd !== '1028') {
+                alert('密码错误');
+                return;
+            }
+            const post = posts.find(p => String(p.id) === String(postId));
+            if (!post || !post.comments) return;
+            post.comments = post.comments.filter(c => String(c.id) !== String(commentId));
+            await updatePostDB(postId);
+            renderPosts();
+            setTimeout(() => {
+                const section = document.getElementById('comments-' + postId);
+                if (section) section.classList.add('show');
+            }, 50);
+        }
+        // ==================== 工具函数 ====================
+        function formatTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const minute = 60 * 1000;
+            const hour = 60 * minute;
+            const day = 24 * hour;
+            if (diff < minute) return '刚刚';
+            if (diff < hour) return Math.floor(diff / minute) + '分钟前';
+            if (diff < day) return Math.floor(diff / hour) + '小时前';
+            if (diff < 7 * day) return Math.floor(diff / day) + '天前';
+            return new Date(timestamp).toLocaleDateString('zh-CN');
+        }
+        function getAvatar(name) {
+            if (OFFICIAL_USERS[name]) return OFFICIAL_USERS[name].avatar;
+            return '🚀';
+        }
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        function updateTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === currentTab);
+            });
+        }
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentTab = tab.dataset.tab;
+                updateTabs();
+                renderPosts();
+            });
+        });
+        // ==================== Supabase 无需心跳保活 ====================
+        // ==================== 用户账号系统 ====================
+        let currentUser = JSON.parse(localStorage.getItem('space_user')) || null;
+        let authMode = 'login';
+        let allUsers = [];
+        async function loadUsers() {
+            try {
+                const { data, error } = await sb.from('users').select('*');
+                if (error) throw error;
+                allUsers = data || [];
+            } catch (e) {
+                console.error('加载用户失败:', e);
+            }
+        }
+        async function saveUser(user) {
+            try {
+                const { error } = await sb.from('users').insert({
+                    name: user.name,
+                    password: user.password,
+                    avatar: user.avatar
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error('保存用户失败:', e);
+            }
+        }
+        function renderAuthArea() {
+            const area = document.getElementById('authArea');
+            if (!area) return;
+            if (currentUser) {
+                const av = getAvatar(currentUser.name);
+                const avHtml = av.startsWith('http') ? `<img src="${av}" alt="avatar">` : av;
+                const badge = OFFICIAL_USERS[currentUser.name] ? `<span class="auth-user-badge">${OFFICIAL_USERS[currentUser.name].badge}</span>` : '';
+                area.innerHTML = `
+                    <div class="auth-user">
+                        <div class="auth-avatar-small">${avHtml}</div>
+                        <span class="auth-name">${escapeHtml(currentUser.name)}</span>
+                        ${badge}
+                        <button class="btn-logout" onclick="handleLogout()">退出</button>
+                    </div>
+                `;
+                renderLaunchControls();
+            } else {
+                area.innerHTML = `<button class="btn-auth" onclick="openAuthModal()">登录 / 注册</button>`;
+            }
+        }
+        function openAuthModal() {
+            authMode = 'login';
+            window._resetMode = false;
+            updateAuthUI();
+            document.getElementById('authUsername').value = '';
+            document.getElementById('authPassword').value = '';
+            document.getElementById('authConfirm').value = '';
+            document.getElementById('authError').classList.remove('show');
+            document.getElementById('authSuccess').classList.remove('show');
+            document.getElementById('authModal').classList.add('show');
+            setTimeout(() => document.getElementById('authUsername').focus(), 100);
+        }
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('show');
+        }
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'signup' : 'login';
+            window._resetMode = false;
+            updateAuthUI();
+            document.getElementById('authError').classList.remove('show');
+            document.getElementById('authSuccess').classList.remove('show');
+        }
+        function updateAuthUI() {
+            if (authMode === 'signup') {
+                document.getElementById('authTitle').textContent = '注册';
+                document.getElementById('authSubmitBtn').textContent = '注册';
+                document.getElementById('authSwitchText').textContent = '已有账号？';
+                document.getElementById('authSwitchLink').textContent = '登录';
+                document.getElementById('authConfirmField').style.display = 'block';
+            } else {
+                document.getElementById('authTitle').textContent = '登录';
+                document.getElementById('authSubmitBtn').textContent = '登录';
+                document.getElementById('authSwitchText').textContent = '还没有账号？';
+                document.getElementById('authSwitchLink').textContent = '注册';
+                document.getElementById('authConfirmField').style.display = 'none';
+            }
+        }
+        async function handleAuth() {
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value;
+            const confirm = document.getElementById('authConfirm').value;
+            const errEl = document.getElementById('authError');
+            const sucEl = document.getElementById('authSuccess');
+            const btn = document.getElementById('authSubmitBtn');
+            errEl.classList.remove('show');
+            sucEl.classList.remove('show');
+            if (!username) { showAuthErr('请输入用户名'); return; }
+            if (!password || password.length < 6) { showAuthErr('密码至少6位'); return; }
+            btn.disabled = true;
+            btn.textContent = '请稍候...';
+            await loadUsers();
+            if (authMode === 'signup' || window._resetMode) {
+                if (password !== confirm) { showAuthErr('两次密码不一致'); btn.disabled = false; btn.textContent = window._resetMode ? '重置密码' : '注册'; return; }
+                if (authMode === 'signup') {
+                    const exists = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
+                    if (exists) { showAuthErr('该用户名已被注册'); btn.disabled = false; btn.textContent = '注册'; return; }
+                    const newUser = { name: username, password: password, avatar: getAvatar(username) };
+                    allUsers.push(newUser);
+                    await saveUser(newUser);
+                    showAuthSuc('注册成功！请登录');
+                    authMode = 'login';
+                    updateAuthUI();
+                    document.getElementById('authPassword').value = '';
+                    document.getElementById('authConfirm').value = '';
+                } else {
+                    // 重置密码模式
+                    const idx = allUsers.findIndex(u => u.name.toLowerCase() === username.toLowerCase());
+                    if (idx !== -1) {
+                        allUsers[idx].password = password;
+                        await sb.from('users').update({ password: password }).eq('name', allUsers[idx].name);
+                    }
+                    showAuthSuc('密码已重置！请重新登录');
+                    window._resetMode = false;
+                    authMode = 'login';
+                    updateAuthUI();
+                    document.getElementById('authPassword').value = '';
+                    document.getElementById('authConfirm').value = '';
+                }
+            } else {
+                const user = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
+                if (!user) { showAuthErr('用户名或密码错误'); btn.disabled = false; btn.textContent = '登录'; return; }
+                // 检测强制重置密码
+                if (user.password && user.password.startsWith('FORCE_RESET_')) {
+                    showAuthSuc('安全更新：您需要设置新密码');
+                    document.getElementById('authConfirmField').style.display = 'block';
+                    document.getElementById('authSubmitBtn').textContent = '重置密码';
+                    window._resetMode = true;
+                    return;
+                }
+                if (user.password !== password) { showAuthErr('用户名或密码错误'); btn.disabled = false; btn.textContent = '登录'; return; }
+                currentUser = { name: user.name, avatar: user.avatar };
+                localStorage.setItem('space_user', JSON.stringify(currentUser));
+                closeAuthModal();
+                renderAuthArea();
+            }
+            btn.disabled = false;
+            btn.textContent = authMode === 'login' ? '登录' : '注册';
+        }
+        function showAuthErr(msg) {
+            const el = document.getElementById('authError');
+            el.textContent = msg; el.classList.add('show');
+            document.getElementById('authSuccess').classList.remove('show');
+        }
+        function showAuthSuc(msg) {
+            const el = document.getElementById('authSuccess');
+            el.textContent = msg; el.classList.add('show');
+            document.getElementById('authError').classList.remove('show');
+        }
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('space_user');
+            renderAuthArea();
+            renderLaunchControls();
+        }
+        // Override openModal to require login
+        const _origOpenModal = openModal;
+        openModal = function() {
+            if (!currentUser) {
+                openAuthModal();
+                return;
+            }
+            _origOpenModal();
+            document.getElementById('modalName').value = currentUser.name;
+            document.getElementById('modalName').readOnly = true;
+            document.getElementById('modalName').style.opacity = '0.6';
+            document.getElementById('modalTitle').focus();
+        };
+        // ==================== 火箭发射时间表 ====================
+        let launches = [];
+        let currentLaunchTab = 'upcoming';
+        function renderLaunches() {
+            const list = document.getElementById('launchList');
+            const launchedList = document.getElementById('launchedList');
+            if (!list) return;
+            const now = Date.now();
+            // 分离即将发射和已发射
+            const upcoming = [];
+            const launched = [];
+            launches.forEach((l, i) => {
+                if (l.status === 'tbd') {
+                    // TBD 发射始终留在"近期发射"
+                    upcoming.push({ data: l, origIndex: i });
+                } else if (l.date - now <= 0) {
+                    launched.push({ data: l, origIndex: i });
+                } else {
+                    upcoming.push({ data: l, origIndex: i });
+                }
+            });
+            // 已发射按时间倒序，只保留前20个
+            launched.sort((a, b) => b.data.date - a.data.date);
+            if (launched.length > 15) {
+                const toRemove = launched.slice(20);
+                for (const item of toRemove) {
+                    if (item.data.id) {
+                        sb.from('launches').delete().eq('id', item.data.id).then(() => {}).catch(e => console.error('删除旧发射记录失败:', e));
+                    }
+                    const idx = launches.indexOf(item.data);
+                    if (idx !== -1) launches.splice(idx, 1);
+                }
+                launched.length = 15;
+            }
+            // 渲染即将发射
+            list.innerHTML = upcoming.length > 0 ? upcoming.map((item) => {
+                const l = item.data;
+                const i = item.origIndex;
+                const diff = l.date - now;
+                const isTBD = l.status === 'tbd';
+                let badgeClass = 'badge-upcoming';
+                let badgeText = '即将发射';
+                if (isTBD) {
+                    badgeClass = 'badge-tentative';
+                    badgeText = '日期待定';
+                } else {
+                    if (l.status === 'tentative') {
+                        badgeClass = 'badge-tentative';
+                        badgeText = '待定';
+                    }
+                    if (diff > 0 && diff < 3 * 24 * 60 * 60 * 1000) {
+                        badgeClass = 'badge-soon';
+                        badgeText = '发射在即';
+                    }
+                }
+                const dateStr = isTBD ? '发射日期待确定' : new Date(l.date).toLocaleString('zh-CN', {
+                    month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                let countdownHtml;
+                if (isTBD) {
+                    countdownHtml = `<div class="launch-countdown"><div class="launch-tbd-message">⏳ 发射日期待确定</div></div>`;
+                } else {
+                    const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                    const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                    const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
+                    const secs = Math.floor((diff % (60 * 1000)) / 1000);
+                    countdownHtml = `
+                        <div class="launch-countdown">
+                            <div class="countdown-box">
+                                <div class="countdown-num" id="cd-days-${i}">${days}</div>
+                                <div class="countdown-label">天</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-num" id="cd-hours-${i}">${String(hours).padStart(2,'0')}</div>
+                                <div class="countdown-label">时</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-num" id="cd-mins-${i}">${String(mins).padStart(2,'0')}</div>
+                                <div class="countdown-label">分</div>
+                            </div>
+                            <div class="countdown-box">
+                                <div class="countdown-num" id="cd-secs-${i}">${String(secs).padStart(2,'0')}</div>
+                                <div class="countdown-label">秒</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="launch-card ${!isTBD && diff > 0 && diff < 3 * 24 * 60 * 60 * 1000 ? 'launching-soon' : ''}">
+                        <div class="launch-card-top">
+                            <div class="launch-info">
+                                <div class="launch-rocket">${l.rocket}</div>
+                                <div class="launch-agency">${l.agency}</div>
+                                <div class="launch-meta">
+                                    <span>📅 ${dateStr}</span>
+                                    <span>📍 ${l.location}</span>
+                                    <span>🎯 ${l.mission}</span>
+                                </div>
+                            </div>
+                            <span class="launch-badge ${badgeClass}">${badgeText}</span>
+                        </div>
+                        ${countdownHtml}
+                        ${l.image ? `<img src="${escapeHtml(l.image)}" class="launch-image" alt="发射图片" onerror="this.style.display='none'">` : ''}
+                        <div class="launch-desc">${escapeHtml(l.description)}</div>
+                        ${currentUser && isOfficialUser(currentUser.name) ? `
+                        <div class="launch-card-actions">
+                            <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
+                            <button class="launch-delete-btn" onclick="deleteLaunch(${i})">🗑 删除</button>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('') : '<div class="empty-state"><div class="emoji">🚀</div><p>暂无即将发射的火箭</p></div>';
+            // 渲染已发射
+            if (launchedList) {
+                launchedList.innerHTML = launched.length > 0 ? launched.map((item) => {
+                    const l = item.data;
+                    const i = item.origIndex;
+                    const dateStr = new Date(l.date).toLocaleString('zh-CN', {
+                        month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+                    const ago = Date.now() - l.date;
+                    const agoDays = Math.floor(ago / (24 * 60 * 60 * 1000));
+                    const agoHours = Math.floor((ago % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                    const agoMins = Math.floor((ago % (60 * 60 * 1000)) / (60 * 1000));
+                    let agoStr = '';
+                    if (agoDays > 0) agoStr = `${agoDays}天${agoHours}小时前`;
+                    else if (agoHours > 0) agoStr = `${agoHours}小时${agoMins}分钟前`;
+                    else agoStr = `${agoMins}分钟前`;
+                    return `
+                        <div class="launch-card launched-card">
+                            <div class="launch-card-top">
+                                <div class="launch-info">
+                                    <div class="launch-rocket">${l.rocket}</div>
+                                    <div class="launch-agency">${l.agency}</div>
+                                    <div class="launch-meta">
+                                        <span>📅 ${dateStr}</span>
+                                        <span>📍 ${l.location}</span>
+                                        <span>🎯 ${l.mission}</span>
+                                    </div>
+                                </div>
+                                <span class="launch-badge badge-launched">已发射</span>
+                            </div>
+                            <div class="launched-time">🚀 发射于 <strong>${agoStr}</strong></div>
+                            ${l.image ? `<img src="${escapeHtml(l.image)}" class="launch-image" alt="发射图片" onerror="this.style.display='none'">` : ''}
+                            <div class="launch-desc">${escapeHtml(l.description)}</div>
+                            ${currentUser && isOfficialUser(currentUser.name) ? `
+                            <div class="launch-card-actions">
+                                <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
+                                <button class="launch-delete-btn" onclick="deleteLaunch(${i})">🗑 删除</button>
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('') : '<div class="empty-state"><div class="emoji">🏁</div><p>暂无已发射的火箭</p></div>';
+            }
+        }
+        // Tab 切换
+        function updateLaunchTabs() {
+            document.querySelectorAll('.launch-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.launchTab === currentLaunchTab);
+            });
+            const list = document.getElementById('launchList');
+            const launchedList = document.getElementById('launchedList');
+            if (list) list.style.display = currentLaunchTab === 'upcoming' ? '' : 'none';
+            if (launchedList) launchedList.style.display = currentLaunchTab === 'launched' ? '' : 'none';
+        }
+        document.querySelectorAll('.launch-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                currentLaunchTab = tab.dataset.launchTab;
+                updateLaunchTabs();
+            });
+        });
+        function updateCountdowns() {
+            const now = Date.now();
+            let needRerender = false;
+            launches.forEach((l, i) => {
+                if (l.status === 'tbd') return; // 跳过TBD发射
+                const diff = l.date - now;
+                if (diff <= 0) {
+                    needRerender = true;
+                    return;
+                }
+                const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                const hours = Math.floor((diff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000));
+                const secs = Math.floor((diff % (60 * 1000)) / 1000);
+                const dEl = document.getElementById('cd-days-' + i);
+                const hEl = document.getElementById('cd-hours-' + i);
+                const mEl = document.getElementById('cd-mins-' + i);
+                const sEl = document.getElementById('cd-secs-' + i);
+                if (dEl) dEl.textContent = days;
+                if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+                if (mEl) mEl.textContent = String(mins).padStart(2, '0');
+                if (sEl) sEl.textContent = String(secs).padStart(2, '0');
+            });
+            if (needRerender) renderLaunches();
+        }
+        // ==================== 发射管理控件 ====================
+        function renderLaunchControls() {
+            const wrap = document.getElementById('launchControlsWrap');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            if (currentUser && isOfficialUser(currentUser.name)) {
+                wrap.innerHTML = '<button class="btn-add-launch" onclick="openLaunchEditor()">+ 添加发射</button>';
+            }
+        }
+        // ==================== 发射编辑器 ====================
+        let editingLaunchId = null;
+        // ==================== 发射日期待确定开关 ====================
+        function toggleLaunchDateTBD(checked) {
+            const dateInput = document.getElementById('launchDate');
+            dateInput.disabled = checked;
+            if (checked) {
+                dateInput.value = '';
+            }
+        }
+        function openLaunchEditor() {
+            editingLaunchId = null;
+            document.getElementById('launchRocket').value = '';
+            document.getElementById('launchAgency').value = '';
+            document.getElementById('launchDate').value = '';
+            document.getElementById('launchDateTBD').checked = false;
+            document.getElementById('launchDate').disabled = false;
+            document.getElementById('launchLocation').value = '';
+            document.getElementById('launchMission').value = '';
+            document.getElementById('launchImage').value = '';
+            document.getElementById('launchDesc').value = '';
+            document.getElementById('launchModalTitle').textContent = '添加火箭发射';
+            document.getElementById('launchModalOverlay').classList.add('show');
+            setTimeout(() => document.getElementById('launchRocket').focus(), 100);
+        }
+        function closeLaunchEditor() {
+            document.getElementById('launchModalOverlay').classList.remove('show');
+            editingLaunchId = null;
+        }
+        function editLaunch(index) {
+            const l = launches[index];
+            if (!l) return;
+            editingLaunchId = index;
+            // 检查是否为TBD（发射日期待确定）
+            const isEditTBD = l.status === 'tbd';
+            document.getElementById('launchDateTBD').checked = isEditTBD;
+            document.getElementById('launchDate').disabled = isEditTBD;
+            // 转换时间为 datetime-local 格式
+            if (isEditTBD) {
+                document.getElementById('launchDate').value = '';
+            } else {
+                const d = new Date(l.date);
+                const localISO = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                document.getElementById('launchDate').value = localISO;
+            }
+            document.getElementById('launchRocket').value = l.rocket || '';
+            document.getElementById('launchAgency').value = l.agency || '';
+            document.getElementById('launchLocation').value = l.location || '';
+            document.getElementById('launchMission').value = l.mission || '';
+            document.getElementById('launchImage').value = l.image || '';
+            document.getElementById('launchDesc').value = l.description || '';
+            document.getElementById('launchModalTitle').textContent = '编辑火箭发射';
+            document.getElementById('launchModalOverlay').classList.add('show');
+        }
+        async function submitLaunch() {
+            if (!currentUser || !isOfficialUser(currentUser.name)) {
+                alert('只有官方机构账号才能管理发射时间表');
+                return;
+            }
+            const rocket = document.getElementById('launchRocket').value.trim();
+            const agency = document.getElementById('launchAgency').value.trim();
+            const dateStr = document.getElementById('launchDate').value;
+            const location = document.getElementById('launchLocation').value.trim();
+            const mission = document.getElementById('launchMission').value.trim();
+            const image = document.getElementById('launchImage').value.trim();
+            const desc = document.getElementById('launchDesc').value.trim();
+            const isTBD = document.getElementById('launchDateTBD').checked;
+            if (!rocket) { document.getElementById('launchRocket').focus(); return; }
+            if (!isTBD && !dateStr) { document.getElementById('launchDate').focus(); return; }
+            const btn = document.getElementById('launchSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = '保存中...';
+            const launchData = {
+                rocket: rocket,
+                agency: agency,
+                date: isTBD ? null : new Date(dateStr).getTime(),
+                location: location,
+                mission: mission,
+                image: image,
+                description: desc,
+                status: isTBD ? 'tbd' : 'tentative'
+            };
+            if (editingLaunchId !== null) {
+                // 更新现有发射记录
+                const existing = launches[editingLaunchId];
+                const dbId = existing.id;
+                const { error } = await sb.from('launches').update({
+                    rocket: rocket, agency: agency, date: isTBD ? null : launchData.date,
+                    location: location, mission: mission, image: image,
+                    description: desc, status: isTBD ? 'tbd' : 'tentative'
+                }).eq('id', dbId);
+                if (error) { alert('保存失败: ' + error.message); btn.disabled = false; btn.textContent = '保存'; return; }
+                launches[editingLaunchId] = { ...launchData, id: dbId };
+            } else {
+                // 新增发射记录
+                const { data: inserted, error } = await sb.from('launches').insert({
+                    rocket: rocket, agency: agency, date: isTBD ? null : launchData.date,
+                    location: location, mission: mission, image: image,
+                    description: desc, status: isTBD ? 'tbd' : 'tentative'
+                }).select();
+                if (error) { alert('保存失败: ' + error.message); btn.disabled = false; btn.textContent = '保存'; return; }
+                if (inserted && inserted[0]) launches.push(inserted[0]);
+            }
+            // 按日期排序（TBD排到最后）
+            launches.sort((a, b) => {
+                if (a.status === 'tbd' && b.status !== 'tbd') return 1;
+                if (a.status !== 'tbd' && b.status === 'tbd') return -1;
+                return (a.date || 0) - (b.date || 0);
+            });
+            renderLaunches();
+            btn.disabled = false;
+            btn.textContent = '保存';
+            closeLaunchEditor();
+        }
+        async function deleteLaunch(index) {
+            if (!currentUser || !isOfficialUser(currentUser.name)) return;
+            if (!confirm('确定要删除这条发射信息吗？')) return;
+            const launch = launches[index];
+            if (launch && launch.id) {
+                const { error } = await sb.from('launches').delete().eq('id', launch.id);
+                if (error) { alert('删除失败: ' + error.message); return; }
+            }
+            launches.splice(index, 1);
+            renderLaunches();
+        }
+        renderLaunches();
+        renderLaunchControls();
+        setInterval(updateCountdowns, 1000);
+        // ==================== 主题切换 ====================
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const btn = document.getElementById('themeToggle');
+            if (current === 'light') {
+                html.removeAttribute('data-theme');
+                localStorage.setItem('space_theme', 'dark');
+                if (btn) btn.textContent = '🌙';
+            } else {
+                html.setAttribute('data-theme', 'light');
+                localStorage.setItem('space_theme', 'light');
+                if (btn) btn.textContent = '☀️';
+            }
+        }
+
+        // ==================== 编辑帖子 ====================
+        let editingPostId = null;
+
+        function editPost(postId) {
+            const post = posts.find(p => String(p.id) === String(postId));
+            if (!post) return;
+            editingPostId = postId;
+            document.getElementById('modalTitleText').textContent = '编辑帖子';
+            document.getElementById('modalName').value = post.author || '';
+            document.getElementById('modalName').readOnly = true;
+            document.getElementById('modalName').style.opacity = '0.6';
+            document.getElementById('modalTitle').value = post.title || '';
+            document.getElementById('modalContent').value = post.content || '';
+            document.getElementById('modalImage').value = post.image || '';
+            document.getElementById('modalSourceUrl').value = post.source_url || '';
+            document.getElementById('submitBtn').textContent = '保存';
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+
+        // ==================== 历史上的今天 ====================
+        const SPACE_HISTORY_EVENTS = {
+            '01/28': [{ year: 1986, text: '挑战者号航天飞机升空73秒后爆炸，7名宇航员遇难' }],
+            '02/20': [{ year: 1962, text: '约翰·格伦成为首个绕地球飞行的美国宇航员（友谊7号）' }],
+            '03/18': [{ year: 1965, text: '阿列克谢·列昂诺夫完成人类首次太空行走' }],
+            '04/12': [
+                { year: 1961, text: '尤里·加加林成为首位进入太空的人类（东方1号）' },
+                { year: 1981, text: 'STS-1 哥伦比亚号航天飞机首次飞行' }
+            ],
+            '05/05': [{ year: 1961, text: '艾伦·谢泊德成为首个进入太空的美国人（自由7号）' }],
+            '05/25': [{ year: 1961, text: '肯尼迪总统宣布登月计划：“在这个十年结束前把人送上月球”' }],
+            '06/03': [{ year: 1965, text: '爱德华·怀特成为首位进行太空行走的美国人（双子座4号）' }],
+            '06/16': [{ year: 1963, text: '瓦莲京娜·捷列什科娃成为首位进入太空的女性（东方6号）' }],
+            '07/20': [{ year: 1969, text: '阿波罗11号登月，尼尔·阿姆斯特朗成为首位踏上月球的人' }],
+            '07/29': [{ year: 1958, text: 'NASA（美国国家航空航天局）正式成立' }],
+            '08/06': [{ year: 2012, text: '好奇号火星车成功登陆火星盖尔坡石坑' }],
+            '09/12': [{ year: 1966, text: '双子座11号发射，执行首次太空对接之一' }],
+            '10/04': [{ year: 1957, text: '苏联发射斯普特尼克1号，人类首颗人造卫星，太空时代开启' }],
+            '10/15': [{ year: 2003, text: '杨利伟乘坐神舟五号成为首位进入太空的中国宇航员' }],
+            '11/03': [{ year: 1957, text: '斯普特尼克2号发射，携带小狗莱卡进入太空' }],
+            '11/26': [{ year: 2011, text: '好奇号火星车发射升空（2012年8月登陆火星）' }],
+            '12/21': [{ year: 1968, text: '阿波罗8号发射，人类首次离开地球轨道环绕月球飞行' }]
+        };
+
+        function renderSpaceCalendar() {
+            const body = document.getElementById('calendarBody');
+            if (!body) return;
+            const now = new Date();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayKey = month + '/' + day;
+            let events = SPACE_HISTORY_EVENTS[todayKey];
+            let isToday = true;
+            if (!events || events.length === 0) {
+                const allKeys = Object.keys(SPACE_HISTORY_EVENTS);
+                const randomKey = allKeys[Math.floor(Math.random() * allKeys.length)];
+                events = SPACE_HISTORY_EVENTS[randomKey];
+                isToday = false;
+            }
+            let html = '';
+            if (isToday) {
+                html += '<div style="color: var(--gold); font-size: 0.85rem; margin-bottom: 8px; font-weight: 600;">🗕 ' + todayKey + ' 历史上的今天</div>';
+            } else {
+                html += '<div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">今天暂无记载事件，为你随机展示一条</div>';
+            }
+            if (events) {
+                events.forEach(function(ev) {
+                    html += '<div class="calendar-event' + (isToday ? ' calendar-event-highlight' : '') + '">';
+                    html += '<span class="calendar-event-year">' + ev.year + '</span>';
+                    html += '<span class="calendar-event-text">' + ev.text + '</span>';
+                    html += '</div>';
+                });
+            }
+            body.innerHTML = html;
+        }
+
+        function toggleCalendar() {
+            const section = document.getElementById('calendarSection');
+            if (section) section.classList.toggle('collapsed');
+        }
+
+        // ==================== 用户关注系统 ====================
+        function toggleFollow(username) {
+            let followed = JSON.parse(localStorage.getItem('space_follows')) || [];
+            if (followed.includes(username)) {
+                followed = followed.filter(function(u) { return u !== username; });
+            } else {
+                followed.push(username);
+            }
+            localStorage.setItem('space_follows', JSON.stringify(followed));
+            const profileModal = document.getElementById('profileModal');
+            if (profileModal && profileModal.classList.contains('show') && profileModal.dataset.username === username) {
+                showUserProfile(username);
+            }
+            if (currentTab === 'follow') renderPosts();
+        }
+
+        // ==================== 用户资料 ====================
+        function showUserProfile(username) {
+            const modal = document.getElementById('profileModal');
+            const contentDiv = document.getElementById('profileContent');
+            if (!modal || !contentDiv) return;
+            modal.dataset.username = username;
+            const userPosts = posts.filter(function(p) { return p.author === username; });
+            const totalLikes = userPosts.reduce(function(sum, p) { return sum + (p.likes || 0); }, 0);
+            const avatar = getAvatar(username);
+            const avHtml = avatar.startsWith('http') ? '<img src="' + avatar + '" alt="avatar">' : avatar;
+            const badge = OFFICIAL_USERS[username] ? '<span class="badge-official">' + OFFICIAL_USERS[username].badge + '</span>' : '';
+            const followed = JSON.parse(localStorage.getItem('space_follows')) || [];
+            const isFollowing = followed.includes(username);
+            var followBtnHtml = '';
+            if (currentUser && currentUser.name !== username) {
+                followBtnHtml = '<button class="profile-follow-btn ' + (isFollowing ? 'following' : 'follow') + '" id="profileFollowBtn" data-username="' + escapeHtml(username) + '" onclick="toggleFollow(this.dataset.username)">' + (isFollowing ? '✓ 已关注' : '+ 关注') + '</button>';
+            }
+            var postsHtml = '';
+            if (userPosts.length > 0) {
+                postsHtml = '<div class="profile-posts"><div class="profile-posts-title">TA的帖子 (' + userPosts.length + ')</div>';
+                userPosts.forEach(function(post) {
+                    var isLiked = likedPosts[post.id] || false;
+                    postsHtml += '<div class="post-card" data-id="' + post.id + '">';
+                    postsHtml += '<div class="post-header"><div class="post-author">';
+                    postsHtml += '<div class="avatar">' + (post.avatar && post.avatar.startsWith('http') ? '<img src="' + post.avatar + '" alt="avatar">' : (post.avatar || '🌟')) + '</div>';
+                    postsHtml += '<div class="author-info"><span class="author-name">' + escapeHtml(post.author) + '</span>';
+                    postsHtml += '<span class="post-time">' + formatTime(post.time) + '</span></div></div></div>';
+                    if (post.title) postsHtml += '<div class="post-title">' + escapeHtml(post.title) + '</div>';
+                    if (post.image) postsHtml += "<div class='post-images'><img src='" + escapeHtml(post.image) + "' class='post-image' alt='图片'></div>";
+                    if (post.content) postsHtml += '<div class="post-content">' + escapeHtml(post.content) + '</div>';
+                    postsHtml += '<div class="post-footer"><button class="action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleLike(\'' + post.id + '\')"><span>' + (isLiked ? '❤️' : '🤍') + '</span><span>' + (post.likes || 0) + '</span></button></div>';
+                    postsHtml += '</div>';
+                });
+                postsHtml += '</div>';
+            } else {
+                postsHtml = '<div class="profile-posts"><div class="profile-posts-title">暂无帖子</div></div>';
+            }
+            contentDiv.innerHTML = '<div class="profile-header"><div class="profile-avatar-large">' + avHtml + '</div><div class="profile-info"><div class="profile-name">' + escapeHtml(username) + ' ' + badge + '</div><div class="profile-stats"><div class="profile-stat"><span class="profile-stat-num">' + userPosts.length + '</span><span>帖子</span></div><div class="profile-stat"><span class="profile-stat-num">' + totalLikes + '</span><span>获赞</span></div></div></div>' + followBtnHtml + '</div>' + postsHtml;
+            modal.classList.add('show');
+        }
+
+        function closeProfileModal() {
+            const modal = document.getElementById('profileModal');
+            if (modal) modal.classList.remove('show');
+        }
+
+// ==================== 初始化 ====================
+        // launchModalOverlay 在 script 之后渲染，这里绑定事件
+        var lmo = document.getElementById('launchModalOverlay');
+        if (lmo) lmo.addEventListener('click', function(e) {
+            if (e.target === this) closeLaunchEditor();
+        });
+        // 主题初始化
+        const savedTheme = localStorage.getItem('space_theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            const themeBtn = document.getElementById('themeToggle');
+            if (themeBtn) themeBtn.textContent = '☀️';
+        }
+        // 历史上的今天
+        renderSpaceCalendar();
+        // 用户资料弹窗点击关闭
+        var pmo = document.getElementById('profileModal');
+        if (pmo) pmo.addEventListener('click', function(e) {
+            if (e.target === this) closeProfileModal();
+        });
+        renderAuthArea();
+        loadUsers();
+        loadPosts();
+</script>
+</body>
+</html>
