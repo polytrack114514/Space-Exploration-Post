@@ -4340,7 +4340,6 @@ if (typeof supabase === 'undefined') {
             <button class="sd-tab" onclick="switchSDTab('meteors', this)">流星雨</button>
             <button class="sd-tab" onclick="switchSDTab('eclipses', this)">日食月食</button>
             <button class="sd-tab" onclick="switchSDTab('launches', this)">🚀 发射任务</button>
-            <button class="sd-tab" onclick="switchSDTab('bookmarks', this)">⭐ 收藏</button>
             <button class="sd-tab" onclick="switchSDTab('nasaeys', this)">🌐 3D太阳系</button>
                     </div>
         <div class="space-data-body">
@@ -4381,9 +4380,6 @@ if (typeof supabase === 'undefined') {
             </div>
             <div class="sd-panel" id="sdPanel-launches">
                 <div class="sd-content" id="launchPanel">🚀 发射任务加载中...</div>
-            </div>
-            <div class="sd-panel" id="sdPanel-bookmarks">
-                <div class="bookmarks-panel" id="bookmarksPanel">⭐ 加载收藏列表...</div>
             </div>
             <div class="sd-panel" id="sdPanel-nasaeys">
                 <div class="nasa-eyes-panel">
@@ -6505,10 +6501,6 @@ function toggleBookmark(postId, postAuthor) {
         if (btn) { btn.textContent = '⭐ 已收藏'; btn.classList.add('bookmarked'); }
     }
     saveBookmarks(bookmarks);
-    // If viewing bookmarks panel, refresh
-    if (document.getElementById('sdPanel-bookmarks') && document.getElementById('sdPanel-bookmarks').classList.contains('active')) {
-        loadBookmarks();
-    }
     if (currentTab === 'bookmarks') renderBookmarksTab();
 }
 
@@ -6697,7 +6689,6 @@ function switchSDTab(tab, btn) {
     else if (tab === 'crew') { loadISSCrew(); }
     else if (tab === 'meteors') { renderMeteorShowers(); }
     else if (tab === 'eclipses') { renderEclipses(); }
-    else if (tab === 'bookmarks') { loadBookmarks(); }
     else if (tab === 'launches') { loadLaunchData(); }
     else if (tab === 'nasaeys') {
         var frame = document.getElementById('nasaEyesFrame');
