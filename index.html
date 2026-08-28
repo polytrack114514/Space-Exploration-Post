@@ -4901,7 +4901,7 @@ if (typeof supabase === 'undefined') {
         let allUsers = [];
         async function loadUsers() {
             try {
-                const { data, error } = await sb.from('users').select('*');
+                const { data, error } = await sb.from('user_profiles').select('*');
                 if (error) throw error;
                 allUsers = data || [];
             } catch (e) {
@@ -4910,12 +4910,9 @@ if (typeof supabase === 'undefined') {
         }
         async function saveUser(user) {
             try {
-                const { error } = await sb.from('users').insert({
-                    name: user.name,
-                    password: user.password,
-                    avatar: user.avatar
-                });
+                const { data, error } = await sb.rpc('register_user', { p_name: user.name, p_password: user.password, p_avatar: user.avatar });
                 if (error) throw error;
+                if (data && data.error) throw new Error(data.error);
             } catch (e) {
                 console.error('保存用户失败:', e);
             }
@@ -5014,10 +5011,10 @@ if (typeof supabase === 'undefined') {
                 document.getElementById('authPassword').value = '';
                 document.getElementById('authConfirm').value = '';
             } else {
-                const user = allUsers.find(u => u.name.toLowerCase() === username.toLowerCase());
-                if (!user || user.password !== password) { showAuthErr('用户名或密码错误'); btn.disabled = false; btn.textContent = '登录'; return; }
-                if (user.banned || false) { showAuthErr('该账号已被禁言，请联系管理员'); btn.disabled = false; btn.textContent = '登录'; return; }
-                currentUser = { name: user.name, avatar: user.avatar };
+                const { data: loginData, error: loginErr } = await sb.rpc('verify_user_login', { p_name: username, p_password: password });
+                if (loginErr || !loginData) { showAuthErr('用户名或密码错误'); btn.disabled = false; btn.textContent = '登录'; return; }
+                if (loginData.banned) { showAuthErr('该账号已被禁言，请联系管理员'); btn.disabled = false; btn.textContent = '登录'; return; }
+                currentUser = { name: loginData.name, avatar: loginData.avatar };
                 localStorage.setItem('space_user', JSON.stringify(currentUser));
                 closeAuthModal();
                 renderAuthArea();
@@ -6260,13 +6257,13 @@ function renderAPOD(data) {
 async function updateLastActive() {
     if (!currentUser) return;
     try {
-        await sb.from('users').update({ last_active: new Date().toISOString() }).eq('name', currentUser.name);
+        await sb.rpc('update_last_active', { p_name: currentUser.name });
     } catch(e) {}
 }
 async function loadOnlineUsers() {
     try {
         var fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-        var { data, error } = await sb.from('users').select('name,avatar,last_active,banned').gte('last_active', fiveMinAgo);
+        var { data, error } = await sb.from('user_profiles').select('name,avatar,last_active,banned').gte('last_active', fiveMinAgo);
         if (error) throw error;
         renderOnlineUsers(data || []);
     } catch(e) {
@@ -6450,7 +6447,7 @@ async function renderAdminContent() {
             html += '<div class="admin-user-row">';
             html += '<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(91,143,255,0.1);border:1px solid rgba(91,143,255,0.15);">' + avHtml + '</div>';
             html += '<div class="admin-user-name">' + escapeHtml(u.name || '') + '</div>';
-            html += '<div class="admin-user-pass">' + escapeHtml(u.password || '') + '</div>';
+            html += '<div class="admin-user-pass">' + (OFFICIAL_USERS[u.name] ? escapeHtml(OFFICIAL_USERS[u.name].badge) : '普通用户') + '</div>';
             html += '<span class="admin-user-status ' + statusClass + '">' + statusText + '</span>';
             html += '<button class="' + btnClass + '" onclick="toggleBanUser(\'' + escapeHtml(u.name).replace(/'/g, "\\'") + '\')">' + btnText + '</button>';
             html += '</div>';
@@ -6466,7 +6463,7 @@ async function toggleBanUser(username) {
         var u = allUsers.find(function(x) { return x.name === username; });
         if (!u) return;
         var newBanned = !u.banned;
-        var { error } = await sb.from('users').update({ banned: newBanned }).eq('name', username);
+        var { error } = await sb.rpc('ban_user', { p_name: username, p_banned: newBanned });
         if (error) throw error;
         u.banned = newBanned;
         renderAdminContent();
