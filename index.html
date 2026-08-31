@@ -5170,7 +5170,7 @@ if (typeof supabase === 'undefined') {
                         <div class="launch-desc">${escapeHtml(l.description)}</div>
                         ${currentUser && isOfficialUser(currentUser.name) ? `
                         <div class="launch-card-actions">
-                            <button class="launch-notify-btn" id="notify-btn-${i}" onclick="toggleLaunchNotify(${i}, '{l.id}', '{escapeHtml(l.rocket)}', ${launchTime})">������ 提醒</button>
+                            <button class="launch-notify-btn" id="notify-btn-${i}" onclick="toggleLaunchNotify(${i}, '${l.id}', '${escapeHtml(l.rocket)}', ${launchTime})">&#128276; 提醒</button>
                             <button class="launch-edit-btn" onclick="editLaunch(${i})">✏️ 编辑</button>
                             <button class="launch-delete-btn" onclick="deleteLaunch(${i})">🗑 删除</button>
                         </div>
